@@ -1,0 +1,61 @@
+﻿@using genetrix.Models;
+
+@{
+    var entitees = new List<Entitee>();
+    try
+    {
+        foreach (Entitee item in ViewBag.Entitee)
+        {
+            entitees.Add(item);
+        }
+    }
+    catch (Exception)
+    { }
+}
+
+<div class="modal fade ajout-comp" id="ajout-entitee" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajout des composants IHM</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="~/XtraRoles/AddEntitee" method="post">
+                    <input type="number" class="hidden" name="RoleId" value="@ViewBag.RoleId" />
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("Ajouter")
+                                </th>
+                                <th>
+                                    @Html.DisplayName("Type")
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in entitees)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="e@(item.Id)" value="@item.Id" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Type)
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                    <input type="submit" _action_requied_loader="0" class="btn btn-soft-primary" value="Ajouter" />
+                </form>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

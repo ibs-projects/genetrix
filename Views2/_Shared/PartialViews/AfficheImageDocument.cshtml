@@ -1,0 +1,53 @@
+﻿<a infoImage="img1-parent" id="bt-show-img" imgid="img-1" infoInputImg="upload-img-1" class="img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:none" title="Agrandir"></a>
+@* Modal detail image *@
+@Html.Partial("~/Views/_Shared/PartialViews/Detail_image.cshtml")
+@* <fin modal detail image *@
+<script>
+    alert("ccc")
+</script>
+<script>
+    $(document).ready(function () {
+        var profile = '@(Session["Profile"])';
+        alert("bbb")
+        $('.file-doc').click(function () {
+            alert("vvvv")
+            if (this.getAttribute('src') == "" || this.getAttribute('src') == "#") {
+                if (profile=="client") {
+                    $('#' + this.getAttribute("input1")).click();
+                    $('#' + this.getAttribute("input1")).parent().removeClass("mdi-upload");
+                    $('#' + this.getAttribute("input1")).parent().addClass("mdi-file-check-outline");
+                } else {
+                    alert("Impossible d'ajouter un document!");
+                }
+            } else {
+               // swipe();
+                // newTabImage();
+                $('#img-2').attr('src', this.getAttribute('src'));
+                document.getElementById('bt-show-img').click();
+            }
+        });
+
+        $('.file-doc').mouseover(function () {
+            $('#img-resume').attr('src', this.getAttribute('src'));
+        });
+
+        function swipe() {
+            var largeImage = document.getElementById('img-resume');
+            largeImage.style.display = 'block';
+            largeImage.style.width =  "100%";
+            largeImage.style.height = "100%";
+            var url = largeImage.getAttribute('src');
+            window.open(url, 'Image', 'width=largeImage.stylewidth,height=largeImage.style.height,resizable=1');
+        }
+
+        function newTabImage() {
+            var image = new Image();
+            image.src = $('#img-resume').attr('src');
+            image.style.width = "auto";
+            image.style.height = "auto";
+            var w = window.open("", '_blank');
+            w.document.write(image.outerHTML);
+            w.document.close();
+        }
+    });
+</script>

@@ -1,0 +1,434 @@
+﻿@using genetrix.Models
+@model VariablGlobales
+@{
+    string panel = string.IsNullOrEmpty(ViewBag.interf) ? "Tableau de bord " : ViewBag.interf;// + ViewBag.userName : ViewBag.interf;
+    ViewBag.Title = panel;
+    ViewBag.pTitle = panel;
+    ViewBag.pageTitle = panel;// (ViewBag.ModeName == genetrix.Contants.LAYOUT_VERTICAL) ? "Minible" : "Layouts";
+    ViewBag.pageImage = string.IsNullOrEmpty(ViewBag.interf)?"~/assets/images/IU/bank.png": "~/assets/images/IU/allDoc.png";
+
+    Session["recu_doc"] = 0; //(ViewData["e1_0"] as InfoDocAcueil).Nbr;
+    Session["encours"] = 0; //(ViewData["e2_0"] as InfoDocAcueil).Nbr;
+    Session["aapurer"] = 0; // (ViewData["e10_0"] as InfoDocAcueil).Nbr;
+    Session["echus"] = 0; //((ViewData["e12_0"] as InfoDocAcueil).Nbr);
+    Session["attentetransmissionbeac"] = 0; //((ViewData["e4_0"] as InfoDocAcueil).Nbr);
+    Session["atten_couv"] = 0; // ((ViewData["e7_0"] as InfoDocAcueil).Nbr);
+    Session["accord"] = 0; //((ViewData["e8_0"] as InfoDocAcueil).Nbr);
+    Session["saisieencours"] = 0; //((ViewData["e7_0"] as InfoDocAcueil).Nbr);
+    Session["encours_stf"] = 0; // ((ViewData["e4_2"] as InfoDocAcueil).Nbr);
+
+    int minSite = 0, maxSite = 0;
+    try
+    {
+        minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        maxSite = Convert.ToInt32(Session["userSIteMaxNiveau"]);
+    }
+    catch (Exception)
+    { }
+
+    int nbrComposants = 0; string rowItems = "col-xl-8 offset-2";
+    try
+    {
+        nbrComposants = int.Parse("" + ViewBag.nbrComposant);
+        if (nbrComposants >= 3)
+        {
+            rowItems = "col-xl-4";
+        }
+        //else if (nbrComposants == 3)
+        //{
+        //    rowItems = "col-xl-4";
+        //}
+        else if (nbrComposants == 2)
+        {
+            rowItems = "col-xl-6";
+        }
+    }
+    catch (Exception)
+    { }
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    .img-tab {
+        height: 80px;
+        width: 80px
+    }
+
+    fieldset {
+        display: block;
+        margin-left: 2px;
+        margin-right: 2px;
+        padding-top: 0.35em;
+        padding-bottom: 0.625em;
+        padding-left: 0.75em;
+        padding-right: 0.75em;
+        border: 2px groove (internal value);
+    }
+
+    .card-item {
+        min-height: 170px;
+        height: 170px;
+        border: 1px solid #5fcbcb;
+    }
+
+    .card-item1 {
+        border: 1px solid #5fcbcb
+    }
+
+    .card-item:hover {
+        box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    }
+</style>
+<div class="row">
+    @{
+        int nb_t = 0, nb_a = 0, nb_v = 0, nb_r = 0;
+        //Accueil commun service transfert: premiere interface lorsqu'un user du service transfert se connecte
+        if (minSite == 5)//minSite=service transfert
+        {
+            if (string.IsNullOrEmpty(ViewBag.interf))
+            {
+                try
+                {
+                    //dossiers reçus
+                    <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=5_5_5&interf=")">
+                        <div class="card card-item" id="doss-recu">
+                            <div class="card-body">
+                                <div>
+                                    <div class="float-end mt-2 ">
+                                        <div id="total-revenue-chart1">
+                                            <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/recus.png" data-holder-rendered="true">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(ViewData["e_5_5"] as InfoDocAcueil).Nbr</span></h4>
+                                        <p class="text-muted mb-0 fs-5">Dossiers reçus</p>
+                                    </div>
+                                    <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                        @{
+                                            //Notification
+                                            <span title="Voir les DFX" class="racourci-comp" href="#">
+                                                <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@((ViewData["e_5_5"] as InfoDocAcueil).GetPercentage(4, 5))</span> @("DFX")
+                                            </span>
+                                            <span title="Voir les refinancements" class="racourci-comp" href="#">
+                                                <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@((ViewData["e_5_5"] as InfoDocAcueil).GetPercentage(5,5))</span> @("Refinancements")
+                                            </span>
+                                        }
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+                catch (Exception)
+                { }
+                try
+                {
+                    //dossiers dfx
+                    nb_t = (ViewData["e_6_10"] as InfoDocAcueil).NbrDFX;
+                    nb_a = (ViewData["e_10_10"] as InfoDocAcueil).NbrAccordés_DFX;
+                    nb_r = (ViewData["e_6_10"] as InfoDocAcueil).NbrRejets_DFX;
+                    nb_v = (ViewData["e_9_9"] as InfoDocAcueil).NbrValidés_DFX;
+
+                    <a class="col-xl-4" href="@Url.Content("~/index/indexbanque?panel=dfx&interf=dfx")">
+                        <div class="card card-item" id="doss-dfx">
+                            <div class="card-body">
+                                <div>
+                                    <div class="float-end mt-2 ">
+                                        <div id="total-revenue-chart1">
+                                            <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/encours.png" data-holder-rendered="true">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(nb_t)</span></h4>
+                                        <p class="text-muted mb-0 fs-5">DFX</p>
+                                    </div>
+                                    <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                        @{
+                                            //Notification
+                                            <span title="Dossiers en cours" class="racourci-comp" href="#">
+                                                <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-refresh me-1"></i>@(nb_t-nb_v-nb_r-nb_a)</span> @("En cours")
+                                            </span>
+                                            <span title="Dossiers validés" class="racourci-comp" href="#">
+                                                <span class="text-primary me-1"><i style="font:bolder" class="uil uil-folder-check me-1"></i>@(nb_v)</span> @("Validés")
+                                            </span>
+                                            <span title="Voir les refinancements" class="racourci-comp" href="#">
+                                                <span class="text-success me-1"><i class="mdi mdi-folder-pound me-1"></i>@(nb_a)</span> @("Accordés")
+                                            </span>
+                                        }
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                }
+                catch (Exception)
+                { }
+
+                try
+                {
+
+                    //dossiers refinancement
+                    nb_v = nb_t = nb_r = nb_a = 0;
+                    nb_t = (ViewData["e_6_10"] as InfoDocAcueil).NbrRefinanacement;
+                    nb_a = (ViewData["e_6_10"] as InfoDocAcueil).NbrAccordéé_Refinancement;
+                    nb_r = (ViewData["e_6_10"] as InfoDocAcueil).NbrRejets_Refinancement;
+                    nb_v = (ViewData["e_6_10"] as InfoDocAcueil).NbrValidés_Refinancement;
+                    <a class="col-xl-4" href="@Url.Content("~/index/indexbanque?panel=ref&interf=refinancement")">
+                        <div class="card card-item" id="doss-ref">
+                            <div class="card-body">
+                                <div>
+                                    <div class="float-end mt-2 ">
+                                        <div id="total-revenue-chart1">
+                                            <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/refinancement.png" data-holder-rendered="true">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(nb_t)</span></h4>
+                                        <p class="text-muted mb-0 fs-5">Refinancements</p>
+                                    </div>
+                                    <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                        @{
+                                            //Notification
+                                            <span title="Dossiers en cours" class="racourci-comp" href="#">
+                                                <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-autorenew me-1"></i>@(nb_t - nb_v - nb_r - nb_a)</span> @("En cours")
+                                            </span>
+                                            <span title="Dossiers validés" class="racourci-comp" href="#">
+                                                <span class="text-primary me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@(nb_v)</span> @("Validés")
+                                            </span>
+                                            <span title="Voir les refinancements" class="racourci-comp" href="#">
+                                                <span class="text-success me-1"><i class="mdi mdi-handshake me-1"></i>@(nb_a)</span> @("Accordés")
+                                            </span>
+                                        }
+
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                }
+                catch (Exception)
+                { }
+            }
+            else if (ViewBag.interf == "dfx")
+            {
+                //dossiers dfx
+                nb_t = (ViewData["e_6_10"] as InfoDocAcueil).NbrDFX;
+                nb_a = (ViewData["e_10_10"] as InfoDocAcueil).NbrAccordés_DFX;
+                nb_r = (ViewData["e_6_10"] as InfoDocAcueil).NbrRejets_DFX;
+                nb_v = (ViewData["e_9_9"] as InfoDocAcueil).NbrValidés_DFX;
+
+                @Html.Partial("~/Views/_Shared/PartialViews/Dfx.cshtml", new List<int>() { nb_t - nb_v - nb_r - nb_a, nb_v, nb_a })
+            }
+            else if (ViewBag.interf == "refinancement")
+            {
+                //refinancement
+                nb_t = (ViewData["e_6_10"] as InfoDocAcueil).NbrRefinanacement;
+                nb_a = (ViewData["e_6_10"] as InfoDocAcueil).NbrAccordéé_Refinancement;
+                nb_r = (ViewData["e_6_10"] as InfoDocAcueil).NbrRejets_Refinancement;
+                nb_v = (ViewData["e_6_10"] as InfoDocAcueil).NbrValidés_Refinancement;
+
+                @Html.Partial("~/Views/_Shared/PartialViews/Refinancement.cshtml", new List<int>() { nb_t - nb_v - nb_r - nb_a, nb_v, nb_a, 0, 0 })
+            }
+        }
+        else
+        {
+            #region Non commun
+            int? gpId = null;
+            foreach (Composant item in ViewData["composants"] as IEnumerable<Composant>)
+            {
+                try
+                {
+                    try
+                    {
+                        if (item.Numero == 9)
+                        {
+                            continue;
+                        }
+                        string ident = item.Numero + "_" + item.NumeroMin + "_" + item.NumeroMax;
+                        @* composant de localisation: accueil *@
+                        if (gpId != item.IdGroupe)
+                        {
+                            try
+                            {
+                                gpId = item.IdGroupe;
+                            }
+                            catch (Exception)
+                            { }
+                        }
+                        int Nbr = 0;
+                        if (item.Recherche == "dfx")
+                        {
+                            Nbr = (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).NbrDFX;
+                        }
+                        else if (item.Recherche == "refinancement")
+                        {
+                            Nbr = (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).NbrRefinanacement;
+                        }
+                        else
+                        {
+                            Nbr = (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).Nbr;
+                        }
+                        <a class="col-md-6 @rowItems" href="@Url.Content(item.GetUrl()+"&comp="+ident)">
+                            <div class="card card-item" id="@ident">
+                                <div class="card-body">
+                                    <div>
+                                        <div class="float-end mt-2 ">
+                                            <div id="total-revenue-chart1">
+                                                <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/@item.GetIconPath()" data-holder-rendered="true">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@Nbr</span></h4>
+                                            <p class="text-muted mb-0">@item.Description</p>
+                                        </div>
+                                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                            @{
+                                                ///Logique service transfert
+                                                if (item.Numero >= 5)
+                                                {
+                                                    //reçu stf.
+                                                    // DFX et Refinancement
+                                                    if (item.Numero <= 6)
+                                                    {
+                                                        <span title="Voir les DFX" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(4,item.Numero))">
+                                                            <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(4, item.Numero))</span> @("DFX")
+                                                        </span>
+                                                        <span title="Voir les refinancements" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(5,item.Numero))">
+                                                            <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(item.Numero))</span> @("Refinancements")
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        //DFX
+                                                        if (item.Recherche == "dfx")
+                                                        {
+                                                            double nbr_traite = (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(2, 9);
+                                                            <span title="Voir les refinancements" class="racourci-comp" href="#">
+                                                                <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@(Nbr-nbr_traite)</span> @("En cours")
+                                                            </span>
+                                                            <span title="Voir les DFX" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(2,9))">
+                                                                <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@nbr_traite</span> @("Accordés")
+                                                            </span>
+                                                        }
+                                                        //Refinancement
+                                                        else
+                                                        {
+                                                            if (item.Numero > 7 && item.Numero < 10)
+                                                            {
+                                                                double nbr_traite = (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(2, 10);
+                                                                <span title="Voir les dossiers en cours" class="racourci-comp" href="#">
+                                                                    <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@(Nbr-nbr_traite)</span> @("En cours")
+                                                                </span>
+                                                                <span title="Voir les dosssiers accordés" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(2,9))">
+                                                                    <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@nbr_traite</span> @("Accordés")
+                                                                </span>
+                                                                <span title="Voir les dossiers rejetés" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(2,9))">
+                                                                    <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(1, -4))</span> @("Rejetés")
+                                                                </span>
+                                                            }
+                                                            else if (item.Numero == 10)
+                                                            {
+                                                                <span title="Voir les DFX" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(0,item.Numero))">
+                                                                    <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(0, 11))</span> @("DFX")
+                                                                </span>
+                                                                <span title="Voir les refinancements" class="racourci-comp" href="@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetLink(5,item.Numero))">
+                                                                    <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(0,12))</span> @("Refinancements")
+                                                                </span>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                else if (item.NumeroMin > maxSite)
+                                                {
+                                                    <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(2))</span> @( (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetDuree(2))
+                                                    <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(1))</span> @( (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetDuree(1))
+                                                }
+                                                else
+                                                {
+                                                    <span class="text-warning me-1"><i class="uil uil-exclamation-triangle me-1"></i>@((ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetPercentage(1))</span> @( (ViewData["e_" + item.NumeroMin + "_" + item.NumeroMax] as InfoDocAcueil).GetDuree())
+                                                }
+                                            }
+
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                    catch (Exception)
+                    { }
+                }
+                catch (Exception ee)
+                { }
+            }
+
+            try
+            {
+                //if (Session["ges"].ToString() == "Archivage")
+                {
+                    @Html.Partial("~/Views/_Shared/PartialViews/FileManager.cshtml")
+                }
+            }
+            catch (Exception)
+            { }
+
+            #endregion
+        }
+
+        @* composant 11:  Liste de tous les dossiers *@
+        if (minSite == 1)
+        {
+            <div numero="11">
+                <div class="ck-toolbar__separator mb-2 p-1"><hr class="fs-2 m-0" style="height:15%!important" /></div>
+
+                <div class="alert alert-border alert-border-info alert-dismissible fade show mt-0" role="alert">
+                    <i class="mdi mdi-folder-multiple-outline font-size-16 text-primary me-2"></i>
+                    Dossiers BEAC
+                    <div class="mt-3">
+                        @*<canvas id="lineChart" height="300"></canvas>*@
+                        @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiersBEAC.cshtml", Model.Dossiers)
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+            </div>
+        }
+        else if (minSite == 5)
+        {
+            <div numero="11">
+                <div class="ck-toolbar__separator mb-2 p-1"><hr class="fs-2 m-0" style="height:15%!important" /></div>
+
+                <div class="alert alert-border alert-border-info alert-dismissible fade show mt-0" role="alert">
+                    <i class="mdi mdi-folder-multiple-outline font-size-16 text-primary me-2"></i>
+                    Dossiers BEAC
+                    <div class="mt-3">
+                        @*<canvas id="lineChart" height="300"></canvas>*@
+                        @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiersBEAC.cshtml", Model.Dossiers)
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+            </div>
+        }
+        @*else if ((Session["user"] as CompteBanqueCommerciale).EstAdmin)
+        {
+            @Html.Partial("~/Views/_Shared/PartialViews/Configuration_banque.cshtml", Model.Banque)
+        }*@
+
+    }
+
+</div>
+<a id="link-comp" class="hidden" href="#"></a>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<!-- apexcharts -->
+<script>
+    $(document).ready(function () {
+        $('.racourci-comp').click(function (e) {
+            document.getElementById('link-comp').setAttribute("href", this.getAttribute("href"));
+            document.getElementById('link-comp').click();
+            e.stopPropagation();
+        });
+    });
+</script>

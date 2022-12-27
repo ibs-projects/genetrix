@@ -1,0 +1,424 @@
+﻿@model genetrix.Models.PubItem
+@{
+    Layout = null;
+    if (string.IsNullOrEmpty(Model.Cards))
+    {
+        Model.Cards += ";aa";
+    }
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    body {
+        background-color: transparent!important;
+        overflow: scroll;
+        margin: 30px;
+        border: none;
+        margin: 0;
+        position: absolute;
+        top: 70%;
+        left:70%;
+        width: 350px;
+        height: 230px;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+    .child {
+        display: none;
+    }
+</style>
+@{
+    if (!string.IsNullOrEmpty(Model.FrameId) || !string.IsNullOrEmpty(Model.Theme))
+    {
+        if (Model.FrameId == "rigth-pub")
+        {
+            <style>
+                .child {
+                    margin: 0;
+                  /*  position: absolute;
+                    top: 50%;*/
+/*                    left: 58%;
+*/                    /*
+                    width: 450px;
+                    height: 350px;*/
+                    /*-ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);*/
+                }
+            </style>
+        }
+        else if (Model.FrameId == "left-pub")
+        {
+            <style>
+                .child {
+                    margin: 0;
+                    position: absolute;
+                    top: 50%;
+                    left: 40%;/*
+                    width: 450px;
+                    height: 350px;*/
+                    -ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                }
+            </style>
+        }
+        else
+        {
+            <style>
+                .center {
+                    margin: 0;
+                    position: absolute;
+                    top: 90%;
+                    width: 350px;
+                    height: 230px;
+                    -ms-transform: translate(-50%, -50%);
+                    transform: translate(-50%, -50%);
+                }
+            </style>
+        }
+    }
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml" style="background-color:transparent">
+<head>
+    <title>01</title>
+</head>
+<body>
+    @{
+        if (Model.Cards.Contains("Special_title1"))
+        {
+            <div class="card card-body child" id="Special_title1">
+                <h3 class="card-title mt-0 titre">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Special title 1")</h3>
+                <p class="card-text">
+                    @{
+                        if (string.IsNullOrEmpty(Model.Description))
+                        {
+                            @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                        }
+                        else
+                        {
+                            @Html.Raw(Model.Description + "");
+                        }
+                    }
+                </p>
+                <a href="#" class="btn btn-primary waves-effect waves-light">Go somewhere</a>
+            </div>
+        }
+        if (Model.Cards.Contains("Special_title2"))
+        {
+            <div class="card child" id="Special_title2">
+                <h4 class="card-header mt-0">Fonctionalité</h4>
+                <div class="card-body">
+                    <h4 class="card-title titre mt-0">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Special title 2")</h4>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        }
+
+        if (Model.Cards.Contains("Card_title1"))
+        {
+            <div class="card child" id="Card_title1">
+                <img class="card-img-top img-fluid" src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):Url.Content("~/assets/images/small/img-5.jpg"))" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title titre mt-0">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card title 1")</h4>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Il s'agit d'une carte plus large avec un texte à l'appui ci-dessous comme entrée naturelle vers du contenu supplémentaire.Ce contenu est un peu plus long.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_title2"))
+        {
+            <div class="card child" id="Card_title2">
+                <div class="card-body">
+                    <h4 class="card-title titre mt-0">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card title 2")</h4>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Il s'agit d'une carte plus large avec un texte à l'appui ci-dessous comme entrée naturelle vers du contenu supplémentaire.Ce contenu est un peu plus long.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                    <p class="card-text">
+                        <small class="text-muted">Last updated 3 mins ago</small>
+                    </p>
+                </div>
+                <img class="card-img-bottom img-fluid" src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):Url.Content("~/assets/images/small/img-7.jpg"))" alt="Card image cap">
+            </div>
+        }
+        if (Model.Cards.Contains("Card_title3"))
+        {
+            <div class="card child" id="Card_title3">
+                <img class="card-img img-fluid" src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):Url.Content("~/assets/images/small/img-6.jpg"))" alt="Card image">
+                <div class="card-img-overlay">
+                    <h4 class="card-title titre text-white mt-0">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card title 3")</h4>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Il s'agit d'une carte plus large avec un texte à l'appui ci-dessous comme entrée naturelle vers du contenu supplémentaire.Ce contenu est un peu plus long.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                    <p class="card-text">
+                        <small class="text-white">Last updated 3 mins ago</small>
+                    </p>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_title4"))
+        {
+            <div class="card child" id="Card_title4">
+                <div class="row Card_title4 g-0 align-items-center">
+                    <div class="col-md-4">
+                        <img class="card-img img-fluid" src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):Url.Content("~/assets/images/small/img-2.jpg"))" alt="Card image">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title titre">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card title 4")</h5>
+                            <p class="card-text">
+                                @{
+                                    if (string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Model.Description + "");
+                                    }
+                                }
+                            </p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_title5"))
+        {
+            <div class="card child" id="Card_title5">
+                <div class="row Card_title5 g-0 align-items-center">
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h5 class="card-title titre">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card title 5")</h5>
+                            <p class="card-text">
+                                @{
+                                    if (string.IsNullOrEmpty(Model.Description))
+                                    {
+                                        @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Model.Description + "");
+                                    }
+                                }
+                            </p>
+                            <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <img class="card-img img-fluid" src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):Url.Content("~/assets/images/small/img-3.jpg"))" alt="Card image">
+                    </div>
+
+                </div>
+            </div>
+        }
+
+        if (Model.Cards.Contains("Card_vierge1"))
+        {
+            <div class="card bg-primary text-white-50 child" id="Card_vierge1">
+                <div class="card-body">
+                    <h5 class="mt-0 mb-4 text-white titre"><i class="uil uil-user me-3"></i>@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card vierge 1")</h5>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_vierge2"))
+        {
+            <div class="card border border-primary child" id="Card_vierge2">
+                <div class="card-header bg-transparent border-primary">
+                    <h5 class="my-0 text-primary titre"><i class="uil uil-user me-3"></i>@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card vierge 2")</h5>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title mt-0">Titre</h5>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                </div>
+            </div>
+        }
+
+        if (Model.Cards.Contains("Card_Masonry"))
+        {
+            <div class="card child" id="Card_Masonry">
+                <div class="card-header titre">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card Masonry")</div>
+                <div class="card-body">
+                    <blockquote class="blockquote font-size-14 mb-0">
+                        <p>
+                            @{
+                                if (string.IsNullOrEmpty(Model.Description))
+                                {
+                                    @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                                }
+                                else
+                                {
+                                    @Html.Raw(Model.Description + "");
+                                }
+                            }
+                        </p>
+                        <footer class="blockquote-footer font-size-12 mt-0">
+                            Someone famous in <cite title="Source Title">Source Title</cite>
+                        </footer>
+                    </blockquote>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_vierge3"))
+        {
+            <div class="card text-center child" id="Card_vierge3">
+                <div class="card-body">
+                    <h5 class="card-title titre">@(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card vierge 3")</h5>
+                    <p class="card-text">
+                        @{
+                            if (string.IsNullOrEmpty(Model.Description))
+                            {
+                                @Html.Raw("Avec le texte de support ci-dessous comme introduction naturelle à du contenu supplémentaire.");
+                            }
+                            else
+                            {
+                                @Html.Raw(Model.Description + "");
+                            }
+                        }
+                    </p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                </div>
+            </div>
+        }
+        if (Model.Cards.Contains("Card_video"))
+        {
+            <div class="card p-0 child" id="Card_video" style="width:100%">
+                <div class="card-header card-title titre">
+                    @(!string.IsNullOrEmpty(Model.Titre)?Model.Titre: "Card vidéo")
+                </div>
+                <div class="card-body p-0">
+                    <!-- 1:1 aspect ratio -->
+                    <div class="ratio ratio-21x9">
+                        <video controls="controls" autoplay="autoplay" style="width:100%;height:100%">
+                            <source src="@(!string.IsNullOrEmpty(Model.Image)?Url.Content(Model.Image):"https://www.youtube.com/embed/zpOULjyy-n8?rel=0")" type="video/mp4" />
+                            @*<source src="file.webm" type="video/webm" />
+                                <source src="file.ogv" type="video/ogg" />*@
+                        </video>
+                    </div>
+
+                </div>
+            </div>
+        }
+
+    }
+</body>
+</html>
+
+
+<!-- end row -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<script src="~/assets/libs/masonry-layout/masonry.pkgd.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+@{
+    if (!string.IsNullOrEmpty("" + Model.Theme))
+    {
+        <script>
+        $('.@(Model.Theme)').show();
+        $('#@(Model.Theme)').show();
+        </script>
+    }
+    if (!string.IsNullOrEmpty("" + Model.FondColor))
+    {
+        <script>
+             $('.child').css('background-color', '@(Model.FondColor)');
+        </script>
+    }
+    if (!string.IsNullOrEmpty("" + Model.DescriptionColor))
+    {
+        <script>
+        $('.card-text,.blockquote').css('color', '@(Model.DescriptionColor)');
+        </script>
+    }
+    if (!string.IsNullOrEmpty("" + Model.TitreColor))
+    {
+        <script>
+        $('.titre').css('color', '@(Model.TitreColor)');
+        </script>
+    }
+    
+    if (Model.Width != null && Model.Heigth != null && Model.Width != 0 && Model.Heigth != 0)
+    {
+        <script>
+            $(document).ready(function () {
+                $('.card').css('height','@(Model.Heigth)px')
+                $('.card').css('width', '@(Model.Width)px')
+                $('body').css('height', '@(Model.Heigth)px')
+                $('body').css('width','@(Model.Width)px')
+            })
+        </script>
+    }
+}

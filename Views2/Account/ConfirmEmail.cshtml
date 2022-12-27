@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "Confirmation de l'e-mail";
+    Layout = "~/Views/_Shared/_BlankLayout.cshtml";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="home-btn d-none d-sm-block">
+    <a href=@Url.Action("Index", "index") class="text-dark"><i class="mdi mdi-home-variant h2"></i></a>
+</div>
+<div class="account-pages my-5  pt-sm-5">
+    <div class="container">
+        <div class="row justify-content-center">
+
+            <div class="col-md-8 col-lg-6 col-xl-5">
+                <div>
+
+                    <a href=@Url.Action("Index", "index") class="mb-5 d-block auth-logo">
+                        <img src="~/assets/images/logo/logo-dark1.png" alt="" height="22" class="logo logo-dark">
+                        <img src="~/assets/images/logo/logo-light1.png" alt="" height="22" class="logo logo-light">
+                    </a>
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title mb-0">
+                                Merci d'avoir confirmé votre e-mail. Veuillez @Html.ActionLink("Cliquer ici pour vous connecter", "connexion", "auth", routeValues: null, htmlAttributes: new { id = "loginLink" })
+                            </p>
+                            <div class="col-sm-12">
+                                <div class="alert alert-success alert-dismissible fade show mt-4 px-4 mb-0 text-center" role="alert">
+                                    <i class="uil uil-check-circle d-block display-4 mt-2 mb-3 text-success"></i>
+                                    <h5 class="text-success">Compte créé avec succès</h5>
+                                    <p>Le code d'accès de l'entreprise vous a été envoyé par votre adresse électronique.</p>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+    </div>
+    <!-- end container -->
+</div>
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>

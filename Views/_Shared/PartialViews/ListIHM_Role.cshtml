@@ -1,0 +1,52 @@
+﻿@model IEnumerable<genetrix.Models.IHM>
+<form action="~/ihms/create" method="post">
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.Composant.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ecrire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supprimer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Créer)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    <input type="index-@item.XRole" name="name" value="" />
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.Composant.Description)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.XRole.Nom)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.Lire)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.Ecrire)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.Supprimer)
+                </td>
+                <td>
+                    @Html.EditorFor(modelItem => item.Créer)
+                </td>
+            </tr>
+        }
+
+    </table>
+</form>

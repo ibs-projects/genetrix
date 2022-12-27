@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    @Html.Partial("~/Views/_Shared/_title_meta.cshtml")
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+    @*@RenderSection("scan", false)*@
+    <script type="text/javascript" src="~/Content/con_ann/dynamic/Resources/dynamsoft.webtwain.initiate.js"></script>
+    <script type="text/javascript" src="~/Content/con_ann/dynamic/Resources/dynamsoft.webtwain.config.js"></script>
+</head>
+
+<body data-layout="horizontal" data-topbar="colored">
+
+    <!-- Loader -->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
+                <i class="uil-shutter-alt spin-icon"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        @Html.Partial("~/Views/_Shared/_horizontal.cshtml")
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    @Html.Partial("~/Views/_Shared/_page_title.cshtml")
+
+                    @RenderBody()
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            @Html.Partial("~/Views/_Shared/_footer.cshtml")
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+    @Html.Partial("~/Views/_Shared/_right_sidebar.cshtml")
+
+    @Html.Partial("~/Views/_Shared/_vendor_scripts.cshtml")
+
+    @RenderSection("scripts", required: false)
+
+
+</body>
+
+</html>
+
+
+

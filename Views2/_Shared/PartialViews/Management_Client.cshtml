@@ -1,0 +1,40 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.Historisation>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Agent")
+        </th>
+        <th>
+            @Html.DisplayName("Date de début")
+        </th>
+        <th>
+            @Html.DisplayName("Date de fin")
+        </th>
+        <th>
+            @Html.DisplayName("Site")
+        </th>
+    </tr>
+    @{ int i = 0;}
+    @foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td>
+                <label>@item.Agent</label>
+            </td>
+            <td>
+                <label>@item.DateDebut</label>
+            </td>
+            <td>
+                <label>@item.DateFin</label>
+            </td>
+             <td>
+                <label>@item.Structure</label>
+            </td>
+            
+        </tr>
+    }
+
+</table>

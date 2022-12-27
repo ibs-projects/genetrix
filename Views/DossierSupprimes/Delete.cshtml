@@ -1,0 +1,118 @@
+﻿@model genetrix.Models.DossierSupprime
+
+@{
+    ViewBag.Title = "Suppression du rapport";
+    ViewBag.pTitle = "Suppression du rapport";
+    ViewBag.pageTitle = "Suppression du rapport";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+}
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer ce rapport.</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Agence)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Agence)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Gestionnaire)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Gestionnaire)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DonneurDordre)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DonneurDordre)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Benefic)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Benefic)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Devise)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Devise)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MontantDev)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MontantDev)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MontantXaf)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MontantXaf)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateTraitement)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateTraitement)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateDepot)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateDepot)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateSupp)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateSupp)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UserName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UserName)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+

@@ -1,0 +1,39 @@
+﻿@model genetrix.Models.Banque
+
+@{
+    ViewBag.Title = "Banque";
+    ViewBag.pTitle = "Suppression Banque";
+    ViewBag.pageTitle = "Banque";
+    ViewBag.pageImage = "~/assets/images/IU/bank.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h3 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h3>
+<div>
+    <div>
+        <div class="">
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Nom)
+                </dd>
+
+            </dl>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="submit" value="Delete" class="btn btn-default" /> |
+                    @Html.ActionLink("Liste", "Index")
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

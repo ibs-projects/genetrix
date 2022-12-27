@@ -1,0 +1,105 @@
+﻿<script>
+
+                            // Factures
+                            document.getElementById("NbreJustif").addEventListener("input", function (e) {
+                                if (this.value > 0) {
+                                    document.getElementById("btn_ajout_fact").disabled = false;
+                                    document.getElementById("CompteurFactures").value = this.value;
+                                } else {
+                                    document.getElementById("btn_ajout_fact").disabled = true;
+                                }
+                            });
+
+                            //agrandir image
+                            var elts = document.getElementsByClassName("img-agd");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('img-2').src = document.getElementById(this.getAttribute("imgid")).getAttribute("src");
+                                    var aa = document.getElementById(this.getAttribute("imgid"));
+                                });
+                            }
+                            elts = null;
+                            //obtenir image
+                            elts = document.getElementsByClassName("img-input");
+                            for (var i = 0; i < elts.length; i++) {
+                                //alert(elts[i].getAttribute("imgid"));
+                                elts[i].onchange = evt => {
+                                    const [file] = evt.target.files;
+
+                                    if (file) {
+                                        //alert(evt.target.getAttribute("imgid"));
+                                        document.getElementById('' + evt.target.getAttribute("imgid")).src = URL.createObjectURL(file);
+                                        document.getElementById('img-2').src = URL.createObjectURL(file);
+                                        document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                        document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                    }
+                                }
+                            }
+                            elts = null;
+                            elts = document.getElementsByClassName("img-sup");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('' + this.getAttribute("infoInputImg")).value = "";
+                                    document.getElementById('' + this.getAttribute("infoImage")).classList.add("hidden");
+                                });
+                            }
+                            elts = null;  //
+
+                            /// Impression
+                            elts = document.getElementsByClassName("img-print");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('printer-contenair').classList.remove("hidden");
+
+                                    // Clone the image
+                                    const image = document.getElementById('' + this.getAttribute("imgid")).cloneNode();
+                                    image.style.maxWidth = '100%';
+                                    image.style.maxHeight = '100%';
+                                    image.style.width = '100%';
+                                    image.style.height = 'auto';
+                                    document.getElementById('printer-contenair').contentDocument.body.appendChild(image);
+                                    document.getElementById("printer-contenair").contentWindow.print();
+                                    //location.reload();
+
+                                });
+                            }
+                            elts = null;
+                            var _url = "@(Url.Content("~/Content/con_ann/dynamic/Scan_ap.html"))";
+
+                            /// scanner
+                            elts = document.getElementsByClassName("scan-bt");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    openRequestedPopup(_url, "Numérisation des doscuments");
+                                    alert("cockie: ");// + getCookie("imgageData"));
+                                });
+                            }
+                            elts = null;
+
+
+                            //functions scanner
+                            var windowObjectReference = null; // global variable
+
+                            function openRequestedPopup(url, windowName) {
+                                if (windowObjectReference == null || windowObjectReference.closed) {
+                                    windowObjectReference = window.open(url, windowName,
+                                        "resizable,scrollbars,status");
+                                } else {
+                                    windowObjectReference.focus();
+                                };
+                            }
+
+                            /*coockie*/
+                            function getCookie(name) {
+                                var nameEQ = name + "=";
+                                var ca = document.cookie.split(';');
+                                for (var i = 0; i < ca.length; i++) {
+                                    var c = ca[i];
+                                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                                } 
+                                return null;
+                            }
+
+
+</script>

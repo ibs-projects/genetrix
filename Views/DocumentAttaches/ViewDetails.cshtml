@@ -1,0 +1,30 @@
+﻿@model genetrix.Models.DocumentAttache
+
+<div class="card">
+    <div class="card-body">
+        <div class="col-lg-12 bg-gradient-dark1" id="img-quit-parent" style="max-height:100%;">
+            <div class="row">
+                <div class="col-1 p-0">
+                    <a infoImage="img-docTrans-parent" imgid="img-doc-att" infoInputImg="img-doc-att" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                    <a infoImage="img-docTrans-parent" imgid="img-doc-att" infoInputImg="img-doc-att" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                    <a infoImage="img-docTrans-parent" imgid="img-doc-att" infoInputImg="img-doc-att" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                </div>
+                <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                    @{
+                        var  estPdf = false;
+                        try
+                        {
+                            estPdf = Model.GetImageDocumentAttache().EstPdf;
+                        }
+                        catch (Exception)
+                        { }
+                       
+                        <iframe  class="pdf-view @(estPdf?"":"hidden1")" src="@Url.Content("~/dossiers/GetPDF?idDoc="+Model.Id+"&estDocAttache=true&idDossier="+Model.DossierId)" style="max-width:221mm;height:143mm;"></iframe>
+                        <img class="card-img img-fluid imf-taille @(!estPdf?"":"hidden1")" src="@(!string.IsNullOrEmpty(Model.GetImageDocumentAttache().GetImage())?Model.GetImageDocumentAttache().GetImage():"#")"  alt=""/>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

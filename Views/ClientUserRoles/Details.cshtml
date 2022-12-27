@@ -1,0 +1,102 @@
+﻿@model genetrix.Models.ClientUserRole
+
+@{
+    ViewBag.Title = "Rôle utilisateur";
+    ViewBag.pTitle = "Rôle utilisateur";
+    ViewBag.pageTitle = "Rôle utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Rôle utilisateur</h4>
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CreerDossier)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CreerDossier)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.SoumettreDossier)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.SoumettreDossier)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CreerUser)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CreerUser)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.SuppUser)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.SuppUser)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ModifUser)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.ModifUser)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CreerBenef)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CreerBenef)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.SuppBenef)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.SuppBenef)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.ModifBenef)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.ModifBenef)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

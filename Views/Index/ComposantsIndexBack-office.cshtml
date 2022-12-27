@@ -1,0 +1,90 @@
+﻿@model genetrix.Models.VariablGlobales
+@using genetrix.Models
+
+@{
+    try
+    {
+        InfoDocAcueil2 info = null;
+        int backoff1 = 0, backoff2 = 0, backoff3 = 0, nb_traites = 0;
+        info = new InfoDocAcueil2();
+        Model.Dossiers.Where(d => d.EtapesDosier == 4 || d.EtapesDosier == 5 || d.EtapesDosier < 0).ToList().ForEach(d =>
+        {
+            if (/*d.DomicilImport == null && d.DeclarImport == null &&*/ !d.ValiderDouane)// || d.EtapesDosier==4)
+            {
+                backoff1++;
+            }
+            //if (d.DomicilImport == null || d.DeclarImport == null || !d.ValiderDouane || d.EtapesDosier == 5)
+            if (d.EtapesDosier == 5 && (d.DomicilImport == null || d.DeclarImport == null || !d.ValiderDouane))
+            {
+                backoff2++;
+            }
+            if((d.EtapesDosier == 4 || d.EtapesDosier == 5) && d.DomicilImport != null && d.DeclarImport != null && d.ValiderDouane)
+            {
+                backoff3++;
+            }
+        });
+        info.Nbr = backoff1;
+        //dossiers reçus
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=1_1_1&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-basket-fill icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(info.Nbr)</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers reçus</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        //dossiers encours
+        info.Nbr = backoff2;
+
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=2_2_5&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-folder-sync-outline icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@info.Nbr</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers en cours</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        //dossiers encours
+
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=19_6_22&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-basket-unfill icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(backoff3)</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers traités</p>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </a>
+    }
+    catch (Exception)
+    { }
+}

@@ -1,0 +1,705 @@
+﻿@using genetrix.Models
+@model genetrix.Models.Dossier
+
+@{
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Nouveau Dossiers";
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    ViewBag.dossierId = Model.Dossier_Id;
+}
+@*<link href="~/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/con_ann/css/imgview.css" rel="stylesheet" />*@
+@*@section scan{*@
+
+@*}*@
+<style>
+    input[type='file'] {
+        opacity: 0
+    }
+
+    @@media only screen and (max-width: 1184px) {
+        #btn-terminer {
+            margin-top: -120px;
+            /*            background-color: red;
+    */
+        }
+    }
+</style>
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm("Create", "Dossiers", FormMethod.Post, new { enctype = "multipart/form-data" ,id="dossier-form-create"}))
+        {
+            @Html.AntiForgeryToken()
+            <div class="hidden">
+                <input type="number" id="id_dossier" value="0" />
+                @Html.HiddenFor(model=>model.ClientId)
+            </div>
+            <div class="card">
+                <div class="form-group card-header">
+                    <div class="col-md-12">
+                        <h4 class="card-title mb-4" style="display:inline!important">Nouveau dossier de transfert</h4>
+                    </div>
+                </div>
+                <div class="btn m-0 p-0" title="Dossier à @(Model.Percentage)%" style="">
+                    <div class="progress bg-danger">
+                        <div class="progress-bar bg-gradient-success" role="progressbar" style="width: @(Model.Percentage)%;" aria-valuenow="@(Model.Percentage)" aria-valuemin="0" aria-valuemax="100">@(Model.Percentage)%</div>
+                    </div>
+                </div>
+                <input type="number" class="hidden" name="EtapesDosier" id="EtapesDosier" value="" />
+                <style>
+                    .detail {
+                        border: 1px solid #eef1fd;
+                        border-radius: 5px 3px;
+                        margin-bottom: 10px
+                    }
+
+                    .detail0 {
+                        padding: 5px
+                    }
+
+                    legend {
+                        background-color: #eef1fd;
+                        padding: 5px;
+                        font-size: large;
+                        font: bold
+                    }
+
+                    .imf-taille {
+                        max-height: 240px;
+                        max-width: 220px;
+                    }
+                </style>
+                <div class="card-body">
+                    <div id="vertical-example" class="vertical-wizard button-items">
+                        <!-- Seller Details -->
+                        <h3>Instruction</h3>
+                        <section>
+                            <div>
+
+                                <fieldset class="detail">
+                                    <legend>Détails ordre de transfert</legend>
+                                    <div class="form-check form-switch form-switch-lg mb-1" dir="ltr">
+                                        <input type="checkbox" class="form-check-input" style="margin-left:0px" id="customSwitchsizelg">
+                                        <label class="form-check-label" for="customSwitchsizelg">Cochez le bouton si la marchadise est déjà arrivée</label>
+                                    </div>
+                                    <div class="detail0">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.IdSite, "Banque", htmlAttributes: new { @class = "control-label" })
+                                                <div class="mb-3">
+                                                    @*@Html.DropDownList("BanqueId", null, htmlAttributes: new { @class = "form-control" })*@
+                                                    <select class="form-control" id="BanqueId" name="IdSite">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (var item in ViewBag.BanqueId)
+                                                            {
+                                                                try
+                                                                {
+                                                                    <option value="@item.Id">@item.Banque.Nom</option>
+                                                                }
+                                                                catch (Exception)
+                                                                { }
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @Html.ValidationMessageFor(model => model.IdSite, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.FournisseurId, "Fournisseur", htmlAttributes: new { @class = "control-label" })
+                                                <div class="mb-3">
+                                                    @*@Html.DropDownList("FournisseurId", null, htmlAttributes: new { @class = "form-control" })*@
+                                                    <select class="form-control" id="FournisseurId" name="FournisseurId">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (var item in ViewBag.FournisseurId)
+                                                            {
+                                                                <option value="@item.Id">@item.Nom</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @Html.ValidationMessageFor(model => model.FournisseurId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.Montant, htmlAttributes: new { @class = "control-label" })
+                                                <div class="mb-3">
+                                                    @Html.EditorFor(model => model.Montant, new { htmlAttributes = new { @class = "form-control",id= "Montant" } })
+                                                    @Html.ValidationMessageFor(model => model.Montant, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                @Html.LabelFor(model => model.DeviseMonetaireId, "Devise", htmlAttributes: new { @class = "control-label" })
+                                                <div class="mb-3">
+                                                    @*@Html.DropDownList("DeviseMonetaireId", null, htmlAttributes: new { @class = "form-control" })*@
+                                                    <select class="form-control" id="DeviseMonetaireId" name="DeviseMonetaireId">
+                                                        <option value="0"></option>
+                                                        @{
+                                                            foreach (var item in ViewBag.DeviseMonetaireId)
+                                                            {
+                                                                <option value="@item.Id">@item.Nom</option>
+                                                            }
+                                                        }
+                                                    </select>
+                                                    @Html.ValidationMessageFor(model => model.DeviseMonetaireId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="detail">
+                                    <legend>Fichier associé</legend>
+                                    <div class=" detail0">
+                                        <div class="col-lg-12 p-0 ">
+                                            <button id="scanner-1" infoImage="img1-parent" type="button" class="btn btn-outline-info scan-bt input-instruct">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-1" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input input-instruct" infoImage="img1-parent" imgid="img-1" infoModal="Instruction (ordre de transfert)" id="upload-img-1" type="file" name="ImageInstruction" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                        <div class="col-lg-12 bg-gradient-dark hidden" id="img1-parent" style="max-height:10%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0">
+
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                    <img class="card-img mg-fluid" src="@(Model.GetImageInstruction())" id="img-1" style="max-height:220px;max-width:120px;height:140px" alt="Erreur lecture du fichier" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </section>
+
+                        <!-- Company Document -->
+                        <h3>Factures</h3>
+                        <section>
+                            <div class="card border1 border-info" style="height:100%!important">
+                                <div class="card-header border-info">
+                                    <h5 class="my-0 text-primary"><i class="uil-invoice me-3 fs-1"></i>Factures</h5>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col-4 form-group">
+                                            <input id="NbreJustif" class="form-control fact-btn" type="number" min="@Model.NbreJustif" name="NbreJustif" placeholder="Nombre de factures" value="0" />
+                                        </div>
+                                        <div class="col-3">
+                                            <button id="btn_ajout_fact" type="button" disabled class="btn btn-primary waves-effect waves-light  fact-btn" data-bs-toggle="modal" data-bs-target=".bs-example-modal-lg">
+                                                <i class="mdi mdi-plus"></i>
+                                                Ajouter
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @Html.Partial("~/Views/_Shared/PartialViews/Justificatifs.cshtml", Model.Justificatifs)
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <!-- Bank Details -->
+                        <h3>Déclaration d'importation</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                        <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1 fs-1"></i> Déclaration d'importation</h5>
+                                    </div>
+                                    <div class="p-0 " style="">
+                                        <button id="scanner-2" type="button" class="btn btn-outline-info scan-bt">
+                                            <i class="mdi mdi-scanner"></i>
+                                            Scanner
+                                        </button>
+                                        <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                            <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                            <input class="img-input" infoImage="img-dp-parent" imgid="img-dp" infoModal="Déclaration d'importation" id="upload-img-2" type="file" name="ImageDeclarImport" accept=".jpg, .jpeg, .png, .pdf" />
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-dp-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-dp" style="" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Domiciliation d'importation</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Domiciliation d'importation</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-3" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-doImp-parent" imgid="img-doImp" infoModal="Domiciliation d'importation" id="upload-img-3" type="file" name="ImageDomicilImport" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-doImp-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-doImp" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Lettre d'engament</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Lettre d'engament</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-4"type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-4" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-lettre-parent" imgid="img-lettre" infoModal="Lettre d'engament" id="upload-img-4" type="file" name="ImageLettreEngage" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-lettre-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-lettre" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Quittance de paiement</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Quittance de paiement</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-5" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-5" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-quit-parent" imgid="img-quit" infoModal="Quittance de paiement" id="upload-img-5" type="file" name="ImageQuittancePay" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-quit-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-quit" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Documents de transport</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Documents de transport</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-5" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-6" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-docTrans-parent" imgid="img-docTrans" infoModal="Documents de transport" id="upload-img-6" type="file" name="ImageDocumentTransport" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-docTrans-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-docTrans" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Autres documents</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="col-7 hidden">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Autres documents</h5>
+                                        </div>
+                                        <div class="col-5">
+                                            <button type="button" class="btn btn-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <a href="#" class="btn btn-pink">
+                                                <i class="mdi mdi-upload"></i>
+                                                Télécharger
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+                        </section>
+
+                        <script>
+                            // Factures
+                            document.getElementById("NbreJustif").addEventListener("input", function (e) {
+                                if (this.value > 0) {
+                                    document.getElementById("btn_ajout_fact").disabled = false;
+                                    document.getElementById("CompteurFactures").value = this.value;
+                                } else {
+                                    document.getElementById("btn_ajout_fact").disabled = true;
+                                }
+                            });
+
+                            //obtenir image
+                            var elts = document.getElementsByClassName("img-input");
+                            for (var i = 0; i < elts.length; i++) {
+                                //alert(elts[i].getAttribute("imgid"));
+                                elts[i].onchange = evt => {
+                                    const [file] = evt.target.files;
+                                    //ajout 05/08/2021
+                                    if (file) {
+                                        if (file.type == "application/pdf") {
+                                            document.getElementById('' + evt.target.getAttribute("imgid")).src = "@Url.Content("~/assets/images/IU/pdf.png")";
+                                            document.getElementById('img-2').src ="@Url.Content("~/assets/images/IU/pdf.png")";
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                            document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                        } else {
+                                            document.getElementById('' + evt.target.getAttribute("imgid")).src = URL.createObjectURL(file);
+                                            document.getElementById('img-2').src = URL.createObjectURL(file);
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                            document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                        }
+                                    }
+                                }
+                            }
+                            elts = null;
+
+                            ///supression image
+                            elts = document.getElementsByClassName("img-sup");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('' + this.getAttribute("infoInputImg")).value = "";
+                                    document.getElementById('' + this.getAttribute("infoImage")).classList.add("hidden");
+                                });
+                            }
+                            elts = null;
+
+                            /// Impression
+                            elts = document.getElementsByClassName("img-print");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('printer-contenair').classList.remove("hidden");
+                                    // Clone the image
+                                    const image = document.getElementById('' + this.getAttribute("imgid")).cloneNode();
+                                    image.style.maxWidth = '100%';
+                                    image.style.maxHeight = '100%';
+                                    image.style.width = '100%';
+                                    image.style.height = 'auto';
+                                    //document.getElementById('printer-contenair').setAttribute('srcdoc', '<html><body></body></html>');
+                                    //document.getElementById('printer-contenair').contentDocument.style.textAlign = 'center';
+                                    //alert(document.getElementById('printer-contenair').contentDocument.body);
+                                    document.getElementById('printer-contenair').contentDocument.body.appendChild(image);
+                                    document.getElementById("printer-contenair").contentWindow.print();
+                                    location.reload();
+
+                                });
+                            }
+                            elts = null;
+                            var _url = "@(Url.Content("~/Content/con_ann/dynamic/Scan_ap.html"))";
+
+                            /// scanner
+                            elts = document.getElementsByClassName("scan-bt");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    openRequestedPopup(_url, "Numérisation des doscuments");
+                                    alert("cockie: ");// + getCookie("imgageData"));
+                                });
+                            }
+                            elts = null;
+
+
+                            //functions scanner
+                            var windowObjectReference = null; // global variable
+
+                            function openRequestedPopup(url, windowName) {
+                                if (windowObjectReference == null || windowObjectReference.closed) {
+                                    windowObjectReference = window.open(url, windowName,
+                                        "resizable,scrollbars,status");
+                                } else {
+                                    windowObjectReference.focus();
+                                };
+                            }
+
+                            /*coockie*/
+                            function getCookie(name) {
+                                var nameEQ = name + "=";
+                                var ca = document.cookie.split(';');
+                                for (var i = 0; i < ca.length; i++) {
+                                    var c = ca[i];
+                                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                                }
+                                return null;
+                            }
+
+
+                        </script>
+
+                    </div>
+
+                </div>
+                <div class="card-footer">
+                    <button type="submit" id="btn-terminer" disabled value="Enregistrer" class="btn btn-outline-warning" style="float:left;margin-right:10px!important;margin-top:-55px;z-index:400;position:relative">
+                        <i class="mdi mdi-check-outline me-2"></i>
+                        Terminer
+                    </button>
+                    <p style="display:inline-block;float:right">
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                    <button type="submit" title="" id="btn-sauvgarde-tmp" value="Enregistrer" class="btn btn-outline-primary" style="float:left;margin-right:10px!important">
+                        <i class="far fa-save me-2"></i>
+                        Sauvegarde temporaire
+                    </button>
+
+                    <div class="btn-group me-1" style="margin-left:5px">
+                        <button type="button" disabled class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="mdi mdi-send"></i> Envoyer <i class="mdi mdi-chevron-down"></i></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-send-circle"></i>  Envoyer maintenant</a>
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-history"></i>  Envoyer plutard</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        }
+        <!-- end card -->
+    </div>
+
+</div>
+
+@* Modal ajout justificatif *@
+
+<div class="modal fade bs-example-modal-lg" id="bs-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header  bg-info m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Détail de la facture n°@(Model.NbreJustif+1)</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @*@Html.Partial("~/Views/_Shared/PartialViews/Facture_Detail.cshtml", new genetrix.Models.JustificatifVM());*@
+                @{
+                    Justificatif justificatif = new Justificatif()
+                    {
+                        DossierId = Model.Dossier_Id,
+                        Dossier = Model,
+                    };
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/Justificatif_DetailView.cshtml", justificatif);
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@* Fin modal *@
+
+
+@* Modal detail image *@
+<div id="detailImage" class="modal fade" tabindex="-1" aria-labelledby="#detailImage" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent">
+            <div class="modal-header text-danger bg-gradient-light">
+                <h5 class="modal-title mt-0" id="modal-typedocument"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-gradient-dark">
+
+                <div class="row">
+                    <div class="col-1 p-0">
+                        @*<a class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>*@
+                        <a class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                        @*<a class="btn text-white img-supp" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>*@
+                    </div>
+                    <div class="col-11 p-3" style="background-color:rgb(163, 232, 237, 0.14)">
+                        <img class="card-img mg-fluid" src="#" id="img-2" style="max-height:100%;max-width:auto" alt="Erreur lecture du fichier" />
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@* <fin modal detail image *@
+
+@* Print modal *@
+<div id="printpreview" class="modal fade" tabindex="-1" aria-labelledby="#printpreview" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent">
+            <div class="modal-header text-danger bg-gradient-light">
+                <h5 class="modal-title mt-0" id="modal-typedocument"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-gradient-dark">
+                <iframe class="hidden1" id="printer-contenair">
+                </iframe>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@* finprintmodal *@
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+@*form wizard init*@
+<script src="~/assets/js/pages/form-wizard.init.js"></script>
+
+<!-- form repeater js -->
+<script src="~/assets/libs/jquery.repeater/jquery.repeater.min.js"></script>
+
+<script src="~/assets/js/pages/form-repeater.int.js"></script>
+<!-- Magnific Popup-->
+<script src="~/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+@*<script src="~/Content/con_ann/js/imgview.js"></script>*@
+
+<!-- lightbox init js-->
+<script src="~/assets/js/pages/lightbox.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $(document).ready(function () {
+        window.addEventListener('resize', function () {
+            tt();
+        });
+
+        tt();
+
+        function tt() {
+            if ($(window).width() < 1184) {
+                $("#btn-terminer").css("margin-top", "-65px");
+            } else {
+                $("#btn-terminer").css("margin-top", "-55px");
+            }
+        }
+    })
+
+    $('#bs-example-modal-lg').modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+</script>
+
+@Html.Partial("~/Views/_Shared/PartialViews/ButtonManger.cshtml");
+

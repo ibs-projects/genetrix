@@ -1,0 +1,334 @@
+﻿@model genetrix.Models.Dossier
+@{
+    bool estGroupéestGroupé=false;
+
+    //DFX
+    if (Model.DFX6FP6BEAC == 1)
+    {
+        if ((Model.DfxId == null || Model.DfxId == 0))//Local
+        {
+            if (Model.EtapesDosier < 19)
+            {
+                Model.Actions_content_visible = true;
+                <th>
+                    <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                        <i class="mdi mdi-cancel"></i>
+                        Rejeter
+                    </button>
+                </th>
+            }
+            if (Model.EtapesDosier < 11)
+            {
+                Model.Actions_content_visible = true;
+                <th>
+                    <button numero="105" id="btn-val-dfx" type="button" value="11" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                        <i class="mdi mdi-check" id="btn-val-dfx-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-dfx-1"></i>
+                        Valider la conformité
+                    </button>
+                </th>
+            }
+            @*if (Model.EtapesDosier == 11)
+            {
+                Model.Actions_content_visible = true;
+                //DFX
+                <th>
+                    <div numero="102" id="btn-reception" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                        <input type="checkbox" name="reception_devise" modif-date="1" class="form-check-input change-etat1" style="margin-left:0px;margin-top:15px" id="reception-devise" value="20">
+                        <label class="form-check-label" for="reception-devise" style="margin-left:5px;margin-top:12px">Devise reçue</label>
+                    </div>
+                </th>
+            }*@
+        }
+        else
+        {
+            estGroupéestGroupé = true;
+            Model.Actions_content_visible = true;
+            <h4 class="text-center">Dossier DFX <a href="@Url.Content("~/Dfxes/details?id="+Model.DfxId)" style="font-size:13px">Acceder à la référence</a></h4>
+        }
+    }
+    //FP
+    else if (Model.DFX6FP6BEAC == 2)
+    {
+        if (Model.EtapesDosier < 19)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                    <i class="mdi mdi-cancel"></i>
+                    Rejeter
+                </button>
+            </th>
+        }
+        if (Model.EtapesDosier < 11)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="105" id="btn-val-dfx" type="button" value="11" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                    <i class="mdi mdi-check" id="btn-val-dfx-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-dfx-1"></i>
+                    Valider la conformité
+                </button>
+            </th>
+        }
+        if (Model.EtapesDosier == 11)
+        {
+            Model.Actions_content_visible = true;
+            //DFX
+            <th>
+                <div numero="102" id="btn-reception" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="reception_devise" modif-date="1" class="form-check-input change-etat1" style="margin-left:0px;margin-top:15px" id="reception-devise" value="20">
+                    <label class="form-check-label" for="reception-devise" style="margin-left:5px;margin-top:12px">Accordé</label>
+                </div>
+            </th>
+        }
+    }
+    //Refinancement
+    if (Model.DFX6FP6BEAC == 3 && Model.EtapesDosier < 15 &&!estGroupéestGroupé)
+    {
+        if (Model.EtapesDosier < 19)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                    <i class="mdi mdi-cancel"></i>
+                    Rejeter
+                </button>
+            </th>
+        }
+        if (Model.EtapesDosier < 11)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="105" id="btn-val-dfx" type="button" value="11" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                    <i class="mdi mdi-check" id="btn-val-dfx-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-dfx-1"></i>
+                    Valider la conformité
+                </button>
+            </th>
+        }
+        if (Model.EtapesDosier < 15 && Model.EtapesDosier > 10 &&( Model.ReferenceExterneId ==null || Model.ReferenceExterneId ==0))
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="105" id="btn-attr-ref" type="button" value="13" class="btn btn-outline-primary" title="Attribuer la référence banque au dossier" data-bs-toggle="modal" data-bs-target="#Modal_Attibuer_reference">
+                    <i class="mdi mdi-link-plus"></i>
+                    Attribuer la référence
+                </button>
+            </th>
+            <th>
+                <button numero="105" id="btn-asso-ref" type="button" value="13" class="btn btn-outline-primary" title="Associer le dossiers à un dossier référencé" data-bs-toggle="modal" data-bs-target="#modal-associer-ref">
+                    <i class="mdi mdi-link-box-variant-outline"></i>
+                    Associer le dossier
+                </button>
+            </th>
+        }
+        else if (Model.EtapesDosier > 11)
+        {
+            <h4>Dossiers refinancement <a href="@Url.Content("~/ReferenceBanques/details?id="+Model.ReferenceExterneId)" style="font-size:13px">Acceder à la référence</a></h4>
+
+            <!--Model.Actions_content_visible = true;
+            <th>-->
+            @*<div numero="102" id="btn-inv" class=" form-check form-switch form-switch-lg mb-1" style="display:inline-block!important" dir="ltr">*@
+            <!--<div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="envoie_beac" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="envoyer-beac" value="15">
+                    <label class="form-check-label" for="envoyer-beac" style="margin-left:5px;margin-top:12px">Envoyé à la BEAC</label>
+                </div>
+            </th>-->
+        }
+
+    }
+
+    //commun
+    if (Model.EtapesDosier > 10 && (Model.DFX6FP6BEAC == 1 || Model.DFX6FP6BEAC == 2 || Model.DFX6FP6BEAC == 3) && Model.EtapesDosier < 15)
+    {
+        if (!estGroupéestGroupé)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button id="btn-change-wf" type="button" name="apure" modif-date="1" value="4" class="btn btn-outline-info  change-wf" title="Changer le workflow">
+                    <i class="mdi mdi-folder-move" id="btn-val-doss-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-doss-1"></i>
+                    Deplacer le dossier
+                </button>
+            </th> 
+	    }
+    }
+
+
+
+    /*
+    if (Model.DFX6FP6BEAC != 3 || Model.DFX6FP6BEAC == 1 && (Model.DfxId == null || Model.DfxId == 0))
+    {
+        //rejet
+        if (Model.EtapesDosier >= 10 && Model.EtapesDosier < 16)
+        {
+
+        }
+        if (Model.EtapesDosier == 11)
+        {
+            if (ViewBag.montantDfx >= Model.MontantCV)
+            {
+                Model.Actions_content_visible = true;
+                <th>
+                    <button numero="105" id="btn-val-dfx" type="button" value="18" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                        <i class="mdi mdi-check" id="btn-val-dfx-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-dfx-1"></i>
+                        Valider la conformité
+                    </button>
+                </th>
+            }
+            else
+            {
+                Model.Actions_content_visible = true;
+                <th>
+                    <button numero="105" id="btn-val-ref" type="button" value="12" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                        <i class="mdi mdi-check" id="btn-val-ref-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-ref-1"></i>
+                        Valider la conformité
+                    </button>
+                </th>
+            }
+        }
+
+
+        if (Model.EtapesDosier >= 13 && Model.EtapesDosier < 19 && !(Model.DFX6FP6BEAC == 2) && false)
+        {
+            Model.Actions_content_visible = true;
+            //Formalités BEAC en cours
+            <th>
+                <button numero="105" id="btn-gen-courr" onclick="document.getElementById('show-modal-gener-courrier').click()" type="button" class="btn btn-outline-info" title="Générer le courrier">
+                    <i class="mdi mdi-file-document-edit" id="btn-gen-courr-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                    Générer courrier
+                </button>
+
+            </th>
+            <th>
+                <button numero="105" id="btn-gen-courr" onclick="info1()" type="button" class="btn btn-outline-info" title="Générer le courrier">
+                    <i class="mdi mdi-file-document-edit" id="btn-gen-courr-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                    Signature courier
+                </button>
+
+            </th>
+            <th>
+                <button numero="105" id="btn-gen-courr" onclick="info1()" type="button" class="btn btn-outline-info" title="Générer le courrier">
+                    <i class="mdi mdi-file-document-edit" id="btn-gen-courr-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                    Numérisation MT
+                </button>
+                <script>
+                    function info1() {
+                        alert("Indisponible pour le moment !");
+                    }
+                </script>
+            </th>
+
+            <th>
+                @{
+                    Model.Actions_content_visible = true;
+                    if (Model.NbrTelechargement == 0)
+                    {
+                        <button type="button" numero="105" id="btn-extraire-doss" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier" title="Extraction du dossier: aucune extraction précédente">
+                            <i class="mdi mdi-folder-move" id="icon-extrait-star"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-extrait-end"></i>
+                            Extraire le dossier
+                        </button>
+                        <a type1="button" numero="105" id="btn-tel-doss1" href="@Url.Content("~/dossiers_banque/DownloadZipFile?dossierId="+Model.Dossier_Id)" class="btn btn-outline-info hidden" title="Télécharger le dossier: aucun téléchargement précédent">
+                            <i class="mdi mdi-download" id="icon-tel-star"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-tel-end"></i>
+                            Telecharger
+                        </a>
+                    }
+                    else
+                    {
+                        <button type="button" numero="105" id="btn-extraire-doss" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier" title="Extraction du dossier: le dossier a déjà été extrait @Model.NbrTelechargement fois">
+                            <i class="mdi mdi-folder-move" id="icon-extrait-star"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-extrait-end"></i>
+                            Extraire le dossier
+                        </button>
+
+                        <a type1="button" numero="105" id="btn-tel-doss1" href="@Url.Content("~/dossiers_banque/DownloadZipFile?dossierId="+Model.Dossier_Id)" class="btn btn-success" title="Télécharger le dossier: le dossier a déjà été téléchargé @Model.NbrTelechargement fois">
+                            <i class="mdi mdi-download" id="icon-tel-star"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-tel-end"></i>
+                            Telecharger
+                        </a>
+                    }
+                }
+            </th>
+
+        }
+        if ((Model.DFX6FP6BEAC == 3))
+        {
+            if (Model.FiniFormalitéBEAC)
+            {
+                Model.Actions_content_visible = true;
+                <th>
+                    @*<div numero="102" id="btn-inv" class=" form-check form-switch form-switch-lg mb-1" style="display:inline-block!important" dir="ltr">*@
+                    <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                        <input type="checkbox" name="envoie_beac" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="envoyer-beac" value="15">
+                        <label class="form-check-label" for="envoyer-beac" style="margin-left:5px;margin-top:12px">Envoyé à la BEAC</label>
+                    </div>
+                </th>
+            }
+            if (Model.EtapesDosier == 15)
+            {
+                //dossier beac accordé
+                Model.Actions_content_visible = true;
+                <th>
+                    <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                        <input type="checkbox" name="accord_beac" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="accord-beac" value="16">
+                        <label class="form-check-label" for="accord-beac" style="margin-left:5px;margin-top:12px">Accord BEAC</label>
+                    </div>
+                </th>
+            }
+            @*if (Model.EtapesDosier == 16)
+                {
+                    //dossier avis couverture beac
+                    ViewBag.actions_content_visible = true;
+                    <th>
+                        <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                            <input type="checkbox" name="couverture_beac" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="couverture-beac" value="17">
+                            <label class="form-check-label" for="couverture-beac" style="margin-left:5px;margin-top:12px">Avis de couverture</label>
+                        </div>
+                    </th>
+                }*@
+            if (Model.EtapesDosier == 16)
+            {
+                //reception couverture beac
+                Model.Actions_content_visible = true;
+                <th>
+                    <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                        <input type="checkbox" name="recept_couverture_beac" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac" value="18">
+                        <label class="form-check-label" for="recept-couvert-beac" style="margin-left:5px;margin-top:12px">Avis de couverture</label>
+                    </div>
+                </th>
+            }
+        }
+        if (Model.EtapesDosier >= 12 && (Model.EtapesDosier < 15 || !(Model.DFX6FP6BEAC == 3)))
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button id="btn-change-wf" type="button" name="apure" modif-date="1" value="4" class="btn btn-outline-info  change-wf" title="Changer le workflow">
+                    <i class="mdi mdi-folder-move" id="btn-val-doss-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-doss-1"></i>
+                    Deplacer le dossier
+                </button>
+            </th>
+        }
+        if (Model.EtapesDosier == 18)// reception couverture devise
+        {
+            Model.Actions_content_visible = true;
+            //DFX
+            <th>
+                <div numero="102" id="btn-reception" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="reception_devise" modif-date="1" class="form-check-input change-etat1" style="margin-left:0px;margin-top:15px" id="reception-devise" value="20">
+                    <label class="form-check-label" for="reception-devise" style="margin-left:5px;margin-top:12px">Devise reçue</label>
+                </div>
+            </th>
+        }
+    }
+    */
+
+}

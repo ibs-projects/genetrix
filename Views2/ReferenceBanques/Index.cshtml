@@ -1,0 +1,384 @@
+﻿@model IEnumerable<genetrix.Models.ReferenceBanque>
+@{
+    var db = new genetrix.Models.ApplicationDbContext();
+    ViewBag.Title = "Dossiers groupés";
+    ViewBag.pTitle = "Dossiers groupés"+ViewBag.info;
+    ViewBag.pageTitle = "Dossiers groupés";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+    // Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    .ligne:hover{
+        background-color:#0094ff;
+        color:white;
+    }
+    th{
+        text-transform:uppercase;
+        background-color:violet;
+    }
+    thead {
+        background-color: #f8f9fa
+    }
+</style>
+<p class="hidden">
+    <a class="btn btn-outline-primary hidden" style="" href="@Url.Action("Create","referencebanques")">
+        <i class="dripicons-plus me-2"></i>
+        Ajouter
+    </a>
+    <a class="btn btn-outline-dark" href="@Url.Content("~/referencebanques/Reflesh")">
+        <i class="mdi mdi-refresh me-2"></i>
+        Actualiser
+    </a>
+</p>
+
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-12">
+        <div class="card">
+            @*<div class="card-header fs-4 bg-gradient-primary text-white"></div>*@
+            <div class="card-body">
+                <div class="table-responsive" style="padding-bottom:40px">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("N°")
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NumeroRef)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ClientEntre)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NATURE)
+                                </th> 
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Montant)
+                                </th> 
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NOTIFICATION)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateReception)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DepotBEAC)
+                                </th>
+                                @*<th>
+                                    @Html.DisplayNameFor(model => model.DélaitT)
+                                </th>
+                               <th>
+                                    @Html.DisplayNameFor(model => model.CvEURO)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateNotif)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MT99)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateMT99)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateMT202)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateCredit)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateTraité)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ObsTransmission)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ObsBEAC)
+                                </th>*@
+                                @*<th>
+                                    @Html.DisplayNameFor(model => model.CvEURO)
+                                </th>*@
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{ int i = 0;}
+                            @foreach (var item in Model)
+                            {
+                                i++;
+                                <tr data-id="@item.Id" style="" idd="link-@item.Id" class="ligne1 card-item1">
+                                    <td data-field="@item.Id">
+                                        @i
+                                    </td>
+                                    <td data-field="@item.NumeroRef">
+                                        @Html.DisplayFor(modelItem => item.NumeroRef)
+                                    </td>
+                                    <td data-field="@item.ClientEntre">
+                                        @Html.DisplayFor(modelItem => item.ClientEntre)
+                                    </td> 
+                                    <td data-field="@item.NATURE">
+                                        @Html.DisplayFor(modelItem => item.NATURE)
+                                    </td> 
+                                    <td data-field="@item.Montant">
+                                        @Html.DisplayFor(modelItem => item.Montant)
+                                    </td> 
+                                    <td data-field="@item.NOTIFICATION">
+                                        @Html.DisplayFor(modelItem => item.NOTIFICATION)
+                                    </td>
+                                    <td data-field="@item.DateReception">
+                                        @Html.DisplayFor(modelItem => item.DateReception)
+                                    </td>
+                                    <td data-field="@item.DepotBEAC">
+                                        @Html.DisplayFor(modelItem => item.DepotBEAC)
+                                    </td>
+                                    @*<td data-field="@item.DélaitT">
+                                        @Html.DisplayFor(modelItem => item.DélaitT)
+                                    </td>
+                                   <td data-field="@item.CvEURO">
+                                        @Html.DisplayFor(modelItem => item.CvEURO)
+                                    </td>
+                                    <td data-field="@item.DateNotif">
+                                        @Html.DisplayFor(modelItem => item.DateNotif)
+                                    </td>
+                                    <td data-field="@item.MT99">
+                                        @Html.DisplayFor(modelItem => item.MT99)
+                                    </td>
+                                    <td data-field="@item.DateMT99">
+                                        @Html.DisplayFor(modelItem => item.DateMT99)
+                                    </td>
+                                    <td data-field="@item.DateMT202">
+                                        @Html.DisplayFor(modelItem => item.DateMT202)
+                                    </td>
+                                    <td data-field="@item.DateCredit">
+                                        @Html.DisplayFor(modelItem => item.DateCredit)
+                                    </td>
+                                    <td data-field="@item.DateTraité">
+                                        @Html.DisplayFor(modelItem => item.DateTraité)
+                                    </td>
+                                    <td data-field="@item.ObsTransmission">
+                                        @Html.DisplayFor(modelItem => item.ObsTransmission)
+                                    </td>
+                                    <td data-field="@item.ObsBEAC">
+                                        @Html.DisplayFor(modelItem => item.ObsBEAC)
+                                    </td>*@
+                                    @*<td data-field="@item.CvEURO">
+                                        @Html.DisplayFor(modelItem => item.CvEURO)
+                                    </td>*@
+                                    <td  class="hidden1">
+                                        <a href="@Url.Content("~/referencebanques/edit/"+item.Id)"><i class="mdi mdi-pen"></i> Editer</a>
+                                        <a id="link-@item.Id" href="@Url.Content("~/referencebanques/details/"+item.Id)"><i class="mdi mdi-details"></i> Détails</a>
+                                        <a href="@Url.Content("~/referencebanques/delete/"+item.Id)"><i class="mdi mdi-delete"></i> Supprimer</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<hr />
+<div class="row mt-1">
+    <div class="col-12">
+        <div class="page-title-box d-flex align-items-center justify-content-between">
+            <h4 class="mb-0">
+                @{
+                    if (!string.IsNullOrEmpty(ViewBag.pageImage))
+                    {
+                        <img class="rounded avatar-xl" alt="100x100" style="height:30px;width:30px;margin-top:-8px;margin-right:10px" src="@Url.Content("~/assets/images/IU/encours.png")" data-holder-rendered="true">
+                    }
+                }
+                Dossiers non groupés
+            </h4>
+        </div>
+    </div>
+</div>
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header fs-4 bg-gradient-primary text-white" style=""></div>
+            <div class="card-body">
+                <div class="table-responsive" style="padding-bottom:40px">
+                    <table id="datatable-buttons1" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Reference
+                                </th>
+                                <th>
+                                    Client
+                                </th>
+
+                                <th>
+                                    Fournisseur
+                                </th>
+
+                                <th>
+                                    Montant
+                                </th>
+                                <th>
+                                    Devise
+                                </th>
+
+                                <th>
+                                    Agence
+                                </th>
+                                <th>
+                                    Statut
+                                </th>
+                                <th id="tb-action" style="display:none;padding-top:10px">Action</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+                            @{
+                                try
+                                {
+                                    foreach (var item in ViewData["dossiers"] as List<genetrix.Models.Dossier>)
+                                    {
+                                        i++;
+                                        <tr data-id="@item.Dossier_Id" style="cursor:pointer" idd="link-@item.Dossier_Id" class="ligne">
+
+                                            <td>
+                                                @{
+                                                    if (item.ReferenceExterne != null)
+                                                    {
+                                                        try
+                                                        {
+                                                            <label>@item.ReferenceExterne.NumeroRef</label>
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                    }
+                                                    else
+                                                    {
+                                                        <label>null</label>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Client.Nom)
+                                            </td>
+                                            <td>
+                                                @{
+                                                    if (item.Fournisseur != null)
+                                                    {
+                                                        <label>
+                                                            @Html.DisplayFor(modelItem => item.Fournisseur.Nom)
+                                                        </label>
+                                                    }
+                                                }
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.Montant)
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => item.DeviseMonetaire.Nom)
+                                            </td>
+
+                                            <td>
+                                                @{
+                                                    try
+                                                    {
+                                                        if (item.Site != null)
+                                                        {
+                                                            try
+                                                            {
+                                                                <label>
+                                                                    @item.Site.BanqueName(db)
+                                                                </label>
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                            <label>
+                                                                @Html.DisplayFor(modelItem => item.Site.Nom)
+                                                            </label>
+                                                        }
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                            </td>
+                                            <td>
+                                                <a id="link-@item.Dossier_Id" class="hidden1 card-item" 1_action_requied_loader="0" href="@Url.Content("~/Dossiers_banque/Details/"+item.Dossier_Id)">
+                                                    <span class="progress-bar" style="width: auto;background-color:@item.GetEtapDossier()[1];">@item.GetEtapDossier()[0]</span>
+                                                </a>
+                                            </td>
+
+                                            @{
+                                                if (item.EtapesDosier == 0 || item.EtapesDosier == null || Session["Profile"] == "admin")
+                                                {
+                                                    <td style="font-size:large;padding:0px!important;text-align:center">
+                                                        <a title="Supprimer" class="text-danger" _action_requied_loader="0" href="@Url.Content("~/Dossiers_banque/Delete/"+item.Dossier_Id)">
+                                                            <i class="mdi mdi-delete"></i>
+                                                        </a>
+                                                    </td>
+                                                }
+                                            }
+                                        </tr>
+                                    }
+                                }
+                                catch (Exception)
+                                { }
+                            }
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- Required datatable js -->
+<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable init js -->
+<script src="~/assets/js/pages/datatables.init.js"></script>
+
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //$('.ligne').click(function () {
+        //    document.getElementById('' + this.getAttribute('idd')).click();
+        //});
+    });
+</script>

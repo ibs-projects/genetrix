@@ -1,0 +1,66 @@
+﻿@model genetrix.Models.UneImage
+
+@{
+    ViewBag.Title = "Delete";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer ce dossier?</h3></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Url)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Url)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateCreation)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateCreation)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DerniereModif)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DerniereModif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Titre)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Titre)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NomCreateur)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NomCreateur)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

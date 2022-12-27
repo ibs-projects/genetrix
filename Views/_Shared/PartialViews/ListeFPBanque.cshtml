@@ -1,0 +1,90 @@
+﻿@model IEnumerable<genetrix.Models.InfoDocAcueil3>
+    @{ 
+        int minSite = 0;
+        try
+        {
+            minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        }
+        catch
+        { }
+    }
+<style>
+    .ligne:hover {
+        background-color: #0094ff;
+        color: white;
+    }
+    table.recap {
+        table-layout: auto;
+        width: 100%;
+    }
+</style>
+<div class="table-responsive">
+    <table id="datatable-buttons1" class="table table-striped table-bordered dt-responsive nowrap table-responsive recap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th>
+                    Donneur d'ordre
+                </th>
+                <th>
+                    Bénéficiaiare
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Montant)
+                </th>
+                <th>
+                    @Html.DisplayName("Devise")
+                </th>
+                <th>
+                    Delai
+                </th>
+                <th>
+                    Statut
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr style="cursor:pointer" idd="link-@item.Id" class="ligne">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Client)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Benefi)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MontantString)
+                    </td>
+                    <td class="hidden1">
+                        @Html.DisplayFor(modelItem => item.Devise)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Delai)
+                    </td>
+                    <td>
+                        <a id="link-@item.Id" class="hidden1 card-Model" _action_requied_loader="0" title="" href="@Url.Content("~/dossiers_banque/Details/"+item.Id)">
+                            <span class="progress-bar text-dark p-2" style="width: auto;background-color:@item.GetColor;"> @item.GetEtapDossier</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a id="link-@item.Id" _action_requied_loader="0" href="@Url.Content("~/dossiers_banque/details/"+item.Id)"><i class="fa fa-eye-dropper1"></i> Détails</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+<script>
+    document.getElementById('nbr-fp').textContent = '(@Model.Count())';
+</script>
+<script>
+    var lignes = document.getElementsByClassName('ligne');
+    for (var i = 0; i < lignes.length; i++) {
+        lignes[i].addEventListener("click",function () {
+            document.getElementById('' + this.getAttribute('idd')).click();
+        });
+    }
+</script>

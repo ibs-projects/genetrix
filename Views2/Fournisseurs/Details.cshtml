@@ -1,0 +1,744 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.Fournisseurs
+
+@{
+    ViewBag.FourId = Model.Id;
+    ViewBag.NonDossier = "fournisseur";
+    ViewBag.Title = "Fournisseur";
+    ViewBag.pTitle = "Détail du fournisseur";
+    ViewBag.pageTitle = "Fournisseur";
+    ViewBag.pageImage = "~/assets/images/IU/fournisseur.png";
+    string _default = "";
+    if (Model.Get_RCCM != "#")
+    {
+        _default = Model.Get_RCCM;
+    }
+    else if (Model.Get_ListeGerants != "#")
+    {
+        _default = Model.Get_ListeGerants;
+    }
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CodeEts)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CodeEts)
+                    </dd> 
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Pays)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Pays)
+                    </dd> 
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Ville)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Ville)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Adresse)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Adresse)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tel1)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Tel1)
+                    </dd>
+
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">Comptes du bénéficiaire</div>
+            <div class="card-body">
+                @Html.Partial("~/Views/_Shared/PartialViews/NumComptesFourn.cshtml", Model.CompteBeneficiaires)
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header1 card-header">
+                Documents du fournisseur
+                @*<div class="float-end">
+                        <a href="#" class="btn btn-outline-info active"><i class="mdi mdi-view-list"></i></a>
+                        <a href="#" class="btn btn-outline-info"><i class="mdi mdi-view-array"></i></a>
+                    </div>*@
+            </div>
+            <form action="~/fournisseurs/addfiles" method="post" enctype="multipart/form-data">
+                <div class="card-body" title="Cliquez pour visualiser le fichier">
+                    <input type="number" class="hidden" name="idFournisseur" value="@Model.Id" />
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="accordion" id="accordionExample">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                            #1 RCCM ou autre document tenant lieu et devant obligatoirement indiquer la dénomination sociale, l'adresse, la date de création et la raison sociale de la société <i class="mdi @(Model.RCCM !=null?"mdi-file-check-outline":" mdi-upload") fs-5"></i>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse show"
+                                         aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+                                        <div class="mb-2 accordion-header">
+
+                                            <a href="#" src="@Model.Get_ListeGerants" input1="RCCM" class="hidden file-doc btn btn-outline-info" style="margin-left:20px">
+                                                <i class="mdi @(Model.RCCM !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                        </div>
+                                        <input class="ml-1 input-file00 estClient" style="margin-left: 20px;" type="file" id="RCCM" name="RCCM" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                        <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.RCCMId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        <hr />
+                                        <div class="accordion-body ">
+
+                                            @{
+                                                int idDoc = 0;
+                                                bool estPdf = false;
+                                                string _url = "", img = "#", visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.RCCM.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.RCCM.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.RCCM.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-RCCM" class="pdf-view @visibilite" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-RCCM" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="headingTwo">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapseTwo"
+                                                aria-expanded="false" aria-controls="collapseTwo">
+                                            #2 Liste des actionnaires ou promoteurs et répartition du capital
+                                        </button>
+                                    </h2>
+                                    <div id="collapseTwo" class="accordion-collapse collapse"
+                                         aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="ListeGerants" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.ListeGerants !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="ListeGerants" name="ListeGerants" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.ListeGerantsId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.ListeGerants.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.ListeGerants.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.ListeGerants.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-ListeGerants" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-ListeGerants" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading3">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse3"
+                                                aria-expanded="false" aria-controls="collapse3">
+                                            #3 Copie des statuts authetifiés par une autorité abilité
+                                        </button>
+                                    </h2>
+                                    <div id="collapse3" class="accordion-collapse collapse"
+                                         aria-labelledby="heading3" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="CopieStatuts" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.CopieStatuts !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="CopieStatuts" name="CopieStatuts" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.CopieStatutsId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.CopieStatuts.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.CopieStatuts.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.CopieStatuts.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-CopieStatuts" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-CopieStatuts" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading4">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse4"
+                                                aria-expanded="false" aria-controls="collapse4">
+                                            #4 Liste des ayant droits finaux personnes physiques
+                                        </button>
+                                    </h2>
+                                    <div id="collapse4" class="accordion-collapse collapse"
+                                         aria-labelledby="heading4" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="ListeAyantDroits" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.ListeAyantDroits !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="ListeAyantDroits" name="ListeAyantDroits" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.ListeAyantDroitsId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.ListeAyantDroits.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.ListeAyantDroits.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.ListeAyantDroits.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-ListeAyantDroits" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-ListeAyantDroits" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading5">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse5"
+                                                aria-expanded="false" aria-controls="collapse5">
+                                            #5 Copie du procès-verbal nommant les dirigeants ou tout autre document en tenant lieu
+                                        </button>
+                                    </h2>
+                                    <div id="collapse5" class="accordion-collapse collapse"
+                                         aria-labelledby="heading5" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="ProcesVerbalNommantDirigeants" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.ProcesVerbalNommantDirigeants !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="ProcesVerbalNommantDirigeants" name="ProcesVerbalNommantDirigeants" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.ProcesVerbalNommantDirigeantsId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.ProcesVerbalNommantDirigeants.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.ProcesVerbalNommantDirigeants.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.ProcesVerbalNommantDirigeants.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-ProcesVerbalNommantDirigeants" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-ProcesVerbalNommantDirigeants" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading6">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse6"
+                                                aria-expanded="false" aria-controls="collapse6">
+                                            #6 Copie de la carte nationale d'identité ou passeport des dirigeants
+                                        </button>
+                                    </h2>
+                                    <div id="collapse6" class="accordion-collapse collapse"
+                                         aria-labelledby="heading6" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="CarteIdentiteDirigeants" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.CarteIdentiteDirigeants !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="CarteIdentiteDirigeants" name="CarteIdentiteDirigeants" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.CarteIdentiteDirigeantsId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.CarteIdentiteDirigeants.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.CarteIdentiteDirigeants.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.CarteIdentiteDirigeants.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-CarteIdentiteDirigeants" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-CarteIdentiteDirigeants" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading7">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse7"
+                                                aria-expanded="false" aria-controls="collapse7">
+                                            #7 Fiche ou attestation KYC (connaissance du client) ou tout document en tenant lieu établie par la banque du bénéficiaire de l'existant et de la regularité du compte au regard des dispositions relatives à la lutte contre le blanchissement des capitaux
+                                        </button>
+                                    </h2>
+                                    <div id="collapse7" class="accordion-collapse collapse"
+                                         aria-labelledby="heading7" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="FicheKYCBenefi" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.FicheKYCBenefi !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="FicheKYCBenefi" name="FicheKYCBenefi" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.FicheKYCBenefiId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.FicheKYCBenefi.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.FicheKYCBenefi.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.FicheKYCBenefi.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-FicheKYCBenefi" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-FicheKYCBenefi" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>                                 
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading8">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse8"
+                                                aria-expanded="false" aria-controls="collapse8">
+                                            #8 Prise d'acte sur la déclaration du compte à la banque centrale pour les bénéficiaires resident de la CEMAC
+                                        </button>
+                                    </h2>
+                                    <div id="collapse8" class="accordion-collapse collapse"
+                                         aria-labelledby="heading8" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="PriseActeDeclarationCompte" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.PriseActeDeclarationCompte !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="PriseActeDeclarationCompte" name="PriseActeDeclarationCompte" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.PriseActeDeclarationCompteId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.PriseActeDeclarationCompte.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.PriseActeDeclarationCompte.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.PriseActeDeclarationCompte.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-PriseActeDeclarationCompte" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-PriseActeDeclarationCompte" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading9">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse9"
+                                                aria-expanded="false" aria-controls="collapse9">
+                                            #9 Justificatifsn de domicile (facture d'eau ou d'électricité)
+                                        </button>
+                                    </h2>
+                                    <div id="collapse9" class="accordion-collapse collapse"
+                                         aria-labelledby="heading9" data-bs-parent="#accordionExample">
+                                        <div class="accordion-header pl-1">
+                                            <a href="#" input1="JustifDomicileBenefi" class="file-doc btn btn-outline-info hidden" style="margin-left:20px">
+                                                <i class="mdi @(Model.JustifDomicileBenefi !=null?"mdi-file-check-outline":" mdi-upload") fs-3">
+                                                </i>
+                                            </a>
+                                            <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="JustifDomicileBenefi" name="JustifDomicileBenefi" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            <a href="@Url.Content("~/fournisseurs/document-fournisseur?fourid="+Model.Id+"&id="+Model.JustifDomicileBenefiId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                        </div>
+                                        <div class="accordion-body">
+
+                                            @{
+                                                idDoc = 0; estPdf = false;
+                                                _url = ""; img = "#"; visibilite = "display:none";
+                                                try
+                                                {
+                                                    estPdf = Model.JustifDomicileBenefi.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.JustifDomicileBenefi.Id;
+                                                        _url = @Url.Content("~/fournisseurs/GetPDF?idDoc=" + idDoc + "&idFournisseur=" + Model.Id);
+                                                        visibilite = "";
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    try
+                                                    {
+                                                        img = Model.JustifDomicileBenefi.GetImageDocumentAttache().GetImage();
+
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                <iframe id="iframe-JustifDomicileBenefi" class="pdf-view" src="@_url" style="width:100%;height:146mm;@visibilite"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" id="img-JustifDomicileBenefi" alt="" />
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="heading10">
+                                        <button class="accordion-button collapsed" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapse10"
+                                                aria-expanded="false" aria-controls="collapse10">
+                                            #10 Autres documents
+                                        </button>
+                                    </h2>
+                                    <div id="collapse10" class="accordion-collapse collapse"
+                                         aria-labelledby="heading10" data-bs-parent="#heading10">
+                                        <div class="accordion-body">
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <button id="ajout-autredoc" type="button" class="btn btn-primary waves-effect waves-light estClient" doc-type="0" data-bs-toggle="modal" data-bs-target="#modal-ajout-document">
+                                                        <i class="mdi mdi-file-document"></i>
+                                                        Ajouter
+                                                    </button>
+                                                    <hr />
+                                                    <div class="table-responsive">
+                                                        <table class="table" id="">
+                                                            <thead>
+                                                                <tr>
+
+                                                                    <th>
+                                                                        Nom du document
+                                                                    </th>
+                                                                    <th>
+                                                                        Actions
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody id="transportdoc_table_body">
+                                                                @foreach (var item in Model.AutresDocuments)
+                                                                {
+                                                                    <tr class="docs" _id="@item.Id">
+
+                                                                        <td>
+                                                                            @Html.DisplayFor(modelItem => item.Nom)
+                                                                        </td>
+                                                                        <td>
+                                                                            @*<a href="#" data-just="@item.Id" class="detail-view-doc" title="Visualiser"><i class="mdi mdi-eye-circle"></i>Lien du document</a> |*@
+                                                                            <a href="@Url.Content("~/DocumentAttaches/Details?id="+item.Id)">Details</a>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                            <tfoot>
+                                                            </tfoot>
+                                                        </table>
+
+                                                    </div>
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="col-lg-4 bg-gradient-dark p-1 hidden">
+                            <img id="img-resume" src="@_default" style="width:100%;height:100%;max-height:400px;max-width:400px" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <input type="submit" name="name" value="Enregistrer" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Voir la liste", "Index")
+</p>
+
+
+<div class="modal fade" id="modal-ajout-document" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Ajout d'un document</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    DocumentAttache documentAttache = new DocumentAttache()
+                    {
+                        DateCreation = DateTime.Now
+                    };
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/AutreDocuments_DetailView .cshtml", documentAttache)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+@*@Html.Partial("~/Views/_Shared/PartialViews/AfficheImageDocument.cshtml")*@
+
+<a infoImage="img1-parent" id="bt-show-img" imgid="img-1" infoInputImg="upload-img-1" class="img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:none" title="Agrandir"></a>
+<script>
+    $(document).ready(function () {
+        try {
+            document.getElementById('Id_tmp').value = '@Model.Id';
+            $('#bt-valider-autre-document').click(function () {
+               document.getElementById('cp-form-doc').setAttribute('action', '@Url.Content("~/fournisseurs/AddAutresDocs")');
+               document.getElementById('cp-form-doc').submit();
+            });
+        } catch (e) {
+
+        }
+    });
+</script>

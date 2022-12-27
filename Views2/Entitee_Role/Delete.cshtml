@@ -1,0 +1,74 @@
+﻿@model genetrix.Models.Entitee_Role
+
+@{
+    ViewBag.Title = "Entitee role";
+    ViewBag.pTitle = "Suppression Entitee role";
+    ViewBag.pageTitle = "Entitee role";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h3 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h3>
+<div>
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Entitee.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Entitee.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.XRole.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.XRole.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lire)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Lire)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ecrire)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ecrire)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Supprimer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Supprimer)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Créer)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Créer)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Liste", "Index")
+        </div>
+    }
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

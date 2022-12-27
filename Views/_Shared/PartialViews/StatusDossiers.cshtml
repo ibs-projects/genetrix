@@ -1,0 +1,68 @@
+﻿@using genetrix.Models
+@model genetrix.Models.Dossier
+@{
+    StatutDossier statut = Model.GetStatusString();
+    double montantDfx = 0;
+    string profile = "";
+    if ((string)Session["Profile"] == "banque")
+    {
+        profile = "Dossiers_banque";
+    }
+    else if ((string)Session["Profile"] == "client")
+    {
+        profile = "Dossiers";
+    }
+    try
+    {
+        montantDfx = Convert.ToDouble(Session["MontantDFX"]);
+    }
+    catch (Exception)
+    { }
+    bool estRefinancement = false;
+    try
+    {
+        if (Model.MontantCV > montantDfx && Model.DeviseMonetaire.Nom.ToLower() == "eur" || Model.DFX6FP6BEAC == 3)
+        {
+            estRefinancement = true;
+        }
+    }
+    catch (Exception)
+    { }
+}
+
+@{
+    if (statut != null)
+    {
+    <a id="link-@Model.Dossier_Id" class="hidden1 card-Model" _action_requied_loader="0" title="@Html.Raw(!string.IsNullOrEmpty(statut.Motif)?statut.Motif:statut.Statut1)" href="@Url.Content("~/"+profile+"/Details/"+Model.Dossier_Id)">
+        @{
+            if (Session["Profile"].ToString() == "client" && (Model.EtapesDosier == -2 || Model.EtapesDosier == -3))
+            {
+                <span class="progress-bar text-dark p-2" style="width: auto; background-color: #ffd800;"> En cours de traitement agence </span>
+            }
+            else if (Model.EtapesDosier == 1 && profile != "Dossiers")
+            {
+                <span class="progress-bar text-dark p-2" style="width: auto;background-color:@Model.GetColor;"> Dossier reçu </span>
+            }
+            else
+            {
+                <span class="progress-bar text-dark p-2" style="width: auto;background-color:@Model.GetColor;"> @(!estRefinancement && Model.EtapesDosier==12? "Couverture devise en cours" : (string.IsNullOrEmpty(statut.Statut1)?Model.GetEtapDossier()[0]: statut.Statut1)) </span>
+            }
+        }
+    </a>
+    }
+    else
+    {
+        <a id="link-@Model.Dossier_Id" class="hidden1 card-Model" _action_requied_loader="0" title="@Model.GetEtapDossier()[0]" href="@Url.Content("~/"+profile+"/Details/"+Model.Dossier_Id)">
+            @{
+                if (Model.EtapesDosier == 1)
+                {
+                        <span class="progress-bar text-dark p-2" style="width: auto;background-color:@Model.GetColor;"> Dossier reçu </span>
+                }
+                else
+                {
+                     <span class="progress-bar text-dark p-2" style="width: auto;background-color:@Model.GetColor;"> @Model.GetEtapDossier()[0]</span>
+                }
+            }
+        </a>
+    }
+}

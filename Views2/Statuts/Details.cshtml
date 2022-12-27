@@ -1,0 +1,95 @@
+﻿@model genetrix.Models.Statut
+@{
+    ViewBag.Title = "Structure";
+    ViewBag.pTitle = "Nouvelle structure";
+    ViewBag.pageTitle = "Structure";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">Creation</div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.MessageCLient)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.MessageCLient)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.MessageAgence)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.MessageAgence)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.CouleurSt)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.CouleurSt)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Etape)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Etape)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StatusDossierClient)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.StatusDossierClient)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StatusDossierBanque)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.StatusDossierBanque)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Argb)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Argb)
+                    </dd>
+
+                </dl>
+            </div>
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>

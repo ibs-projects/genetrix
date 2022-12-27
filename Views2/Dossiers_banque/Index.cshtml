@@ -1,0 +1,490 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.Dossier>
+
+@{
+    int numComp = 0, menu = 0; double montantcv = 0;
+    string[] filtre = new string[] { };
+    try
+    {
+        string _filtre = ViewBag.par + "";
+        if (_filtre.Trim() != "unique")
+        {
+            filtre = _filtre.Split(';');
+        }
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        numComp = Convert.ToInt32(Session["NumComposant"]);
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        menu = Convert.ToInt32(Session["menu"].ToString());
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        montantcv = Convert.ToDouble(ViewData["montantcv"].ToString());
+    }
+    catch (Exception)
+    { }
+    int minSite = 0, maxSite = 0;
+    try
+    {
+        minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        maxSite = Convert.ToInt32(Session["userSIteMaxNiveau"]);
+    }
+    catch (Exception)
+    { }
+    ViewBag.minSite = minSite;
+    ViewBag.maxSite = maxSite;
+    ApplicationDbContext db = new ApplicationDbContext();
+    ViewBag.Title = "Dossiers";
+    ViewBag.pTitle = ViewBag.statut;
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    //Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<style>
+    .card-header {
+        display: none;
+    }
+
+    .bg-1 {
+        background-color: #568687;
+    }
+
+    .att {
+        cursor: initial;
+        text-align: center;
+    }
+
+    .icon-action {
+        cursor: pointer;
+    }
+
+        .icon-action:hover {
+            padding: 20px;
+            background-color: rgb(173, 231, 239, 0.24);
+        }
+</style>
+
+
+@{
+    <div class="row">
+        <div class="col-12">
+            <table style="width:100%">
+                <tr>
+                    <td>
+                        <div class="border border-1" style="display:inline-block;border:1px solid #ffffff;padding-right:10px;background-color:aliceblue">
+                            @{
+                                string url = "", nom = "", color = "", labcolor = "";
+                                foreach (var item in filtre)
+                                {
+                                    try
+                                    {
+                                        labcolor = "";
+                                        url = item.Split('=')[0];
+                                        nom = item.Split('=')[1];
+                                        if (nom == "Fond propre")
+                                        {
+                                            nom = "Fonds propres";
+                                        }
+                                        else if (nom == "Tout")
+                                        {
+                                            nom = "Tous";
+                                        }
+                                        else if (nom == "En cours de traitement BEAC")
+                                        {
+                                            nom = "En cours de traitement à la BEAC";
+                                        }
+                                        else if (nom == "rejetés")
+                                        {
+                                            nom = "Rejetés";
+                                        }
+                                        //else
+                                        //{
+                                        //    try
+                                        //    {
+                                        //        labcolor = $"border-bottom:3px solid {item.Split('=')[2]}!important;color:black";
+                                        //    }
+                                        //    catch (Exception)
+                                        //    { }
+                                        //}
+                                        if (ViewBag.st == url)
+                                        {
+                                            ViewBag.labcolor = nom;
+                                            <div class="form-check mb-1" style="display:inline-block!important;" dir="ltr">
+                                                <input type="radio" name="envoie_beac" checked class="form-check-input link" href="@url" style="margin-left:0px;margin-top:15px;">
+                                                <label class="form-check-label" for="envoyer-beac" style="margin-left: 5px; margin-top: 12px; border-bottom: 3px solid #1535b0 ">@nom</label>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="form-check mb-1" style="display:inline-block!important;" dir="ltr">
+                                                <input type="radio" name="envoie_beac" class="form-check-input link" href="@url" style="margin-left:0px;margin-top:15px">
+                                                <label class="form-check-label" for="envoyer-beac" style="margin-left:5px;margin-top:12px;@labcolor">@nom</label>
+                                            </div>
+                                        }
+                                    }
+                                    catch (Exception)
+                                    { }
+                                }
+                            }
+                        </div>
+                    </td>
+                    <td>
+                        <span class="float-end" style="font-size:18px;font-weight:bolder;margin-bottom:-5px;position:relative" id="mont-total-dfx"> </span>
+                    </td>
+                    @if (!string.IsNullOrEmpty(ViewBag.st))
+                    {
+                        if (minSite == 9 && ViewBag.st.ToLower().Contains("dfx"))
+                        {
+                            <td style="padding-bottom:5px;">
+                                <form id="form-csv-generate" action="~/dossiers_banque/GetcvsFile" method="post">
+                                    <button style="display:none" id="btn-show-csv-modal" _action_requied_loader="0" type="button" class="btn btn-outline-info action-dfx float-end" data-bs-toggle="modal" data-bs-target="#modal-entete-cvs-dfx" title="Générer le fichier csv DFX">
+                                        <i class="mdi mdi-file-excel"></i>
+                                        Créer le DFX
+                                    </button>
+                                    <div class="form-check mb-1" style="display:inline-block!important;" dir="ltr">
+                                        <input type="checkbox" class="form-check-input check-one" montant="0" id="ajout-dfx" style="margin-left:0px;margin-top:15px">
+                                        <label class="form-check-label" for="ajout-dfx" id="ajout-dfx-lab" style="margin-left:5px;margin-top:12px;@labcolor">Créer un DFX</label>
+                                    </div>
+                                </form>
+                            </td>
+                        }
+                    }
+                </tr>
+            </table>
+            @Html.Partial("~/Views/_Shared/PartialViews/Liste_dossiers.cshtml", Model)
+           
+        </div> <!-- end col -->
+    </div>
+}
+<a id="link-partial-docs" class="hi" href="#"></a>
+<a href="#" id="show-modal-actions" class="hidden" data-bs-toggle="modal" data-bs-target="#modal-actions-dossier"></a>
+@*<a href="#" id="show-modal-xaf" class="hidden" data-bs-toggle="modal" data-bs-target="#modal-XAF"></a>*@
+<a href="#" id="show-modal-xaf" class="hidden" ></a>
+@Html.Partial("~/Views/Dossiers_banque/Modal_Actions.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Viewer_DFX.cshtml")
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+<div class="all-users1 border border-1 border-info card p-1 p-0" id="call-users" style="position:absolute;z-index:500;max-width:350px;display:none">
+    <div class="bg-info m-0 pr-1 text-white" id="ffermeCallusers" style="cursor:pointer;margin-right:5px" title="Fermer">Responsables du dossier <span class="text-white fs-5 float-end">X</span></div>
+    <!-- item-->
+    <div class="card-body1" style="width: 350px;margin-left:0px;padding-bottom:20px; overflow-x: scroll">
+        <a href="javascript:void(0);" class="dropdown-item notify-item" title="responsable agence">
+            <i class="fa fa-user-alt fs-6 text-info"></i> Agence: <span class="align-middle" style="font-weight:bold" id="agence-resp"> </span>
+        </a>
+        <a href="javascript:void(0);" id="back-office-resp-parent" style="display:none" class="dropdown-item notify-item" title="responsable back-office">
+            <i class="fa fa-user-alt fs-6 text-info"></i> Saisie DIB: <span class="align-middle" style="font-weight:bold" id="back-office-resp"> </span>
+        </a>
+        <a href="javascript:void(0);" id="conform-resp-parent" style="display:none" class="dropdown-item notify-item" title="Responsable conformité">
+            <i class="fa fa-user-alt fs-6 text-warning"></i> Conformité: <span class="align-middle" style="font-weight:bold" id="conform-resp"> </span>
+        </a>
+        <a href="javascript:void(0);" id="trans-resp-parent" style="display:none" class="dropdown-item notify-item" title="Responsable service transfert">
+            <i class="fa fa-user-alt fs-6 text-purple"></i> Transfert: <span class="align-middle" style="font-weight:bold" id="trans-resp"> </span>
+        </a>
+    </div>
+</div>
+
+<script>
+    try {
+        $('#btn-show-csv-modal').click(function () {
+            @*var _url = '@Url.Content("~/Dossiers_banque/OpenXAFViewer?idsDossiers=")';*@
+            var _url = '@Url.Content("~/dfxes/create?ids=")';
+            var ids = "";
+            var cheds = document.getElementsByClassName('check-one');
+            for (var i = 0; i < cheds.length; i++) {
+                if (cheds[i].checked) {
+                    ids += cheds[i].id + ";";
+                }
+            }
+            document.getElementById('show-modal-xaf').setAttribute('href', _url + '' + ids);
+            document.getElementById('show-modal-xaf').click();
+        })
+    } catch (e) {
+
+    }
+    //mont-total-dfx
+    try {
+        $('#check-all').on('click', function () {
+            $('.check-one').attr('checked', this.checked);
+            var _type = "@ViewBag.st";
+            afficheMtDFX();
+            //if (_type.includes('dfx')) {
+            //    if (this.checked) {
+            //        $('.action-dfx').show();
+            //    } else {
+            //        $('.action-dfx').hide();
+            //    }
+            //}
+        });
+        $('.check-one').on('click', function () {
+            if (this.id == "ajout-dfx") {
+                if (this.checked) {
+                    $('.row-nondfx').hide();
+                    $('.action-dfx').show();
+                    $('#ajout-dfx-lab').text("Annuler");
+                } else {
+                    $('.action-dfx').hide();
+                    $('.row-nondfx').show();
+                    $('.check-one').attr('checked', false);
+                    $('#ajout-dfx-lab').text("Ajouter un DFX");
+                    $('.action-dfx').hide();
+                    $('#mont-total-dfx').text("");
+                    return;
+                }
+            }
+            var _type = "@ViewBag.st";
+            //if (_type.includes('dfx')) {
+            //    if (this.checked) {
+            //        $('.action-dfx').show();
+            //    } 
+            //}
+            document.getElementById('check-all').checked = false;
+            afficheMtDFX();
+        })
+
+        function afficheMtDFX() {
+            if (!document.getElementById('ajout-dfx').checked) {
+                return;
+            }
+            var chon = document.getElementsByClassName('check-one');
+            var mt = 0;
+            var visible = false;
+            for (var i = 0; i < chon.length; i++) {
+                if (chon[i].checked) {
+                    visible = true;
+                    mt += Number(chon[i].getAttribute('montant'));
+                }
+            }
+            if (!visible) {
+                $('.action-dfx').hide();
+            }
+            var mm = Number(mt).toLocaleString();
+            var reste = Number(3000000 - mt).toLocaleString();
+            if (reste < 0) {
+                return false;
+            }
+            if (!document.getElementById('ajout-dfx').checked) {
+                mm = "";
+                $('#mont-total-dfx').text("");
+            } else {
+                $('#mont-total-dfx').text("Total en Euro : "+mm+"  |  Reste: "+reste);
+            }
+        }
+    } catch (e) {
+
+    }
+    $(document).ready(function () {
+        try {
+            $('.link').click(function (e) {
+                var _url = '@Url.Content("~/Dossiers_banque/Index?st=")' + this.getAttribute("href");
+                document.getElementById('Preloader_partiel').style.display='initial';
+            var self = document.getElementById('link-partial-docs');
+            self.setAttribute("href", _url);
+            self.click();
+        });
+        } catch (e) {
+
+        }
+        //Actions
+        try {
+            var ctent = "";
+            $('.icon-action').click(function () {
+                ctent = "Deplacer le dossier vers les dossiers";
+                ctent += this.getAttribute('estBeac') == "False" ? " BEAC" : " internes";
+                //$('#action-name0').text(ctent);
+                //$('#btn-change-wf').val(this.getAttribute('doss-id'));
+                var iframAction = document.getElementById('iframe-model-action');
+                iframAction.onload = function () {
+                };
+                iframAction.setAttribute('src', '@Url.Content("~/dossiers_banque/ActionsVew?id=")' + this.getAttribute('doss-id'));
+                document.getElementById('show-modal-actions').click();
+            });
+
+            $('#btn-change-wf').on('input', function () {
+                if (this.checked) {
+                    if (confirm('Voullez-vous ' + ctent.toLowerCase()+"?")) {
+                        $.ajax({
+                            url: '@Url.Content("~/dossiers_banque/changewf?doss=")' +this.value,
+                            success: function (responce) {
+                                document.location.reload();
+                            },
+                            error: function (responce) { alert("Echec de deplacement du dossier") }
+                        });
+                    }
+                }
+            });
+        } catch (e) {
+
+        }
+        //attribuer doss
+        //action apres bouton selction
+        $('.att-link').click(function () {
+            var _this = this;
+            var selid = 'att-sel-' + this.getAttribute("idd");
+            var lab = document.getElementById('att-lab-' + this.getAttribute("idd"));
+            $(lab).hide();
+            $(this).hide();
+            $('#att-close-' + this.getAttribute("idd")).show();
+            $('#att-icon-' + this.getAttribute("idd")).show();
+            $('#' + selid).show();
+            $.ajax({
+                url: '@Url.Content("~/comptebanquecommerciales/getAgents")',
+                success: function (responce) {
+                    var daySelect = document.getElementById('' + selid);
+                    var length = daySelect.options.length;
+                    for (i = length - 1; i >= 0; i--) {
+                        daySelect.options[i] = null;
+                    }
+                    daySelect.options[daySelect.options.length] = new Option($(lab).text(), '');
+                    $.each(responce, function (index, item) {
+                        daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                    });
+                    $('#att-icon-' + _this.getAttribute("idd")).hide();
+                },
+                error: function (responce) { alert(responce.error) }
+            });
+        });
+        //action apres bouton close
+        $('.att-close').click(function () {
+            $(this).hide();
+            $('#att-lab-' + this.getAttribute("idd")).show();
+            $('#att-link-' + this.getAttribute("idd")).show();
+            $('#att-sel-' + this.getAttribute("idd")).hide();
+        });
+
+        //action apres selection d'un agent
+        $('.att-sel').on("change", function () {
+            var sel = this;
+            var laid = 'att-lab-' + this.getAttribute("idd");
+            $('#att-icon-' + this.getAttribute("idd")).show();
+            $.ajax({
+                url: '@Url.Content("~/comptebanquecommerciales/attribute?doss=")' + this.getAttribute("idd")+"&agent="+this.value,
+                success: function (responce) {
+                    $(sel).hide();
+                    $('#' + laid).text(responce);
+                    $('#' + laid).show();
+                    $('#att-icon-' + sel.getAttribute("idd")).hide();
+                    var daySelect = document.getElementById('' + selid);
+                    var length = daySelect.options.length;
+                    for (i = length - 1; i >= 0; i--) {
+                        daySelect.options[i] = null;
+                    }
+                },
+                error: function (responce) { alert("Echec d'attribution du dossier") }
+            });
+        });
+
+        $('.ligne td').click(function () {
+            if (!this.classList.contains("att")) {
+                document.getElementById('' + this.parentElement.getAttribute('idd')).click();
+                $("#Preloader_partiel").show();
+            } else {
+            }
+        });
+
+        //get all users
+        try {
+            $('.all-users0').click(function () {
+                var btn = this;
+                var moi = this.childNodes[1];
+                moi.classList.remove('fa-users');
+                moi.classList.remove('fa');
+                moi.classList.add('mdi');
+                moi.classList.add('mdi-spin');
+                moi.classList.add('mdi-loading');
+                var calusers = document.getElementById('call-users');
+                $(calusers).hide();
+
+                document.getElementById('agence-resp').textContent = "";
+                document.getElementById('agence-resp').setAttribute('title', "");
+                document.getElementById('conform-resp').textContent = "";
+                document.getElementById('conform-resp').setAttribute('title', "");
+                document.getElementById('trans-resp').textContent = "";
+                document.getElementById('trans-resp').setAttribute('title', "");
+                document.getElementById('back-office-resp').textContent = "";
+                document.getElementById('back-office-resp').setAttribute('title', "");
+
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/getrespons?iddoss=")' + this.value,
+                    success: function (res) {
+                        try {
+                            var dd = res[0].split('_');
+                            document.getElementById('agence-resp').textContent = dd[0];
+                            document.getElementById('agence-resp').setAttribute('title',"(Tel: " + dd[1] + ". Email: " + dd[2] + ")");
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[1].split('_');
+                            document.getElementById('conform-resp-parent').style.display = 'initial';
+                            document.getElementById('conform-resp').textContent = dd[0];
+                            document.getElementById('conform-resp').setAttribute('title', "(Tel: " + dd[1] + ". Email: " + dd[2] + ")");
+
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[2].split('_');
+                            document.getElementById('trans-resp-parent').style.display = 'initial';
+                            document.getElementById('trans-resp').textContent = dd[0];
+                            document.getElementById('trans-resp').setAttribute('title', "(Tel: " + dd[1] + ". Email: " + dd[2] + ")");
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[3].split('_');
+                            document.getElementById('back-office-resp-parent').style.display='initial';
+                            document.getElementById('back-office-resp').textContent = dd[0];
+                            document.getElementById('back-office-resp').setAttribute('title', "(Tel: " + dd[1] + ". Email: " + dd[2] + ")");
+                        } catch (e) {
+
+                        }
+                        calusers.style.top = Number(btn.offsetTop + calusers.offsetHeight + 80) + "px";
+                        calusers.style.left = Number(btn.offsetLeft-220) + 'px';
+                        moi.classList.remove('mdi');
+                        moi.classList.remove('mdi-spin');
+                        moi.classList.remove('mdi-loading');
+                        moi.classList.add('fa');
+                        moi.classList.add('fa-users');
+                        calusers.style.display = 'initial';
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+        } catch (e) {
+        }
+        $("#ffermeCallusers").click(function () {
+            $('#call-users').hide(300);
+        });
+
+        $('thead').addClass("bg-gradient-primary text-white");
+        $('.nav-pills').addClass("bg-white");
+    });
+</script>
+<script type="text/javascript">
+    $('#modal-actions-dossier').on('hidden.bs.modal', function (e) {
+        var etat = document.getElementById('iframe-model-action').getAttribute('etat');
+        if (etat == "1") {
+            window.location.reload();
+        }
+    })
+</script>

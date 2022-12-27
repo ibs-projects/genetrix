@@ -1,0 +1,173 @@
+﻿@using genetrix.Models
+@model VariablGlobales
+@{
+    ViewBag.globalvariable = Model;
+    string panel = string.IsNullOrEmpty(ViewBag.interf) ? "Tableau de bord " : ViewBag.interf;// + ViewBag.userName : ViewBag.interf;
+    ViewBag.Title = panel;
+    ViewBag.pTitle = panel;
+    ViewBag.pageTitle = panel;// (ViewBag.ModeName == genetrix.Contants.LAYOUT_VERTICAL) ? "Minible" : "Layouts";
+    ViewBag.pageImage = string.IsNullOrEmpty(ViewBag.interf) ? "~/assets/images/IU/bank.png" : "~/assets/images/IU/allDoc.png";
+
+    Session["recu_doc"] = 0; //(ViewData["e1_0"] as InfoDocAcueil).Nbr;
+    Session["encours"] = 0; //(ViewData["e2_0"] as InfoDocAcueil).Nbr;
+    Session["aapurer"] = 0; // (ViewData["e10_0"] as InfoDocAcueil).Nbr;
+    Session["echus"] = 0; //((ViewData["e12_0"] as InfoDocAcueil).Nbr);
+    Session["attentetransmissionbeac"] = 0; //((ViewData["e4_0"] as InfoDocAcueil).Nbr);
+    Session["atten_couv"] = 0; // ((ViewData["e7_0"] as InfoDocAcueil).Nbr);
+    Session["accord"] = 0; //((ViewData["e8_0"] as InfoDocAcueil).Nbr);
+    Session["saisieencours"] = 0; //((ViewData["e7_0"] as InfoDocAcueil).Nbr);
+    Session["encours_stf"] = 0; // ((ViewData["e4_2"] as InfoDocAcueil).Nbr);
+
+    int minSite = 0, maxSite = 0;
+    try
+    {
+        minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        maxSite = Convert.ToInt32(Session["userSIteMaxNiveau"]);
+    }
+    catch (Exception)
+    { }
+
+    int nbrComposants = 0; string rowItems = "col-xl-8 offset-2";
+    try
+    {
+        nbrComposants = int.Parse("" + ViewBag.nbrComposant);
+        if (nbrComposants >= 3)
+        {
+            rowItems = "col-xl-4";
+        }
+        //else if (nbrComposants == 3)
+        //{
+        //    rowItems = "col-xl-4";
+        //}
+        else if (nbrComposants == 2)
+        {
+            rowItems = "col-xl-6";
+        }
+    }
+    catch (Exception)
+    { }
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<style>
+    .img-tab {
+        height: 80px;
+        width: 80px
+    }
+
+    fieldset {
+        display: block;
+        margin-left: 2px;
+        margin-right: 2px;
+        padding-top: 0.35em;
+        padding-bottom: 0.625em;
+        padding-left: 0.75em;
+        padding-right: 0.75em;
+        border: 2px groove (internal value);
+    }
+
+    .card-item {
+        min-height: 170px;
+        height: 170px;
+        border: 1px solid #5fcbcb;
+        overflow-x:hidden;
+    }
+
+    .card-item1 {
+        border: 1px solid #5fcbcb
+    }
+
+    .card-item:hover {
+        box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    }
+
+    .racourci-comp:hover {
+        background-color: rgb(174, 203, 55, 0.90);
+        height: 55px;
+        color: white
+    }
+    .racourci-comp{
+        margin:3px;
+        padding-top:8px;
+        padding-bottom:8px;
+        
+    }
+</style>
+<div class="row">
+    @{
+        //Composants de l'accueil pour chacun des profils
+
+        @* composant 11:  Liste de tous les dossiers *@
+        if (ViewBag.comp != "apurement")
+        {
+            if (minSite == 1) //agence
+            {
+                @Html.Partial("~/Views/Index/ComposantsIndexAgence.cshtml", Model)
+            }
+            else if (minSite == 4) //back-office
+            {
+                @Html.Partial("~/Views/Index/ComposantsIndexBack-office.cshtml", Model)
+            }
+            else if (minSite == 6) //conformite
+            {
+                @Html.Partial("~/Views/Index/ComposantsIndexConformite.cshtml", Model)
+            }
+            else if (minSite == 9)//service transfert
+            {
+                @Html.Partial("~/Views/Index/ComposantsIndexTransfert.cshtml", Model)
+            }
+            @* Tableau recapitulatif des dossiers *@
+            <div numero="11">
+                <div class="ck-toolbar__separator mb-2 p-1"><hr class="fs-2 m-0" style="height:15%!important" /></div>
+
+                <div class="alert alert-border alert-border-success alert-dismissible fade show mt-0" role="alert">
+                    <i class="mdi mdi-folder-clock font-size-16 text-success me-2"></i>
+                    Racapitulatif des transferts
+                    <div class="mt-3">
+                        @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiers_Banque.cshtml", Model.Dossiers.Where(d => !d.Apurement && d.EtapesDosier >= minSite && d.EtapesDosier <= maxSite || (minSite == 1 && (d.EtapesDosier == -2 || d.EtapesDosier == -3))))
+                    </div>
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+
+                </div>
+
+            </div>
+        }
+        else
+        {
+           
+
+        }
+
+
+    }
+
+
+</div>
+<a id="link-partial-docs" class="hidden" href="#"></a>
+<a id="link-comp" class="hidden" href="#"></a>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<!-- apexcharts -->
+<script>
+    $('.btn-close').hide();
+    $(document).ready(function () {
+        //$('.racourci-comp').click(function (e) {
+        //    document.getElementById('link-comp').setAttribute("href", this.getAttribute("href"));
+        //    document.getElementById('link-comp').click();
+        //    e.stopPropagation();
+        //});
+        $('.racourci-comp').click(function (e) {
+            var _url = "";
+            if (this.classList.contains("link")) {
+                _url = this.getAttribute("href");
+            } else {
+                _url = '@Url.Content("~/Dossiers_banque/Index?st=")' + this.getAttribute("href");
+             }
+            var self = document.getElementById('link-partial-docs');
+            self.setAttribute("href", _url);
+            e.preventDefault(); // prevent default any way
+            self.click();
+        });
+
+    });
+</script>

@@ -1,0 +1,174 @@
+﻿@model genetrix.Models.DocumentAttache
+    @{ 
+        bool estDossier = string.IsNullOrEmpty(ViewBag.NonDossier);
+    }
+<link href="~/assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" />
+
+<form id="cp-form-doc" method="post" enctype = "multipart/form-data">
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal fs-6 text-dark card-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row mb-3">
+            <input type="number" class="hidden" id="Id_tmp" name="Id" value="" />
+            <input type="number" class="hidden" id="DossierId" name="DossierId" value="@ViewBag.dossierId" />
+            <input type="number" class="hidden" id="type-doc" name="typeDocument" value="" />
+            <div class="col-lg-12">
+                @Html.Label("Nom du document", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control", required = "required", id = "Nomautredoc" } })
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <p></p>
+                <input name="ImagesFactureDoc" class="hidden" id="ImagesFacture-doc" max="7" type="file" accept=".jpg, .jpeg, .png, .pdf">
+                <button type="button" id="btn-upload-file"><i class="mdi mdi-upload"></i> Télécharger le fichier</button>
+                <label id="nom-fichier" style="color:blue"></label>
+            </div>
+        </div>
+        
+        <div class="form-group mb-3 bg-dark upload-file hidden" id="upload-file-panel-doc" onclick="return false">
+            <div class="row">
+                <div id="upload-file-actived" class="col-lg-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                    <div class="fallback hidden">
+                    </div>
+                    <div class="dz-message needsclick" id="images-contenaire-doc">
+                        @*<i class="display-4 text-muted uil uil-cloud-upload" id="icon-upload"></i>
+                        <h6 id="label-upload" class="text-white">Cliquez ici pour télécharger les fichiers.</h6>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-12">
+                <button type="button" _action_requied_loader="0"  id="bt-valider-autre-document" value="Valider" class="btn card-header1" ><i class="mdi mdi-check"></i> Valider</button>
+              &emsp;  
+                <div  style="margin-top:10px;display:inline-block">
+                    <p style="display: none" id="ajout-doc-loader">
+                        <i class="mdi mdi-spin mdi-loading fs-1"></i> Veuillez patientez, validation en cours
+                    </p>                
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    //obtenir les images;
+
+    document.getElementById("ImagesFacture-doc").onchange = evt => {
+        const [file] = evt.target.files;
+        document.getElementById("images-contenaire-doc").style = "overflow-x:scroll";
+
+        if (file) {
+            var img = new Image(100, 100);// document.createElement("img");
+            img.src = URL.createObjectURL(file);
+            img.setAttribute("class", "img-responsive mg-fluid imf-taille img-fille");
+            img.style.margin = "3px";
+            document.getElementById("images-contenaire-doc").appendChild(img);
+
+            // get file name
+            var fullPath = document.getElementById('ImagesFacture-doc').value;
+            if (fullPath) {
+                var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+                var filename = fullPath.substring(startIndex);
+                if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+                    filename = filename.substring(1);
+                }
+                $('#nom-fichier').text(filename);
+            }
+        } else {
+            
+        }
+    }
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        //btn-upload-file
+        $('#btn-upload-file').click(function () {
+            document.getElementById('ImagesFacture-doc').click();
+        });
+
+        $('#bt-valider-autre-document').on('click', function () {
+            var totalFiles = document.getElementById("ImagesFacture-doc").files.length;
+            try {
+                if (!$('#Nomautredoc').val()) {
+                    if ("@ViewBag.pageTitle" !="Entreprise") {
+                        alert('Le nom du document est obligatoire !')
+                    }
+                    document.getElementById('Nomautredoc').focus();
+                    return;
+                }
+                if (totalFiles ==0) {
+                    alert('Renseigner le fichier du document !')
+                    return;
+                }
+            } catch (e) {
+
+            }
+            //Images files
+            var formData = new FormData();
+
+            for (var i = 0; i < totalFiles; i++) {
+                var file = document.getElementById("ImagesFacture-doc").files[i];
+                formData.append("ImagesFactureDoc" + Number(i+1), file);
+            }
+
+            //
+            formData.append('Nom', $("#Nomautredoc").val());
+            formData.append('DossierId', $("#DossierId").val());
+            formData.append('typeDocument', $("#type-doc").val());
+            //Serialize the form datas.
+            document.getElementById('ajout-doc-loader').style.display = 'initial';
+            if ('@estDossier' == "False") {
+                return false;
+            }
+            var _url_detail = "@Url.Content("~/DocumentAttaches/Details/")";
+            var _url = "@Url.Content("~/DocumentAttaches/CreateJs/")";
+                $.ajax({
+                    url: _url,
+                    type: "POST",
+                    contentType: false, //
+                    processData: false,
+                    data: formData,
+                    success: function (e) {
+                        location.reload();
+                        if (e) {
+                            var table;
+                            if (e.typeDoc=="0") {//document de transport
+                                table = document.getElementById("transportdoc_table_body");
+                            } else {//autres documents
+                                table = document.getElementById("autresdoc_table_body")
+                            }
+                            var row = table.insertRow(0);
+                            var cell1 = row.insertCell(0);
+                            var cell2 = row.insertCell(1);
+                            //var cell3 = row.insertCell(0);
+                            // Add some text to the new cells:
+                            cell1.innerHTML = "" + e.Nom;
+                            cell2.innerHTML = "<a href=\"" + _url_detail + "" + e.Id + " \">Details<a />";
+
+                            $("#Nomautredoc").val("");
+                            $("#ImagesFacture-doc").val("");
+
+                        } else {
+                          //  alert(e[2]);
+                        }
+                        document.getElementById('ajout-doc-loader').style.display = 'none';
+                        document.getElementById('modal-ajout-document-close').click();
+                    }, error: function (jqXHR, textStatus, errorThrown) {
+                        document.getElementById('ajout-doc-loader').style.display = 'none';
+                        var responseTitle = $(jqXHR.responseText).filter('title').get(0);
+                        alert('Error - ' + responseTitle.textContent);
+                    }
+                });
+            });
+    });
+</script>

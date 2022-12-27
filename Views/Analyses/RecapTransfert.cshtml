@@ -1,0 +1,762 @@
+﻿@model IEnumerable<genetrix.Models.ElementResumeTransfert>
+@using genetrix.Models;
+@using genetrix.Models.Fonctions;
+@{
+        ViewBag.Title = "Resumé du transfert";
+        ViewBag.pTitle = "Resumé du transfert";
+        ViewBag.pageTitle = "Resumé du transfert";
+        Layout = null;
+        Client client = null;
+        Dictionary<string, RapportMontantDevise> rapportMontantDevises = null;
+        Dictionary<string, double[]> montantDevise = new Dictionary<string, double[]>();
+        try
+        {
+            rapportMontantDevises = ViewBag.montantDevise as Dictionary<string, RapportMontantDevise>;
+        }
+        catch (Exception)
+        {}
+        if (rapportMontantDevises==null)
+        {
+            rapportMontantDevises = new Dictionary<string, RapportMontantDevise>();
+        }
+        try
+        {
+            client = ViewBag.client as Client;
+        }
+        catch (Exception)
+        {}
+        if (client == null)
+        {
+            client = new Client();
+        }
+    }
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    body {
+        color: black;
+        background-color: whitesmoke;
+    }
+    table#datatable-buttons {
+        table-layout: auto !important;
+    }
+    table, th, td {
+/*        border: 1px solid black;
+*/        border-collapse: collapse;
+    }
+
+    th {
+        padding: 10px;
+    }
+    body,tr,th,td,div,table{
+        @*font-size:@(ViewBag.impression==1?"12px":"1em")*@
+    }
+       /* table.t-lab {
+            table-layout: fixed;
+            border-collapse: collapse;
+        }*/
+    .t-lab > tr, td {
+        border: none;
+    }
+    .pan-item {
+        background-color: rgb(198, 208, 211, 0.38);
+        border: 0.1px solid white;
+        border-radius: 5px;
+    }
+    .champ {
+        color: #830d0d;
+        font-weight:bold;
+        font-size:1.1em;
+    }
+    .detail-01 {
+        font-weight: bold;
+        color: #2689a6;
+        font-size: 1.5em
+    }
+</style>
+<div class="row p-5">
+    <div class="d-print-none" style="position:relative;top:0;right:0;margin-left:20px;z-index:1500;margin-bottom:-15px;margin-top:-25px">
+        <a href="@Url.Content("~/clients/details?id="+client.Id)" class="btn btn-primary w-md waves-effect waves-light"><i class="mdi mdi-undo-variant"></i> Retour</a>
+        <hr />
+    </div>
+    <div class="col-lg-12">
+        <div class="card1">
+            <div class="card-body">
+                <div class="row">
+                    @*<div class="mt-4">
+                            <h5 style="text-align:center">Resumé du transfert @dossier.GetClient - @dossier.MontantStringDevise - @dossier.GetFournisseur :<span class="text-muted float-end">@ViewBag.datejour</span></h5>
+                        </div>
+                        <br />*@
+                    <div class="col-6">
+                        <div class="text-muted">
+                            @*<img src="~/assets/images/logo/logo-dark1.png" alt="logo" height="60" />*@
+                            <fieldset>
+                                <legend>Donneur d'ordre</legend>
+                                <p class="font0-size-16 mb-3">
+                                    Raison sociale: <span style="font-weight:bold">@client.Nom</span><br />
+                                    Adresse: <span style="font-weight:bold">@client.Adresse</span><br />
+                                    Tel: <span style="font-weight:bold">@client.Telephone</span><br />
+                                    Email: <span style="font-weight:bold">@client.Email</span><br />
+                                </p>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-muted float-end">
+                            <div>
+                                <fieldset>
+                                    <legend>Agence11</legend>
+                                    <p class="font0-size-16 mb-3">
+                                        Agence: <span style="font-weight:bold">@client.AgenceName</span><br />
+                                        Adresse: <span style="font-weight:bold">@client.AgenceAdresse</span><br />
+                                        Gestionnaire (actuel): <span style="font-weight:bold">@client.GetGestionnaire</span><br />
+                                        Tel: <span style="font-weight:bold">@client.GestionnaireTel</span><br />
+                                        Email: <span style="font-weight:bold">@client.GestionnaireEmail</span><br />
+                                    </p>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <details>
+                    <summary class="detail-01">Montant total (XAF): @(Fonctions.ConvertMontantEnChaine(ViewBag.totalXaf,0))</summary>
+                    <div class="row">
+
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card card-item">
+                                <div class="card-body">
+                                    <div>
+                                        <div class="float-end mt-2">
+                                            <div id="orders-chart1" style="padding-top:0px">
+                                                <p class="mdi mdi-folder-pound-outline icon0">
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1"><span data-plugin="counterup00"></span>XAF @Fonctions.ConvertMontantEnChaine(rapportMontantDevises.Values.Where(r => r.Etat == 1).Sum(r => r.TotalXaf),0)</h4>
+                                            <details>
+                                                <summary style="font-weight:bolder">Rapports transferts</summary>
+                                                <table style="width:100%">
+                                                    @{
+                                                        foreach (var item in rapportMontantDevises.Values.Where(r => r.Etat == 1))
+                                                        {
+                                                            <tr>
+                                                                <th>@item.Devise</th>
+                                                                <td>@Fonctions.ConvertMontantEnChaine(item.MontantTotal)</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </table>
+                                            </details>
+                                        </div>
+                                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                            @{
+                                                foreach (var item in ViewBag.DevisesMonetaire)
+                                                {
+                                                    <span title="Dossiers au brouillon" class="racourci-comp hidden" href="brouil">
+                                                        <span class="text-warning1 me-1"> - @item</span>
+                                                    </span>
+                                                }
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card card-item">
+                                <div class="card-body">
+                                    <div>
+                                        <div class="float-end mt-2">
+                                            <div id="orders-chart1" style="padding-top:0px">
+                                                <p class="mdi mdi-folder-pound-outline icon0">
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1"><span data-plugin="counterup00"></span>XAF @(Fonctions.ConvertMontantEnChaine(rapportMontantDevises.Values.Where(r=>r.Etat==2 || r.Etat == 3).Sum(r=>r.TotalXaf),0))</h4>
+                                            <details>
+                                                <summary style="font-weight:bolder">Rapports dossiers à apurer</summary>
+                                                <table style="width:100%">
+                                                    @{
+                                                        foreach (var item in rapportMontantDevises.Values.Where(r => r.Etat == 2 || r.Etat == 3))
+                                                        {
+                                                            <tr>
+                                                                <th>@item.Devise</th>
+                                                                <td>@item.MontantTotal</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </table>
+                                            </details>
+                                        </div>
+                                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                            @{
+                                                foreach (var item in ViewBag.DevisesMonetaire)
+                                                {
+                                                    <span title="Dossiers au brouillon" class="racourci-comp hidden" href="brouil">
+                                                        <span class="text-warning1 me-1"> - @item</span>
+                                                    </span>
+                                                }
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-xl-4">
+                            <div class="card card-item">
+                                <div class="card-body">
+                                    <div>
+                                        <div class="float-end mt-2">
+                                            <div id="orders-chart1" style="padding-top:0px">
+                                                <p class="mdi mdi-folder-pound-outline icon0">
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1"><span data-plugin="counterup00"></span>XAF @(Fonctions.ConvertMontantEnChaine(rapportMontantDevises.Values.Where(r=>r.Etat== 4 || r.Etat == 5).Sum(r=>r.TotalXaf),0))</h4>
+                                            <details>
+                                                <summary style="font-weight:bolder">Rapports dossiers apurés</summary>
+                                                <table style="width:100%">
+                                                    @{
+                                                        foreach (var item in rapportMontantDevises.Values.Where(r => r.Etat == 4 || r.Etat == 5))
+                                                        {
+                                                            <tr>
+                                                                <th>@item.Devise</th>
+                                                                <td>@item.MontantTotal</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </table>
+                                            </details>
+                                        </div>
+                                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                            @{
+                                                foreach (var item in ViewBag.DevisesMonetaire)
+                                                {
+                                                    <span title="Dossiers au brouillon" class="racourci-comp hidden" href="brouil">
+                                                        <span class="text-warning1 me-1"> - @item</span>
+                                                    </span>
+                                                }
+                                            }
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </details>
+                <hr />
+                <h5 class="font-size-15">Details du transfert</h5>
+                <div class="card bg-light @(ViewBag.impression==1?"hidden":"")">
+                    <div class="card-body">
+                        <details class="dt-0">
+                            <summary class="dt-0" style="font-weight: bold; color: #2689a6;font-size:1.5em">Critères de recherche</summary>
+                            <hr />
+                            <div>
+                                <div style="padding-left:10px;padding-right:10px">
+                                    <div class="row pan-item">
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="control-label float-left">Montant en devise</label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-numeric-1"></i></div>
+                                                <input type="text" class="form-control champ" style="width:40%!important;" min="0" name="Montant1" id="Montant1" value="" />
+                                                <input type="text" class="input-group-text champ" min="0" style="width:45%!important;background-color:white" name="Montant2" id="Montant2" value="" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="control-label float-left">Devise</label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-currency-eur"></i></div>
+                                                <select class="form-control champ" min="0" name="Devise" id="Devise">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.DevisesMonetaire)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4 mb-3">
+                                            <label class="control-label float-left">Bénéficiaire</label>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-account-tie-outline"></i></div>
+                                                <select class="form-control champ" name="Fourniseur" id="Fourniseur">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.Fournisseurs)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <fieldset class="p-2 mb-3">
+                                    <legend class="" style="font-weight:bold;font-size:1.2em">Période de dépot</legend>
+                                    <div class="row p-2 pan-item">
+                                        <div class="col-lg-6 mb-3">
+                                            <table class="t-lab" style="width:100%" border="0">
+                                                <tr>
+                                                    <td>Période de début/ jour</td>
+                                                    <td>Mois</td>
+                                                    <td>Année</td>
+                                                </tr>
+                                            </table>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-calendar"></i></div>
+                                                <input type="number" class="input-group-text champ" style="width:25%!important;background-color:white" min="1" placeholder="Jour" name="JourDepot1" id="JourDepot1" value="" />
+                                                <select class="form-control champ" style="width:25%!important;background-color:white" name="MoisDepot1" id="MoisDepot1">
+                                                    <option></option>
+                                                    <option value="1">Janvier</option>
+                                                    <option value="2">Févier</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">décembre</option>
+                                                </select>
+                                                <select class="input-group-text champ" placeholder="Année" style="width:33%!important;background-color:white" name="AnneeDepot1" id="AnneeDepot1">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.annees)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <table class="t-lab" style="width:100%" border="0">
+                                                <tr>
+                                                    <td>Période de fin/ jour</td>
+                                                    <td>Mois</td>
+                                                    <td>Année</td>
+                                                </tr>
+                                            </table>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-calendar"></i></div>
+                                                <input type="number" class="input-group-text champ" style="width:25%!important;background-color:white" placeholder="Jour" name="JourDepot2" min="1" id="JourDepot2" value="" />
+                                                <select class="form-control champ" style="width:25%!important;background-color:white" name="MoisDepot2" id="MoisDepot2">
+                                                    <option></option>
+                                                    <option value="1">Janvier</option>
+                                                    <option value="2">Févier</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">décembre</option>
+                                                </select>
+                                                <select class="input-group-text champ" placeholder="Année" style="width:33%!important;background-color:white" name="AnneeDepot2" id="AnneeDepot2">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.annees)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+
+                                <fieldset class="p-2 mb-3">
+                                    <legend class="" style="font-weight:bold;font-size:1.2em"> Période de traitement</legend>
+                                    <div class="row p-2 pan-item" style="border:0.1px solid white;border-radius:5px;">
+                                        <div class="col-lg-6 mb-3">
+                                            <table class="t-lab" style="width:100%" border="0">
+                                                <tr>
+                                                    <td>Période de début/ jour</td>
+                                                    <td>Mois</td>
+                                                    <td>Année</td>
+                                                </tr>
+                                            </table>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-calendar"></i></div>
+                                                <input type="number" class="input-group-text champ" style="width:25%!important;background-color:white" min="1" placeholder="Jour" name="JourTraitement1" id="JourTraitement1" value="" />
+                                                <select class="form-control champ" style="width:25%!important;background-color:white" name="MoisTraitement1" id="MoisTraitement1">
+                                                    <option></option>
+                                                    <option value="1">Janvier</option>
+                                                    <option value="2">Févier</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">décembre</option>
+                                                </select>
+                                                <select class="input-group-text champ" placeholder="Année" style="width:33%!important;background-color:white" name="AnneeTraitement1" id="AnneeTraitement1">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.annees)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <table class="t-lab" style="width:100%" border="0">
+                                                <tr>
+                                                    <td>Période de fin/ jour</td>
+                                                    <td>Mois</td>
+                                                    <td>Année</td>
+                                                </tr>
+                                            </table>
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-calendar"></i></div>
+                                                <input type="number" class="input-group-text champ" style="width:25%!important;background-color:white" placeholder="Jour" name="JourTraitement2" min="1" id="JourTraitement2" value="" />
+                                                <select class="form-control champ" style="width:25%!important;background-color:white" name="MoisTraitement2" id="MoisTraitement2">
+                                                    <option></option>
+                                                    <option value="1">Janvier</option>
+                                                    <option value="2">Févier</option>
+                                                    <option value="3">Mars</option>
+                                                    <option value="4">Avril</option>
+                                                    <option value="5">Mai</option>
+                                                    <option value="6">Juin</option>
+                                                    <option value="7">Juillet</option>
+                                                    <option value="8">Août</option>
+                                                    <option value="9">Septembre</option>
+                                                    <option value="10">Octobre</option>
+                                                    <option value="11">Novembre</option>
+                                                    <option value="12">décembre</option>
+                                                </select>
+                                                <select class="input-group-text champ" placeholder="Année" style="width:33%!important;background-color:white" min="@ViewBag.datejour" name="AnneeTraitement2" id="AnneeTraitement2">
+                                                    <option value=""></option>
+                                                    @{
+                                                        foreach (var item in ViewBag.annees)
+                                                        {
+                                                            <option value="@(item)">@(item)</option>
+                                                        }
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+
+                                <div style="padding-left:10px;padding-right:10px;">
+                                    <div class="row pan-item">
+                                        <div class="col-lg-8">
+                                            <fieldset>
+                                                <legend style="font-weight:bold;font-size:1.2em">Delai de traitement</legend>
+                                                <div class="row">
+                                                    <div class="col-lg-6 mb-3">
+                                                        <label class="control-label float-left">Délai minimum</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-clock"></i></div>
+                                                            <input type="text" class="form-control champ" name="Delai1" id="Delai1" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 mb-3">
+                                                        <label class="control-label float-left">Délai maximun</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-clock"></i></div>
+                                                            <input type="text" class="form-control champ" name="Delai2" id="Delai2" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </fieldset>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div style="margin-top:32px">
+                                                <label class="control-label float-left">Catégorie de transfert</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-text"><i class="icon-dos mdi mdi-widgets"></i></div>
+                                                    <select class="form-control champ" name="TypeTransfert" id="TypeTransfert">
+                                                        <option value=""></option>
+                                                        <option value="dfx" title="Dossiers à apurer">A apurer</option>
+                                                        <option value="fp" title="Dossiers apurer">Apuré</option>
+                                                        <option value="ref" title="Dossiers">Echus</option>
+                                                        <option value="ref" title="En cours de traitement">En cours</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div style="padding-left:10px;padding-right:10px">
+                                    <div class="row pan-item">
+                                        <div class="col-lg-3">
+                                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                                <input type="checkbox" name="DFX" class="form-check-input champ" style="margin-left:0px;margin-top:12px" id="DFX">
+                                                <label class="form-check-label" for="DFX" style="margin-left:5px;margin-top:12px">DFX</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                                <input type="checkbox" name="FP" class="form-check-input champ" style="margin-left:0px;margin-top:12px" id="FP">
+                                                <label class="form-check-label" for="FP" style="margin-left:5px;margin-top:12px">Fonds propres</label>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                                <input type="checkbox" name="Ref" class="form-check-input champ" style="margin-left:0px;margin-top:12px" id="Ref">
+                                                <label class="form-check-label" for="Ref" style="margin-left:5px;margin-top:12px">Refinancement</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="col-12"><button class="btn btn-primary submit" type="button"><i class="mdi mdi-filter"></i> Filtrer</button></div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                <div class="@(ViewBag.impression==1?"":"card")">
+                    <div class="card-body">
+                        <div class="table-responsive1" style="padding-bottom:25px">
+                            <table id="@(ViewBag.impression==1?"datatable-buttons1":"datatable-buttons")" class="table table-striped table-bordered dt-responsive nowrap table-responsive mb-3" style="border-collapse: collapse;margin-bottom:15px!important; border-spacing: 0; width: 100%;">
+                                <thead>
+                                    <tr>
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Devise)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.MontantSting)
+                                        </th>
+
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.MontantCvString)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.DateDepotBanque)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.Beneficiaire)
+                                        </th>
+                                        <th>
+                                            @Html.DisplayNameFor(model => model.DateTraitement)
+                                        </th>
+                                        <th id="delai-tr">
+                                            Délai de traitement
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+
+                                <tbody>
+                                    @{
+                                        int i = 0; double totalDevise = 0, totalXaf = 0;
+                                        string devise = "";
+                                    }
+                                    @foreach (var dd in Model.GroupBy(d => d.Devise))
+                                    {
+                                        totalDevise=0;totalXaf=0;
+                                        devise = dd.Key;
+                                        foreach (var item in dd)
+                                        {
+                                            totalDevise += item.Montant;
+                                            totalXaf += item.MontantCv;
+                                            i++;
+                                            <tr data*-id="@i" style="cursor:pointer;" idd="link-@i" class="ligne">
+
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Devise)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.MontantSting)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.MontantCvString)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.DateDepotBanque)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.Beneficiaire)
+                                                </td>
+                                                <td>
+                                                    @Html.Raw(item.DateTraitement)
+                                                </td>
+                                                <td>
+                                                    @Html.DisplayFor(modelItem => item.Delai)
+                                                </td>
+                                            </tr>
+                                        }
+                                        try
+                                        {
+                                            montantDevise.Add(devise, new double[] { totalDevise, totalXaf });
+                                        }
+                                        catch (Exception)
+                                        { }
+                                    }
+
+                                </tbody>
+                                <tfoot>
+                                    <tr style="background-color: rgb(79, 141, 159, 0.27); color: #2689a6; font-weight: bolder">
+                                        <td></td>
+                                        <td>Total devise</td>
+                                        <td>Total XAF</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @foreach (var item in montantDevise)
+                                    {
+                                        try
+                                        {
+                                            <tr style="background-color: rgb(79, 141, 159, 0.27); color: #2689a6; font-weight: bolder">
+                                                <td>@item.Key</td>
+                                                <td>@Fonctions.ConvertMontantEnChaine(item.Value[0])</td>
+                                                <td>@Fonctions.ConvertMontantEnChaine(item.Value[1], 0)</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        }
+                                        catch (Exception)
+                                        {}
+                                    }
+                                </tfoot>
+                            
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-print-none mt-4" style="position:fixed;bottom:0;right:0;margin-bottom:10px;margin-right:10px;z-index:1500">
+                    <div class="float-end">
+                        @{
+                            if (ViewBag.impression == 1)
+                            {
+                                <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1 btn-print"><i class="fa fa-print"></i></a>
+                                <a href="#" _id="&pdf=True&print=0" class="btn btn-primary w-md waves-effect waves-light btn-print-active submit"><i class="mdi mdi-printer-off"></i>Désactiver le mode impression</a>
+                            }
+                            else
+                            {
+                                <a href="#" _id="&pdf=True&print=1" class="btn btn-primary w-md waves-effect waves-light btn-print-active submit"><i class="mdi mdi-printer-eye"></i> Activer le mode impression</a>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="" class="hidden" id="link-01"></a>
+<!-- end row -->
+<!-- JAVASCRIPT -->
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+<script>
+    var tab = '@ViewBag.serachString'.split(';');
+    var _v = "", _id = "";
+    try {
+        for (var i in tab) {
+            try {
+                _id = tab[i].split(':')[0];
+                _v = tab[i].split(':')[1];
+                switch (document.getElementById(_id).tagName) {
+                    case "INPUT":
+                        try {
+                            if ($(".champ")[i].getAttribute('type') == "checkbox") {
+                                document.getElementById(_id).checked = _v;
+                            } else {
+                                document.getElementById(_id).value = _v;
+                            }
+                        } catch (e) {
+
+                        }
+                        break;
+                    case "SELECT":
+                        try {
+                            document.getElementById(_id).options[document.getElementById(_id).selectedIndex].value = _v;
+                            document.getElementById(_id).options[document.getElementById(_id).selectedIndex].text = _v;
+                        } catch (e) {
+
+                        }
+                        break;
+                    default:
+                }
+            } catch (e) {
+
+            }
+        }
+    } catch (e) {
+
+    }
+
+    $(document).ready(function () {
+        if ('@ViewBag.serachString') {
+            $('.dt-0').click();
+        }
+
+        $('.btn-print-active,.submit').click(function () {
+            this.disabled = true;
+            document.body.style.opacity = '0.2';
+            document.body.style.cursor = 'wait';
+        });
+        $('.submit').click(function () {
+            var _url = "@Url.Content("~/Analyses/RecapTransfert?id="+ client.Id)",v="",id="";
+            try {
+                for (var i in $(".champ")) {
+                    try {
+                        id = $(".champ")[i].getAttribute('id');
+                        v = $(".champ")[i].tagName;
+                        switch (v) {
+                            case "INPUT":
+                                if ($(".champ")[i].getAttribute('type') == "checkbox") {
+                                    v = $(".champ")[i].checked;
+                                } else {
+                                    v = $(".champ")[i].value;
+                                }
+                                break;
+                            case "SELECT":
+                                v = $(".champ")[i].value;
+                                break;
+                            default:
+                        }
+                        if (v) {
+                            _url += '&' + id + '=' + v;
+
+                        }
+                    } catch (e) {
+
+                    }
+                }
+            } catch (e) {
+
+            }
+            if (this.getAttribute('_id')) {
+                _url += this.getAttribute('_id');
+            }
+            $('#link-01').attr('href', _url);
+            document.getElementById('link-01').click();
+        });
+    });
+</script>

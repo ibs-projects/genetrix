@@ -1,0 +1,73 @@
+﻿<input type="file" id="upload-MT" class="hidden" name="fileCourrier" accept=".jpg, .jpeg, .png, .pdf" value="" />
+<div id="modal-ajout_mt" class="modal fade" tabindex="-1" aria-labelledby="#add-mt" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header card-header1">
+                <h5 class="modal-title mt-0 text-white" id="add-mt">@(ViewBag.EtapeDossier<15? "Numérisation du MT 298" : "Le MT 298")</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: rgb(163, 232, 237, 0.14)">
+                <fieldset>
+                    <div id="de-mt">
+                        <div class="card-body">
+                            @if (Model.MT==null)
+                            {
+                                <div style="">
+                                    <button id="scanner-mt" href="#" class="btn btn-outline-info scan-bt">
+                                        <i class="mdi mdi-scanner"></i>
+                                        Scanner
+                                    </button>
+                                    <span class="btn btn-outline-info" onclick="document.getElementById('upload-MT').click()" style="max-width:150px;max-height:40px;">
+                                        <label for="upload-mt" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                    </span>
+                                    <span class="text-muted pl-1" id="mt-file-size"></span>
+                                </div>
+                            }
+                            <div class="col-lg-12" id="img-courrier-parent" style="max-height:100%;">
+                                <div class="row">
+                                    <div class="col-1 p-0 bg-gradient-dark1 hidden">
+                                        <a infoImage="img-mt-parent" imgid="img-mt" infoInputImg="upload-img-2" class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                    </div>
+                                    <div class="col-12 p-3 text-left">
+                                        @{
+                                            var estPdf = false; string url = "", img = "";
+                                            try
+                                            {
+                                                estPdf = Model.MT.EstPdf;
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = Model.MT.Id;
+                                                    url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=0");
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+                                            else
+                                            {
+                                                img = Model.Get_MT;
+                                            }
+                                            <iframe id="iframe-img-mt" class="pdf-view @(estPdf?"":"hidden")" src="@url"></iframe>
+                                            <img class="card1 bg-transparent-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" style="max-height:150px;max-width:150px" id="img-mt" alt="" />
+                                        }
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                <button type="submit" id="btn-valider-mt" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div>
+    </div>
+</div>

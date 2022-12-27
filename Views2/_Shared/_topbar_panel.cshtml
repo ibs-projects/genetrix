@@ -1,0 +1,89 @@
+﻿@using genetrix.Models;
+@{ 
+    var notifs = Session["Notifs"];// as genetrix.Models.Notifications;
+    string module = "";
+    try
+    {
+        module = Session["ges"].ToString().ToLower(); 
+    }
+    catch (Exception)
+    {}
+    if (module.Contains("transfert"))
+    {
+        module = "transfert";
+    }
+    else if (module.Contains("conform"))
+    {
+        module = "conformité";
+    }
+    else if (module.Contains("archivage"))
+    {
+        module = "archivage";
+    }
+}
+<header id="topbar-panel" style="z-index:100!important;position:relative;margin-bottom:-80px">
+    <div class="navbar-header">
+        <div class="d-flex">
+            <!-- LOGO -->
+            <div class="navbar-brand-box">
+                <a href=@Url.Action("Index", "index") class="logo logo-dark">
+                    <span class="logo-sm">
+                        <img src="~/assets/images/logo/logo-sm1.png" alt="" height="22">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="~/assets/images/logo/logo-dark1.png" alt="" height="20">
+                    </span>
+                </a>
+
+                <a href=@Url.Action("Index", "index") class="logo logo-light">
+                    <span class="logo-sm">
+                        <img src="~/assets/images/logo/logo-sm1.png" alt="" height="22">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="~/assets/images/logo/logo-light1.png" alt="" height="20">
+                    </span>
+                </a>
+            </div>
+
+            <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+                <i class="fa fa-fw fa-bars"></i>
+            </button>
+
+            <!-- App Search-->
+            <form class="app-search d-lg-block">
+                <div class="position-relative" style="padding-top:40px">
+                    <h4><i class="mdi mdi-bank-check"></i> @ViewBag.banqueName</h4>
+                    <h6><i class="mdi mdi-circle-medium"></i> @ViewBag.struc</h6>
+                </div>
+            </form>
+            </div>
+
+        <div class="d-flex1">
+
+            <div class="dropdown d-lg-inline-block ms-1">
+                <label style="font:bold;">@ViewBag.userName</label>
+                <label>(@Session["role"])</label>
+            </div>
+
+            <div class="dropdown d-inline-block" title="Déconnexion">
+                <button type="button" id="deconnexion" class="btn header-item noti-icon waves-effect">
+                    <i class="uil uil-sign-out-alt"></i>
+                </button>
+            </div>
+
+            <div class="dropdown d-lg-inline-block ms-1" title="Plein ecran">
+                <button type="button" class="btn header-item noti-icon waves-effect" data-bs-toggle="fullscreen">
+                    <i class="uil-minus-path"></i>
+                </button>
+            </div>
+
+            <div class="d-inline-block hidden">
+                <a  href="#" id="deconnexion" class="btn header-item waves-effect">
+                   <i class="uil-cog">555</i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</header>

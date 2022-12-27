@@ -1,0 +1,61 @@
+﻿@using genetrix.Models
+@model LoginViewModel
+<style>
+    input {
+        height: 40px;
+        border-radius: 12px 14px;
+    }
+    .pos {
+        bottom: 0;
+        margin-top:45px;
+    }
+</style>
+
+@using (Html.BeginForm("connexion", "auth", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "row login_forml", role = "form", id = "con-form" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="card11 pb-4" style="">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="col-lg-12 form-group">
+            <p class="text-danger"> @ViewBag.info </p>
+        </div>
+        <div class="col-lg-12 form-group">
+            <p class="float-start" style="font:bold;margin-bottom:0px">Courrier électronique</p>
+            <div>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nom d'utilisateur ou adresse mail" })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-lg-12 form-group hidden" style="display:none">
+            @Html.Label("Code de l'entreprise", new { @class = "Form-label" })
+            <div class="mb-3">
+                <input type="text" name="NumeroEntreprise" class="form-control" value="1" />
+                @Html.ValidationMessageFor(m => m.NumeroEntreprise, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-lg-12 form-group">
+            <p class="float-start" style="font:bold;margin-bottom:0px;margin-top:10px">Mot de passe</p>
+            <div>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Entrer le mot de passe..." })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <p></p>
+        <div class="col-lg-12 form-group row">
+            <table style="width:100%">
+                <tr>
+                    <td>
+                        <p></p>
+                        <a class="text-muted pos1" style="margin-bottom:-15px" href="@Url.Content("~/account/ForgotPassword")">Reinitialiser le mot de passe</a>
+                    </td>
+                    <td>
+                        <button id="btn-submit" class="btn btn-outline-info w-sm waves-effect waves-light float-end" _action_requied_loader="0" type="submit"><i class="mdi mdi-key-variant"></i> Connexion</button>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+}
+

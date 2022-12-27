@@ -1,0 +1,53 @@
+﻿
+<form class="text-dark">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="Numero">Numero de la facture</label>
+                <input type="text" name="Numero" class="form-control" id="Numero">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="date">Date de la facture</label>
+                <input type="date" name="date" class="form-control" id="date">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="Montant">Montant</label>
+                <input type="number" class="form-control" name="Montant" id="Montant">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="Numero">Devise</label>
+                <select name="Devise" class="form-control" id="Devise">
+                    <option></option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="Fournisseur">Fournisseur</label>
+                <input type="text" name="Fournisseur" class="form-control" id="Fournisseur">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label class="form-label" for="NbrePieces">Nombre de pages</label>
+                <input type="number" name="NbrePieces" class="form-control" id="NbrePieces">
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary">
+            Enregistrer
+        </button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Annuler</button>
+    </div>
+</form>

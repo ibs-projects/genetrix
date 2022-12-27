@@ -1,0 +1,69 @@
+﻿@model genetrix.Models.BanqueTierClient
+
+@{
+    ViewBag.Title = "Banque tierce";
+    ViewBag.pTitle = "Banque tierce";
+    ViewBag.pageTitle = "Banque tierce";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Client.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Client.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Ville)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Ville)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pays)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pays)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Adresse)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Adresse)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                <a href="@Url.Content("~/Clients/Details?id=0")">Retour</a>
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

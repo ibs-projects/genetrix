@@ -1,0 +1,65 @@
+﻿@model genetrix.Models.DocumentAttache
+
+
+@{
+    ViewBag.Title = "Suppression du document";
+    ViewBag.pTitle = "Suppression du document";
+    ViewBag.pageTitle = "Suppression du document";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer ce document!</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NomBreDoc)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NomBreDoc)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.TypeDocumentAttaché)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TypeDocumentAttaché)
+            </dd>
+
+        </dl>
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Delete" class="btn btn-default" />
+            </div>
+        }
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> 
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+

@@ -1,0 +1,35 @@
+﻿@using genetrix.Models;
+@*@model IEnumerable<genetrix.Models.Composant>*@
+@{ 
+    string url = ViewBag.estStructure == null ? "~/XtraRoles/AddComposant" : "~/Structures/AddComposant";
+    var compos = new List<Composant>();
+    try
+    {
+        foreach (Composant item in ViewBag.Composants)
+        {
+            compos.Add(item);
+        }
+    }
+    catch (Exception)
+    {}
+}
+
+<div class="modal fade" id="modal-email" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen" style="text-align:center!important;">
+        <div class="modal-content badge border border-3 border-info p-0 bg-light " style="">
+            <div class="modal-header m-0">
+                <h5 class="modal-title mt-0" id="staticBackdropLabel">Nouveau message</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body m-0" style="">
+                <iframe id="ifram-email" class="loader-none" src="" style="width:100%;height:100%"></iframe>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    document.getElementById('ifram-email').onload = function () {
+        this.style = "height:100%;width:100%";
+    };
+</script>

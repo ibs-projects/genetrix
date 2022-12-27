@@ -1,0 +1,120 @@
+﻿@model IEnumerable<genetrix.Models.DossierParReference>
+
+@{
+    ViewBag.Title = "Dossiers";
+    ViewBag.pTitle = "Liste de dossiers " + ViewBag.statut;
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    //Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="card-title">Liste de dossiers</h4>
+
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NumeroRef)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NbrDossiers)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EtapeDosiier)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IdClient)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NomClient)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IdAgence)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NomAgence)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NumeroRef)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NbrDossiers)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EtapeDosiier)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IdClient)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomClient)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IdAgence)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomAgence)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("index", "dossiers_banque", new { referenceId = item.NumeroRef  }) |
+                                </td>
+                            </tr>
+                        }
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- Required datatable js -->
+<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable init js -->
+<script src="~/assets/js/pages/datatables.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>

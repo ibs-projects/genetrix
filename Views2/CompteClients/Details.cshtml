@@ -1,0 +1,87 @@
+﻿@model genetrix.Models.CompteClient
+@{
+    ViewBag.Title = "Utilisateur";
+    ViewBag.pTitle = "Détails de l'Utilisateur ";
+    ViewBag.pageTitle = "Utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Utilisateur</h4>
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Prenom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Prenom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Sexe)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Sexe)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tel2)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Tel2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tel1)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Tel1)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.UserName)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.UserName)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

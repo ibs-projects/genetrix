@@ -1,0 +1,93 @@
+﻿@model IEnumerable<genetrix.Models.Statut>
+@{
+    ViewBag.Title = "Structure";
+    ViewBag.pTitle = "Nouvelle structure";
+    ViewBag.pageTitle = "Structure";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<p>
+    <a class="" href="@Url.Action("Create","structures")">
+        <i class="dripicons-plus me-2"></i>
+        Nouveau statut
+    </a>
+</p>
+<div class="row">
+    <div class="col-12">
+        <p class="text-danger">@ViewBag.msg </p>
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">
+                Liste
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MessageCLient)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MessageAgence)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.CouleurSt)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Etape)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StatusDossierClient)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StatusDossierBanque)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Argb)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MessageCLient)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MessageAgence)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.CouleurSt)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Etape)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StatusDossierClient)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StatusDossierBanque)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Argb)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                        @Html.ActionLink("Détails", "Details", new { id = item.Id }) |
+                                    </td>
+                                </tr>
+                            }
+
+                    </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

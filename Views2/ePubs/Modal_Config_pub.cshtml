@@ -1,0 +1,88 @@
+﻿<style>
+    fieldset {
+        display: block;
+        margin-left: 2px;
+        margin-right: 2px;
+        padding: 1.35em;
+        border: 1px dotted #0094ff;
+    }
+</style>
+<div id="modal-config-pub" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content badge border border-3 p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel-attrib">Configuration de la publication</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" style="color:black;font-size:14px">
+                <form action="~/ePubs/CreatePubItem" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="number" name="Id" id="IdePub" class="hidden" value="" />
+                    <div class="row">
+                        <div class="form-group col-6">
+                            @Html.Label("Date et heure début")
+                            <div class="col-md-12 mb-3">
+                                <input type="date" name="DateDebut" id="dateDebut" class="form-control date" style="width:70%;float:left" value="" />
+                                <input type="time" name="HeureDebut" id="heureDebut" class="form-control" style="width:30%;" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            @Html.Label("Date fin")
+                            <div class="col-md-12 mb-3">
+                                <input type="date" name="DateFin" id="dateFin" class="form-control date" style="width:70%;float:left" value="" />
+                                <input type="time" name="HeureFin" id="heureFin" class="form-control" style="width:30%;" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-6">
+                            @Html.Label("Chaque x heure")
+                            <div class="col-md-12 mb-3">
+                                <input type="time" name="ChaqueHeure" id="chaqueHeure" class="form-control" value="" />
+                            </div>
+                        </div>
+                        <div class="form-group col-6">
+                            @Html.Label("Active")
+                            <div class="col-md-12 mb-3">
+                                <input type="checkbox" name="Active" id="active" value="" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="float:none">
+                        <div class="col-6">
+                            <div class="form-group">
+                                @Html.Label("Durée d'apparition(s)")
+                                <div class="col-md-12 mb-3">
+                                    <input type="number" name="DureeApp" id="dureeApp" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group">
+                                @Html.Label("Durée d'attente apres une apparition(s)")
+                                <div class="col-md-12 mb-3">
+                                    <input type="number" name="DuréeAtt" id="dureeAtt" class="form-control" value="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                    <button type="button" class="btn btn-danger waves-effect close-ref-modal" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                    <button type="submit" id="bt-associer-ref" onclick="loader" class="btn btn-soft-primary bt-add-ref"><i class="mdi mdi-check"></i> Valider</button>
+                    &emsp;
+                </form>
+                <div style="margin-top:10px;display:inline-block">
+                    <p style="display: none;color:black" id="dd-loader">
+                        <i class="mdi mdi-spin mdi-loading fs-1 text-dark"></i> Veuillez patientez, validation en cours
+                    </p>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    function loader() {
+        document.getElementById('dd-loader').style.display = 'initial';
+    }
+</script>

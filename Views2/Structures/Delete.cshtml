@@ -1,0 +1,117 @@
+﻿@model genetrix.Models.Structure
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer cet élément?</h3></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Responsable.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Responsable.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.TypeStructure.Intitule)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TypeStructure.Intitule)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Adresse)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Adresse)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Ville)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Ville)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pays)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pays)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Telephone)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Telephone2)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Telephone2)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NiveauDossier)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NiveauDossier)
+            </dd>
+             <dt>
+                @Html.DisplayNameFor(model => model.NiveauMaxDossier)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NiveauMaxDossier)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EstAgence)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EstAgence)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

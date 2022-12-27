@@ -1,0 +1,41 @@
+﻿
+<div id="modal-choix" class="modal fade" tabindex="-1" aria-labelledby="#modalxaf" aria-hidden="true">
+    <div style="width: 400px!important" class="modal-dialog modal-lg">
+        <div class="modal-content bg-white">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0 text-dark" id="modalxaf">Dites-nous pourquoi vous fermez le chat</h5>
+                @*<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>*@
+            </div>
+            <div class="modal-body" style="padding-top:30px">
+                <div class="form-check form-check-right mb-3">
+                    <input class="form-check-input" type="radio" name="radioSituation"
+                           id="resolu" checked>
+                    <label class="form-check-label" for="resolu">
+                        Résolu
+                    </label>
+                </div>
+                |
+                <div class="form-check form-check-right mb-3">
+                    <input class="form-check-input" type="radio" name="radioSituation"
+                           id="nonresolu">
+                    <label class="form-check-label" for="nonresolu">
+                        Non résolu
+                    </label>
+                </div>
+                |
+                <div class="form-check form-check-right mb-3">
+                    <input class="form-check-input" type="radio" name="radioSituation"
+                           id="aucunereponse">
+                    <label class="form-check-label" for="aucunereponse">
+                        Aucune repose
+                    </label>
+                </div>
+                <div>
+                    <hr />
+                    <button type="button" id="bt-termier" class="btn btn-primary ferme-chat" data-bs-dismiss="modal"><i class="mdi mdi-check"></i> Terminer</button>
+                    <button type="button" id="bt-annuler" class="btn btn-danger ferme-chat" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

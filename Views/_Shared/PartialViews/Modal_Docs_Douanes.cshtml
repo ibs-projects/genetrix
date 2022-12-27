@@ -1,0 +1,116 @@
+﻿
+<div id="modal-docs-douane" class="modal fade" tabindex="-1" aria-labelledby="#exampleModalFullscreenLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header card-header1 ">
+                <h5 class="modal-title mt-0 text-white" id="exampleModalFullscreenLabel">Documents douane <span id="douane-size"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: rgb(163, 232, 237, 0.14)">
+                <fieldset>
+                    <legend>Déclaration d'importation  <span id="deimp-size" class="text-muted fs-6"></span></legend>
+                    <div id="de-impot">
+                        <div class="card-body">
+                            <div style="">
+                                <button id="scanner-2" href="#" class="btn btn-outline-info scan-bt">
+                                    <i class="mdi mdi-scanner"></i>
+                                    Scanner
+                                </button>
+                                <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                    <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                </span>
+                            </div>
+                            <div class="col-lg-12" id="img-dp-parent" style="">
+                                <div class="row">
+                                    @*<div class="col-1 p-0 bg-gradient-dark1">
+                                        <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                    </div>*@
+                                    <div class="col-12 p-3 text-left">
+                                        @{
+                                            var estPdf = false;string url = "";
+                                            try
+                                            {
+                                                estPdf = Model.DeclarImport.EstPdf;
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = Model.DeclarImport.Id;
+                                                    url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+                                            <iframe id="iframe-img-dp1" class="pdf-view @(estPdf?"":"hidden")" src="@url" ></iframe>
+                                            <img class="card1 bg-transparent-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(Model.Get_DeclarImport)" style="max-height:150px;max-width:150px" id="img-dp1" alt="" />
+                                        }
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <hr />
+                <fieldset>
+                    <legend>Domiciliation d'importation <span id="doimp-size" class="text-muted fs-6"></span></legend>
+                    <div id="do-impot">
+                        <div class="card-body">
+                            <div class="" style="">
+                                <button id="scanner-3" href="#" class="btn btn-outline-info scan-bt">
+                                    <i class="mdi mdi-scanner"></i>
+                                    Scanner
+                                </button>
+                                <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                    <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                </span>
+                            </div>
+                            <div class="col-lg-12 bg-gradient-dark1" id="img-doImp-parent" style="max-height:100%;">
+                                <div class="row">
+                                    @*<div class="col-1 p-0 bg-gradient-dark1">
+                                        <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                    </div>*@
+                                    <div class="col-12 p-3 text-left">
+                                        @{
+                                            estPdf = false;url = "";
+                                            try
+                                            {
+                                                estPdf = Model.DomicilImport.EstPdf;
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = Model.DomicilImport.Id;
+                                                    url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+                                            <iframe id="iframe-img-doImp1" class="pdf-view @(estPdf?"":"hidden")" src="@url" ></iframe>
+                                            <img class="card1 bg-transparent-img img-fluid imf-taille  @(estPdf?"hidden":"")" src="@(Model.Get_DomicilImport)" style="max-height:150px;max-width:150px" id="img-doImp1" alt="" />
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                <button type="submit" id="btn-valider-douane" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    

@@ -1,0 +1,114 @@
+﻿@model genetrix.Models.VariablGlobales
+@using genetrix.Models
+
+@{
+    try
+    {
+        if (ViewBag.comp == "apurement")
+        {
+            var info = Model.GetAllDataBankByEtapesDeviseBeac(new int?[] { 22, 23, 24, 25, 230, 231, 232, 250, -230, -231,  -232, -250 }, 0, estBeac: 0, all_beac_non: true);
+
+            var aapAcomp = info.Where(d => d.EtapeDossier == 22 || d.EtapeDossier == 23 || d.EtapeDossier == -230 || d.EtapeDossier == -231 || d.EtapeDossier == -232 || d.EtapeDossier == -250).Count();
+            var aapAval = info.Where(d => d.EtapeDossier == 230 || d.EtapeDossier == 231 || d.EtapeDossier == 250).Count();
+            var ech = info.Where(d => d.EtapeDossier == 25 || d.EtapeDossier == 250).Count();
+            var aapBEAC = info.Where(d => d.EtapeDossier == 232).Count();
+            var ap = info.Where(d => d.EtapeDossier == 24).Count();
+
+            @Html.Partial("~/Views/_Shared/PartialViews/IndexApurement.cshtml", new int[] { aapAcomp, aapAval, ech, aapBEAC, ap })
+        }
+        else
+        {
+            InfoDocAcueil2 info = Model.GetAllDataBankByEtapes(new int?[] { 1 }, 0);
+            //dossiers reçus
+            <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=1_1_1&interf=")">
+                <div class="card card-item" id="doss-recu">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2 ">
+                                <div id="total-revenue-chart1">
+                                    <p class="mdi mdi-basket-fill icon0"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(info.Nbr)</span></h4>
+                                <p class="text-muted mb-0 fs-5">Dossiers reçus</p>
+                            </div>
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;overflow-x:hidden">
+                                <span class="text-warning me-1"><i class="mdi mdi-alert me-1"></i>@info.NbrAnciens</span> @info.GetDureeString()
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            //dossiers encours
+            info = Model.GetAllDataBankByEtapes(new int?[] { 2, 3, 4, 5 }, 0);
+
+            <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=2_2_5&interf=")">
+                <div class="card card-item" id="doss-recu">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2 ">
+                                <div id="total-revenue-chart1">
+                                    <p class="mdi mdi-folder-sync-outline icon0"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@info.Nbr</span></h4>
+                                <p class="text-muted mb-0 fs-5">Dossiers en cours</p>
+                            </div>
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;overflow-x:hidden">
+                                <span class="text-warning me-1"><i class="mdi mdi-alert me-1"></i>@info.NbrAnciens</span> @info.GetDureeString()
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            //dossiers encours
+            var nb_t = Model.GetAllDataBankByEtapes(new int?[] { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, -2, -3 }, 0).Nbr;
+            var nb_r = Model.GetAllDataBankByEtapes(new int?[] { -2, -3 }, 0).Nbr;
+            var nb_v = Model.GetAllDataBankByEtapes(new int?[] { 16, 17, 18, 19, 20, 21 }, 0).Nbr;
+
+            <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=19_6_22&interf=")">
+                <div class="card card-item" id="doss-recu">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2 ">
+                                <div id="total-revenue-chart1">
+                                    <p class="mdi mdi-basket-unfill icon0"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(nb_t)</span></h4>
+                                <p class="text-muted mb-0 fs-5">Dossiers envoyés</p>
+                            </div>
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;overflow-x:hidden">
+                                @{
+                                    //Notification
+                                    <span title="Dossiers en cours" class="racourci-comp" href="encours">
+                                        <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-refresh me-1"></i>@(nb_t-nb_v-nb_r)</span> @("En cours")
+                                    </span>
+                                    <span title="Voir les refinancements" class="racourci-comp" href="rej">
+                                        <span class="text-danger me-1"><i class="mdi mdi-folder-alert me-1"></i>@(nb_r)</span> @("Rejetés")
+                                    </span>
+                                    <span title="Dossiers validés" class="racourci-comp" href="accord">
+                                        <span class="text-success me-1"><i style="font:bolder" class="uil uil-folder-check me-1"></i>@(nb_v)</span> @("Accordés")
+                                    </span>
+                                    @*<span title="Dossiers traités" class="racourci-comp" href="traite">
+                                            <span class="text-success me-1"><i style="font:bolder" class="mdi mdi-safe me-1"></i>@(nb_traites)</span> @("Traités")
+                                        </span>*@
+                                }
+
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+        }
+    }
+    catch (Exception)
+    { }
+}

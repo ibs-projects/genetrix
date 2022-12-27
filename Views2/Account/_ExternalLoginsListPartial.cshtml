@@ -1,0 +1,38 @@
+﻿@model genetrix.Models.ExternalLoginListViewModel
+@using Microsoft.Owin.Security
+
+@{
+    var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
+    if (loginProviders.Count() == 0) {
+        <div>
+            <p>
+                Aucun service d'authentification externe n'est configuré. Consultez <a href="https://go.microsoft.com/fwlink/?LinkId=403804">cet article</a>
+                pour plus d'informations sur la configuration de cette application ASP.NET et la prise en charge des connexions via des services externes.
+            </p>
+        </div>
+    }
+    else {
+        using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Model.ReturnUrl })) {
+            @Html.AntiForgeryToken()
+                <ul class="list-inline" id="socialLoginList">
+                    @foreach (AuthenticationDescription p in loginProviders)
+                    {
+                        try
+                        {
+                            <li class="list-inline-item">
+                                <button type="submit" class="social-list-item bg-info text-white border-info" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Connexion avec votre compte @p.Caption">
+                                    <i class="mdi mdi-@p.AuthenticationType.ToLower()"></i>
+                                </button>
+                                @*<a href="javascript:void()" class="social-list-item bg-info text-white border-info">
+                                        <i class="mdi mdi-twitter"></i>
+                                    </a>*@
+                            </li>
+                        }
+                        catch (Exception)
+                        { }
+
+                    }
+                </ul>
+        }
+    }
+}

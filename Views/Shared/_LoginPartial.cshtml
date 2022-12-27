@@ -1,0 +1,64 @@
+﻿@using Microsoft.AspNet.Identity
+@if (Request.IsAuthenticated)
+{
+    var profile = "";
+    try
+    {
+        profile = Session["Profile"].ToString();
+    }
+    catch (Exception)
+    {}
+    var controller="account";
+    if (profile=="banque")
+    {
+        controller = "auth";
+    }
+
+    using (Html.BeginForm("LogOff", ""+@controller, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            @*<img class="rounded-circle header-profile-user" src="~/assets/images/IU/user.png"alt="Header Avatar">*@
+            <span class="mdi mdi-account-box" style="font-size:2em;margin-bottom:0px"></span>
+            <span class="d-none d-xl-inline-block ms-1 fw-medium font-size-15">
+                @{ 
+                    try
+                    {
+                        User.Identity.GetUserName().Substring(0, 8);
+                    }
+                    catch (Exception)
+                    {}
+                }
+            </span>
+            <i class="uil-angle-down d-none d-xl-inline-block font-size-15"></i>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end">
+            <!-- item-->
+            @*<a class="dropdown-item" href="@Url.Content("~/home/profile")"><i class="mdi mdi-account-box font-size-18 align-middle text-muted me-1"></i> <span class="align-middle">Mon Profil</span></a>*@
+            @{
+                try
+                {
+                    if (Session["Profile"].ToString() == "banque" && Session["userSIteMinNiveau"].ToString() == "1")
+                    {
+                        <a class="dropdown-item" href="@Url.Content("~/index/IndexBanque?page=principale")"><i class="uil uil-wallet font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle">Page principale</span></a>
+                    }
+                }
+                catch (Exception)
+                { }
+            }
+            @*<a class="dropdown-item d-block" href="#"><i class="uil uil-cog font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle">Paramètres</span> <span class="badge bg-soft-success rounded-pill mt-1 ms-2">03</span></a>
+        <a class="dropdown-item" href="@Url.Content("~/index/panel")"><i class="uil uil-intercom-alt font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle">Page de demarrage</span></a>*@
+            <a class="dropdown-item" href="javascript:document.getElementById('logoutForm').submit()"><i class="uil uil-sign-out-alt font-size-18 align-middle me-1 text-muted"></i> <span class="align-middle">Déconnexion</span></a>
+        </div>
+    }
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("S'inscrire", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li>@Html.ActionLink("Se connecter", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+    </ul>
+
+}

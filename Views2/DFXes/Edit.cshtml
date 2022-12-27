@@ -1,0 +1,122 @@
+﻿@model genetrix.Models.DFX
+
+@{
+    ViewBag.Title = "Edition DFX";
+    ViewBag.pTitle = "Edition DFX";
+    ViewBag.pageTitle = "Edition DFX";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+
+<div class="row">
+    <div class="mb-2">
+        <button class="btn btn-primary float-end" type="button" onclick="document.getElementById('form-xaf').submit();"><i class="fa fa-save"></i> Enregistrer</button>
+    </div>
+    <hr />
+    <div class="card">
+        <div class="form-horizontal mb-2 card-body">
+            <form id="form-xaf" action="~/dfxes/create" method="post">
+                @Html.AntiForgeryToken()
+                <div class="row">
+                    <input type="text" class="hidden" name="GetIdsDossiers" value="@Model.GetIdsDossiers" />
+                    <div class="col-6">
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.NumeroAnnexe, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.NumeroAnnexe, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.NumeroAnnexe, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Numero, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control", @readonly="readonly" } })
+                                @Html.ValidationMessageFor(model => model.Numero, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.NumeroRef, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.NumeroRef, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.NumeroRef, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <div class="form-group mb-3 col-6">
+                                @Html.LabelFor(model => model.DateDebut, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    <input type="date" name="DateDebut" id="DateDebut" class="form-control _date" value="" />
+                                    @Html.ValidationMessageFor(model => model.DateDebut, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3 col-6">
+                                @Html.LabelFor(model => model.DateFin, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    <input type="date" name="DateFin" id="DateFin" class="form-control _date" value="" />
+                                    @Html.ValidationMessageFor(model => model.DateFin, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                @Html.Label("BIC Correspondant bancaire", htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    <select class="form-control" id="CorrespondantB" name="CorrespondantB">
+                                        <option value="0"></option>
+                                        @{
+                                            foreach (var co in ViewBag.Correspondants)
+                                            {
+                                                <option value="@co.Value">@co.Text</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <hr />
+    <div class="card p-3">
+        @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiers_DFX.cshtml", Model.Dossiers)
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<script>
+    try {
+        $(function () {
+            var dtToday = new Date();
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if (month < 10)
+                month = '0' + month.toString();
+            if (day < 10)
+                day = '0' + day.toString();
+
+            var maxDate = year + '-' + month + '-' + day;
+            $('._date').attr('max', maxDate);
+        });
+
+    } catch (e) {
+
+    }
+</script>

@@ -1,0 +1,70 @@
+﻿@model IEnumerable<genetrix.Models.XtraRole>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Structure.Nom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Nom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.EstAdmin)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NiveauDossier)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VoirDossiersAutres)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VoirUsersAutres)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VoirClientAutres)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Structure.Nom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Nom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EstAdmin)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NiveauDossier)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VoirDossiersAutres)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VoirUsersAutres)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VoirClientAutres)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.RoleId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.RoleId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.RoleId })
+        </td>
+    </tr>
+}
+
+</table>

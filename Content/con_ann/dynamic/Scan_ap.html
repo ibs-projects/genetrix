@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Numérisation des documents | genetrix</title>
+	<script type="text/javascript" src="Resources/dynamsoft.webtwain.initiate.js"></script>
+	<script type="text/javascript" src="Resources/dynamsoft.webtwain.config.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<!--<script src="Scripts/jquer_latest_2.11_.min.js" type="text/javascript"></script>-->
+	<!--<script src="html2canvas.js" type="text/javascript"></script>-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+</head>
+<body class="bg-danger" id="body01" style="background-color:rgb(117, 169 ,160 , 0.57)!important">
+	<!--style="background-color:rgb(117, 169 ,160 , 0.57)!important"-->
+	<div id="dwtcontrolContainer" style="background-color:white!important;" ></div>
+	<input class="btn btn-default" id="acqu" type="button" value="Scanner" onclick="AcquireImage();" />
+	<!--<input class="btn btn-default btn-Convert-Html2Image" id="obten" type="button" value="Obtenir l'image" onclick="rimg();" />-->
+	<a class="btn btn-default btn-Convert-Html2Image" id="telech" href="#">Télécharger l'image</a>
+
+	<script type="text/javascript">
+		var DWObject;
+
+		function Dynamsoft_OnReady() {
+			DWObject = Dynamsoft.DWT.GetWebTwain('dwtcontrolContainer');
+		}
+
+		function AcquireImage() {
+			if (DWObject) {
+				if (Dynamsoft.Lib.env.bMobile) {
+					DWObject.LoadImageEx('', 5,
+						function () {
+							console.log('success');
+						},
+						function (errCode, error) {
+							alert(error);
+						}
+					);
+				} else {
+					DWObject.SelectSource(function () {
+						DWObject.OpenSource();
+						DWObject.AcquireImage();
+					},
+						function () {
+							console.log("SelectSource failed!");
+						}
+					);
+				}
+			}
+		}
+
+		function UploadAsPDF() {
+			var url = Dynamsoft.Lib.detect.ssl ? "https://" : "http://";
+			url += location.hostname;
+			var path = location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1);
+			url += location.port === "" ? path : ":" + location.port + path;
+			url += "saveUploadedPDF.aspx";
+			//alert("url: "+url);
+			var indices = [];
+			if (DWObject) {
+				if (DWObject.HowManyImagesInBuffer === 0) {
+					console.log("There is no image to upload!");
+					return;
+				}
+				DWObject.SelectAllImages();
+				indices = DWObject.SelectedImagesIndices;
+				var donnees = DWObject.HTTPUpload(
+					url,
+					indices,
+					Dynamsoft.DWT.EnumDWT_ImageType.IT_PDF,
+					Dynamsoft.DWT.EnumDWT_UploadDataFormat.Binary,
+					"HelloWorld.pdf",
+					function (e) {
+						//The server response is empty!
+						alert(e);
+						console.log("Successfully uploaded!")
+					},
+					function (errCode, errString, response) {
+						console.log(errString);
+						alert(url);
+					}
+				);
+
+				//alert(donnees);
+			}
+		}
+	</script>
+
+	<script>
+		$(document).ready(function () {
+
+			$("#telech").on('click', function () {
+
+				var element = $(".dvs-showImageArea")[0];// document.getElementById('dwtcontrolContainer').firstChild;// $("#body01"); // global variable
+
+				var getCanvas; //global variable
+				html2canvas(element, {
+					onrendered: function (canvas) {
+
+						getCanvas = canvas;
+
+						var imgageData = getCanvas.toDataURL("image/png");
+						imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+						$("#telech").attr("download", "your_image.png").attr("href", imgageData);
+
+						//$("#img01").attr("src", imgageData)
+					}
+				});
+				//            alert(getCanvas);
+				//            //alert("ee: " + document.getElementById('dwtcontrolContainer').firstChild);
+				//var imgageData = getCanvas.toDataURL("image/png");
+				//            alert(imgageData);
+				//            $("#img01").attr("src", imgageData)
+				//Now browser starts downloading it instead of just showing it
+				//var newData = imgageData.replace(/^data:image\/png/, "data:application/octet-stream");
+				//$("#btn-Convert-Html2Image").attr("download", "your_image.png").attr("href", newData);
+			});
+		});
+	</script>
+
+
+	<script type="text/javascript">
+					//function AcquireImage() {
+					//	var DWObject = Dynamsoft.DWT.GetWebTwain('dwtcontrolContainer');
+					//	if (DWObject) {
+					//		if (DWObject.UseLocalService) {
+					//			DWObject.SelectSource(function () {
+					//				var OnAcquireImageSuccess = OnAcquireImageFailure = function () {
+					//					DWObject.CloseSource();
+					//				};
+					//				DWObject.OpenSource();
+					//				DWObject.IfDisableSourceAfterAcquire = true;
+					//				DWObject.AcquireImage(OnAcquireImageSuccess, OnAcquireImageFailure);
+					//				///alert(OnAcquireImageSuccess + "\n" + DWObject);
+					//			}, function () {
+					//				console.log('SelectSource failed!');
+					//			});
+					//		} else {
+					//			DWObject.LoadImageEx("", -1);
+					//		}
+					//	}
+					//}
+
+						//recuperation de l'image
+						//function rimg() {
+
+						//	//document.getElementById("dwtcontrolContainer").contentWindow.print();
+						//	var chislds = document.getElementById("dwtcontrolContainer").childNodes;
+						//	alert(chislds);
+						//	var elts = "";
+						//	for (var i = 0; i < chislds.length; i++) {
+						//		console.log(chislds[i]);
+						//		elts += "\n" + chislds[i];//.innerHtml;
+						//	}
+						//	console.log(elts);
+						//	alert(elts);
+						//}
+
+
+	</script>
+</body>
+</html>

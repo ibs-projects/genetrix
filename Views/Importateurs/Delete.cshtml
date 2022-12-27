@@ -1,0 +1,159 @@
+﻿@model genetrix.Models.Importateur
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer cet importateur?</h3></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Client.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Client.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Grestionnaire.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Grestionnaire.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NomComplet)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NomComplet)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pays)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pays)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.PaysOrigine)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.PaysOrigine)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Ville)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Ville)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Telephone)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Fax)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Fax)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Profession)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Profession)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Adresse)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Adresse)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Groupe)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Groupe)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CodeAgrement)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CodeAgrement)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateOptention)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateOptention)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Code)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Code)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Immatriculation)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Immatriculation)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NumInscri)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumInscri)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,44 @@
+﻿<style>
+    fieldset {
+        display: block;
+        margin-left: 2px;
+        margin-right: 2px;
+        padding: 1.35em;
+        border: 1px dotted #0094ff;
+    }
+</style>
+<div class="modal fade" id="Modal_Attibuer_reference" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel-attrib" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel-attrib">Attribuer la référence au dossier</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="~/referencebanques/AttributionRef" method="post" id="form-attr-ref">
+                    <input type="number" class="hidden" name="DossierId" value="@ViewBag.DossierId" />
+                    <fieldset>
+                        <legend style="color:#0094ff;font-size:small;margin-bottom:10px">Référence banque</legend>
+                        <input type="text" class="form-control" name="Reference" id="Reference" required placeholder="Inserer la référence" />
+                        <hr />
+                        <button type="button" class="btn btn-danger waves-effect close-ref-modal bt-annul" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                        <button type="button" id="bt-attribution-ref" onclick="showLoarder2()" class="btn btn-soft-primary bt-add-ref"><i class="mdi mdi-check"></i> Valider</button>
+                        &emsp;
+                        <div style="margin-top:10px;display:inline-block">
+                            <p style="display: none;color:black" id="ddd-loader">
+                                <i class="mdi mdi-spin mdi-loading fs-1 text-dark"></i> Veuillez patientez, validation en cours
+                            </p>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    function showLoarder2() {
+       /* document.getElementById('ddd-loader').style.display = 'initial';*/
+    }
+</script>

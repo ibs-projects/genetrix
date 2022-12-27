@@ -1,0 +1,75 @@
+﻿@model IEnumerable<genetrix.Models.Adresse>
+@{ 
+    int idClient = 0;
+    try
+    {
+        idClient= Convert.ToInt32(ViewBag.clientId); 
+    }
+    catch (Exception)
+    {}
+}
+<p>
+    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajout-adresse"><i class="mdi mdi-plus"></i> Ajouter</a>
+</p>
+<div class="table-responsive">
+    <table class="table table-centered table-nowrap mb-0">
+        <thead class="table-bordered">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    Telephone
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CodePostal)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Tel1)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CodePostal)
+                    </td>
+                    <td>
+                        <a href="@Url.Content("~/adresses/edit?id="+item.Id)">Editer</a> |
+                        <a href="@Url.Content("~/adresses/delete?id="+item.Id)">Supprimer</a> 
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</div>
+
+
+@*Ajout adresse*@
+
+<div class="modal fade ajout-comp" id="ajout-adresse" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content p-0" style="text-align: left !important; position: center; border: 3px solid #2689a6;">
+            <div class="modal-header m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajouter une adresse</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Adresses/Add.cshtml",
+               new genetrix.Models.Adresse(){ClientId=idClient }
+           )
+            </div>
+            <div class="card-header1"></div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+

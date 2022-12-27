@@ -1,0 +1,67 @@
+﻿@model genetrix.Models.UneImage
+
+@{
+    ViewBag.Title = "Details";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Url)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Url)
+                        <img src="C:\genetrix\Clients\RessourcesClient\Dossier_5_0\IMG_914021432623.png" class="img-fluid" alt="Erreur lecture du fichier" style="max-height:150px;max-width:150px"/>
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DateCreation)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DateCreation)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.DerniereModif)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.DerniereModif)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Titre)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Titre)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NomCreateur)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NomCreateur)
+                    </dd>
+
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Voir la liste", "Index")
+</p>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

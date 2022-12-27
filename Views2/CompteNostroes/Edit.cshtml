@@ -1,0 +1,76 @@
+﻿@model genetrix.Models.CompteNostro
+
+@{
+    ViewBag.Title = " Edition compteNostro";
+    ViewBag.pTitle = "Edition compteNostro";
+    ViewBag.pageTitle = "Edition compteNostro";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+    ViewBag.IdCorespondant = Model.Id;
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-info"></div>
+            <div class="card-body">
+                <div class="col-lg-12">
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Compte Nostro</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        @Html.HiddenFor(model => model.IdCorrespondant)
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Numero, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Numero, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Libellé, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Libellé, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Libellé, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.RIB, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.RIB, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RIB, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.IdDevise, "Devise", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("IdDevise", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdDevise, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            @Html.ActionLink("Liste", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,89 @@
+﻿@model genetrix.Models.Signataire
+
+@{
+    ViewBag.Title = " Edition Signataire";
+    ViewBag.pTitle = "Edition Signataire";
+    ViewBag.pageTitle = "Edition Signataire";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1"></div>
+            <div class="card-body">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            <h4>Signataire</h4>
+                            <hr />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.NomComplet, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.NomComplet, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.NomComplet, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Telephone, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Telephone, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3 hidden">
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.BanqueId, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Rang, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EnumDropDownListFor(model => model.Rang, htmlAttributes: new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Rang, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Fonction, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Fonction, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Fonction, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <div class="col-md-offset-2 col-md-12">
+                                    <input type="submit" value="Create" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            @Html.ActionLink("Liste", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

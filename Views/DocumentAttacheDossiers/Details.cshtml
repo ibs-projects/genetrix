@@ -1,0 +1,58 @@
+﻿@model genetrix.Models.DocumentAttacheDossier
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DocumentAttacheDossier</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Url)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Url)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FichierImage)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FichierImage)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateCreaApp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateCreaApp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DateModif)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DateModif)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,181 @@
+﻿@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pure Css Responsive Slideshow</title>
+    @*<link rel="stylesheet" type="text/css" href="~/Views/Bg/css/style.css">*@
+<style>
+        body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 100vh;
+}
+
+.container .slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 500%;
+    height: 100%;
+    animation: animate 10s linear infinite;
+}
+
+.container .slider .slide {
+    position: relative;
+    width: 20%;
+    height: 100%;
+    float: left;
+}
+
+.container .slider .slide .caption {
+    position: absolute;
+    bottom: 60px;
+    left: 60px;
+    right: 60px;
+    padding: 30px;
+    background: rgba(0, 0, 0, .5);
+    box-sizing: border-box;
+    transition: 0.5s;
+}
+
+.container .slider .slide .caption h2 {
+    margin: 0 0 20;
+    padding: 0;
+    color: #fff;
+    font-size: 48px;
+    transition: 0.5s;
+}
+
+.container .slider .slide .caption p {
+    margin: 0;
+    padding: 0;
+    color: #fff;
+    font-size: 20px;
+    transition: 0.5s;
+}
+
+.container .slider .slide.slide1 {
+    background-image: url('@Url.Content("~/assets/images/IU/login-img/1.jpeg")');
+    background-size: cover;
+    background-position: center;
+}
+
+.container .slider .slide.slide2 {
+    background-image: url('@Url.Content("~/assets/images/IU/login-img/1.jpg")');
+    background-size: cover;
+    background-position: center;
+}
+
+.container .slider .slide.slide3 {
+    background: url('@Url.Content("~/assets/images/IU/login-img/1.jpg")');
+    background-size: cover;
+    background-position: center;
+}
+
+.container .slider .slide.slide4 {
+    background: url('@Url.Content("~/assets/images/IU/login-img/1.jpg")');
+    background-size: cover;
+    background-position: center;
+}
+
+@@keyframes animate {
+    0% {
+        left: 0;
+    }
+    20% {
+        left: 0;
+    }
+    25% {
+        left: -100%;
+    }
+    45% {
+        left: -100%;
+    }
+    50% {
+        left: -200%;
+    }
+    70% {
+        left: -200%;
+    }
+    75% {
+        left: -300%;
+    }
+    95% {
+        left: -300%;
+    }
+    100% {
+        left: -400%;
+    }
+}
+
+@@media (max-width: 768px) {
+    .container .slider .slide .caption {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        padding: 20px;
+    }
+    .container .slider .slide .caption h2 {
+        margin: 0 0 10;
+        font-size: 30px;
+    }
+    .container .slider .slide .caption p {
+        font-size: 16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="slider">
+            <div class="slide slide1">
+                <div class="caption">
+                    <h2>Slide1</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio corrupti nemo incidunt deserunt obcaecati vero dolor explicabo tempore, rem quas cum vitae magni dolores. Delectus voluptatem dicta quam assumenda est.</p>
+                </div>
+            </div>
+            <div class="slide slide2">
+                <div class="caption">
+                    <h2>Slide2</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio corrupti nemo incidunt deserunt obcaecati vero dolor explicabo tempore, rem quas cum vitae magni dolores. Delectus voluptatem dicta quam assumenda est.</p>
+                </div>
+            </div>
+            <div class="slide slide3">
+                <div class="caption">
+                    <h2>Slide3</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio corrupti nemo incidunt deserunt obcaecati vero dolor explicabo tempore, rem quas cum vitae magni dolores. Delectus voluptatem dicta quam assumenda est.</p>
+                </div>
+            </div>
+            <div class="slide slide4">
+                <div class="caption">
+                    <h2>Slide4</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio corrupti nemo incidunt deserunt obcaecati vero dolor explicabo tempore, rem quas cum vitae magni dolores. Delectus voluptatem dicta quam assumenda est.</p>
+                </div>
+            </div>
+            <div class="slide slide1">
+                <div class="caption">
+                    <h2>Slide1</h2>
+                    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio corrupti nemo incidunt deserunt obcaecati vero dolor explicabo tempore, rem quas cum vitae magni dolores. Delectus voluptatem dicta quam assumenda est.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

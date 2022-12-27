@@ -1,0 +1,839 @@
+﻿@using genetrix.Models
+@using System.Globalization;
+
+@model genetrix.Models.Bien
+
+@{
+    ViewBag.Title = "Bien";
+    ViewBag.pTitle = "Edition de l'opération";
+    ViewBag.pageTitle = "Bien";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+}
+
+@*}*@
+<style>
+    input[type='file'] {
+        opacity: 0;
+    }
+    .file-show {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 38%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+    .zone{
+        border:0.3px solid rgb(187, 187, 187 , 0.30);
+        padding-bottom:10px;
+    }
+</style>
+<style>
+    .detail {
+        border: 1px solid #eef1fd;
+        border-radius: 5px 3px;
+        margin-bottom: 10px
+    }
+
+    .detail0 {
+        padding: 5px
+    }
+
+    legend {
+        background-color: #eef1fd;
+        padding: 5px;
+        font-size: large;
+        font: bold;
+        text-transform:uppercase;
+    }
+
+    .imf-taille {
+        /*max-height: 420px;
+        max-width: 320px;*/
+        width: 150px;
+        height: 200px
+    }
+
+    #list-info {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333333;
+    }
+
+        #list-info li {
+            float: left;
+        }
+
+    .col-1 {
+        display: none
+    }
+
+    .icon-dos {
+        font-size: 1.5em;
+        color: #2689a6;
+    }
+
+    .separation {
+        margin: 5px;
+    }
+</style>
+<style>
+    details > summary {
+        padding: 8px;
+        width: 40vw;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.3em;
+        color: #2689a6;
+        text-align:left;
+        text-transform:uppercase;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+    table td {
+        width: 50%;
+        border: 0.3px solid rgb(187, 187, 187, 0.30);
+        text-align:left;
+        vertical-align:top;
+        padding:10px;
+    }
+    .input-group-text:hover {
+        cursor: pointer;
+        box-shadow: 3px 3px rgb(187, 187, 187, 0.30);
+        background-color: rgb(38, 137,166, 0.35);
+    }
+    #pan-nature {
+        border: 0.3px solid rgb(187, 187, 187, 0.30);
+        padding:15px;
+        padding-left:6em;
+    }
+    input[type='radio'], label[class='form-check-label'] {
+        font-size: 1.5em;
+    }
+    .separation{
+        margin-top:1em;
+        margin-bottom:1em;
+    }
+    #table-domici{
+        width:100%;
+        font-size:1.3em;
+    }
+    .item {
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        color: #2689a6;
+    }
+
+    .td-data {
+        padding: 10px;
+        overflow:hidden;
+    }
+        .td-data > input {
+            width: 100%;
+            height: 40px;
+            margin:0px;
+            padding-left:10px;
+        }
+    .td-data > input:hover {
+        border: 1.8px solid #2689a6;
+    }
+    .input-data{
+        display:none;
+    }
+</style>
+
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        
+        <div class="card">
+            <div class="card-body bg-light">
+                @*<h4 class="card-title mb-4">Saisie de données</h4>*@
+
+                <div id="basic-example">
+                    <!-- Seller Details -->
+                    <h3>Saisie des données</h3>
+                    <section>
+                        <form id="form-edit" action="~/dossiers/edit" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="number" class="hidden" name="Dossier_Id" value="@Model.Dossier_Id" />
+                            <input type="number" class="hidden" name="ClientId" value="@Model.ClientId" />
+                            <div class="row">
+                                <div class="" style="text-align:center!important">
+                                    <details>
+                                        <summary>Nature de l'opération</summary>
+                                        <div id="pan-nature">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="formRadios"
+                                                       id="formRadios1" checked>
+                                                <label class="form-check-label" for="formRadios1">
+                                                    Bien
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="formRadios"
+                                                       id="formRadios2">
+                                                <label class="form-check-label" for="formRadios2">
+                                                    Service
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </details>
+                                    <hr class="separation" />
+                                    <details>
+                                        <summary id="detail-transfert">Domiciliation d'importation (Biens)</summary>
+                                        <div class="table-responsive">
+                                            <table id="table-domici">
+                                                <tr>
+                                                    <td colspan="2" class="item">
+                                                        Importatteur
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nom ou raison sociale:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.ImportaNom</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="ImportaNom" value="@Model.ImportaNom" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Numéro d'inscription au registre de commerce:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.ImportaNumInscri</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="ImportaNumInscri" value="@Model.ImportaNumInscri" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Adresse complète:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.ImportaAdresse</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="ImportaAdresse" value="@Model.ImportaAdresse" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Profession</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.ImportaProfession</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="ImportaProfession" value="@Model.ImportaProfession" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Immatriculation statique: </td>
+                                                    <td class="td-data">
+                                                        <span>@Model.ImportaImmatri</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="ImportaImmatri" value="@Model.ImportaImmatri" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="item">
+                                                        Fournisseur
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Nom ou raison sociale: </td>
+                                                    <td class="td-data">
+                                                        <span>@Model.GetFournisseur</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="GetFournisseur" value="@Model.GetFournisseur" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Pays d'origine:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.PaysFournisseur</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="PaysFournisseur" value="@Model.PaysFournisseur" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Adresse dans le pays d'origine:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.PaysFournisseur</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="PaysFournisseur" value="@Model.PaysFournisseur" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="item">
+                                                        Marchandise
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Designation commerciale:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.Description</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="Description" value="@Model.Description" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Quantité (Poinds net):</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.Qte</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="Qte" value="@Model.Qte" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Bureau d'embarquement:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.BureauEmbarquement</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="BureauEmbarquement" value="@Model.BureauEmbarquement" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>FOB:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.FOBDevise</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="FOBDevise" value="@Model.FOBDevise" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>CAF:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.CAF</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="CAF" value="@Model.CAF" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Nomenclature douanière:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.NomenClatureDouane</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="NomenClatureDouane" value="@Model.NomenClatureDouane" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Reference de la facture:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.NumFacturePro</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="NumFacturePro" value="@Model.NumFacturePro" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Montant en devise:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.Montant</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="Montant" value="@Model.Montant" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Montant en CFA:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.MontantCV</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="MontantCV" value="@Model.MontantCV" />
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td>Echéance fixée pour le paiement:</td>
+                                                    <td class="td-data">
+                                                        <span>@Model.EcheancePaiement</span>
+                                                        <input class="input-data" autocomplete="off" type="text" name="EcheancePaiement" value="@Model.EcheancePaiement" />
+                                                    </td>
+                                                </tr>
+
+                                                @*<tr>
+                        <td colspan="2">
+                            <p>Je soussigné, certifie sincères et véritables, les énonciations sur la présente formule.</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <input type="text" name="name" value="" />
+                        </td>
+                    </tr>*@
+                                            </table>
+                                        </div>
+                                    </details>
+                                    <hr class="separation" />
+                                    <details>
+                                        <summary id="detail-donneur">Déclaration d'importation de biens</summary>
+                                        <div class="table-responsive">
+                                            <table>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="col-12">
+                                                                <label class="control-label mt-2">Importateur (nom/adresse)</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-text"><i class="icon-dos mdi mdi-account-search"></i></div>
+                                                                    <input type="text" class="form-control input-sel" name="ImportaNom" id="ImportaNom" value="@Model.ImportaNomAdress" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.ImportaNom, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <label class="control-label mt-2">Ville</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportaVille" id="ImportaVille" value="@Model.ImportaVille" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportaVille, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <label class="control-label mt-2">Pays</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportaPays" id="ImportaPays" value="@Model.ImportaPays" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportaPays, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.ImportateurCodeAgr, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportateurCodeAgr" id="ImportateurCodeAgr" value="@Model.ImportateurCodeAgr" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportateurCodeAgr, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.Obtention, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="Obtention" id="Obtention" value="@Model.Obtention" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.Obtention, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.Peremption, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="Peremption" id="Peremption" value="@Model.Peremption" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.Peremption, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <label class="control-label mt-2">Code</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportateurCode" id="ImportateurCode" value="@Model.ImportateurCode" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportateurCode, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <label class="control-label mt-2">Téléphone</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportateurPhone" id="ImportateurPhone" value="@Model.ImportateurPhone" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportateurPhone, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-12">
+                                                                <div class="col-12">
+                                                                    @Html.LabelFor(model => model.ImportateurMail, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="ImportateurMail" id="ImportateurMail" value="@Model.ImportateurMail" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ImportateurMail, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="col-12">
+                                                                <label class="control-label mt-2">Vendeur (nom/adresse)</label>
+                                                                <div class="input-group">
+                                                                    <div class="input-group-text"><i class="icon-dos mdi mdi-account-search"></i></div>
+                                                                    <input type="text" class="form-control input-sel" name="VendeurNomAdress" id="VendeurNomAdress" value="@Model.VendeurNomAdress" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.VendeurNom, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    <label class="control-label mt-2">Ville</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="VendeurVille" id="VendeurVille" value="@Model.VendeurVille" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.VendeurVille, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.VendeurPaysHorsCemac, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="VendeurPaysHorsCemac" id="VendeurPaysHorsCemac" value="@Model.VendeurPaysHorsCemac" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.VendeurPaysHorsCemac, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.VendeurPhone, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="VendeurPhone" id="VendeurPhone" value="@Model.VendeurPhone" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.VendeurPhone, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.VendeurFax, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="VendeurFax" id="VendeurFax" value="@Model.VendeurFax" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.VendeurFax, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="">
+                                                                @Html.LabelFor(model => model.LieuDeroulement, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                <div class="input-group">
+
+                                                                    <input type="text" class="form-control input-sel" name="LieuDeroulement" id="LieuDeroulement" value="@Model.LieuDeroulement" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.LieuDeroulement, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.PaysProv, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="PaysProv" id="PaysProv" value="@Model.PaysProv" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.PaysProv, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.PaysOrig, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="PaysOrig" id="PaysOrig" value="@Model.PaysOrig" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.PaysOrig, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.ModeTransport, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="ModeTransport" id="ModeTransport" value="@Model.ModeTransport" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ModeTransport, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.TypeExpedition, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="TypeExpedition" id="TypeExpedition" value="@Model.TypeExpedition" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.TypeExpedition, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.BanqueDomi, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="BanqueDomi" id="BanqueDomi" value="@Model.BanqueDomi" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.BanqueDomi, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.Label("Reference date domiciliation", htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" placeholder="Ref." class="form-control input-sel" name="RefDomiciliation" id="RefDomiciliation" value="@Model.RefDomiciliation" />
+                                                                        <input type="datetime" placeholder="Date" class="form-control input-sel" name="DateDomiciliation" id="DateDomiciliation" value="@Model.DateDomiciliation" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.RefDomiciliation, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.DeviseMonetaireId, "Devise", htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        @Html.DropDownList("DeviseMonetaireId", null, htmlAttributes: new { @class = "form-control input-sel", id = "DeviseMonetaireId" })
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.DeviseMonetaireId, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.ValeurDevise, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="ValeurDevise" id="ValeurDevise" value="@Model.ValeurDevise" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ValeurDevise, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-8">
+                                                                    @Html.LabelFor(model => model.NumFacturePro, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    &emsp;&emsp;&emsp; Date
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="NumFacturePro" id="NumFacturePro" value="@Model.NumFacturePro" />
+                                                                        <input type="datetime" class="form-control input-sel" name="DateFacturePro" id="DateFacturePro" value="@Model.DateFacturePro" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.NumFacturePro, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.ModalReglement, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="ModalReglement" id="ModalReglement" value="@Model.ModalReglement" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ModalReglement, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-5">
+                                                                    @Html.LabelFor(model => model.TermeVente, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="TermeVente" id="TermeVente" value="@Model.TermeVente" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.TermeVente, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-7">
+                                                                    @Html.LabelFor(model => model.ValeurFOB, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="ValeurFOB" id="ValeurFOB" value="@Model.ValeurFOB" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ValeurFOB, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.TauxChange, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="TauxChange" id="TauxChange" value="@Model.TauxChange" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.TauxChange, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.ValeurCFA, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="number" class="form-control input-sel" name="ValeurCFA" id="ValeurCFA" value="@Model.ValeurCFA" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ValeurCFA, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-4">
+                                                                    @Html.LabelFor(model => model.ValeurDevise, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="number" class="form-control input-sel" name="ValeurDevise" id="ValeurDevise" value="@Model.ValeurDevise" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ValeurDevise, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="TermeVente" id="Description" value="@Model.Description" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    @Html.LabelFor(model => model.ServiceConnexe, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+
+                                                                        <input type="text" class="form-control input-sel" name="ServiceConnexe" id="ServiceConnexe" value="@Model.ServiceConnexe" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.ServiceConnexe, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div class="form-group mb-3">
+                                                            <div class="row">
+                                                                <div class="col-3">
+                                                                    @Html.LabelFor(model => model.PosTarif, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="number" class="form-control input-sel" name="PosTarif" id="PosTarif" value="@Model.PosTarif" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.PosTarif, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    @Html.LabelFor(model => model.Qte, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="number" class="form-control input-sel" name="Qte" id="Qte" value="@Model.Qte" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.Qte, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    @Html.LabelFor(model => model.Unite, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="text" class="form-control input-sel" name="Unite" id="Unite" value="@Model.Unite" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.Unite, "", new { @class = "text-danger" })
+                                                                </div>
+                                                                <div class="col-3">
+                                                                    @Html.LabelFor(model => model.FOBDevise, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                    <div class="input-group">
+                                                                        <input type="number" class="form-control input-sel" name="FOBDevise" id="FOBDevise" value="@Model.FOBDevise" />
+                                                                    </div>
+                                                                    @Html.ValidationMessageFor(model => model.FOBDevise, "", new { @class = "text-danger" })
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        <div class="row">
+                                                            <div class="col-8">
+                                                                <div class="input-group">
+                                                                    @Html.LabelFor(model => model.TypeExpedition, htmlAttributes: new { @class = "control-label mt-2" })
+
+                                                                    <input type="number" class="form-control input-sel" name="TypeExpedition" id="TypeExpedition" value="@Model.TypeExpedition" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.TypeExpedition, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <div class="control-group">
+                                                                    @Html.LabelFor(model => model.ChequeNum, htmlAttributes: new { @class = "control-label mt-2" })
+
+                                                                    <input type="text" class="form-control input-sel" name="ChequeNum" id="ChequeNum" value="@Model.ChequeNum" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.ChequeNum, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="col-2">
+                                                                @Html.LabelFor(model => model.ChequeDate, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                <div class="input-group">
+
+                                                                    <input type="datetime" class="form-control input-sel" name="ChequeDate" id="ChequeDate" value="@Model.ChequeDate" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.Qte, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="col-3">
+                                                                @Html.LabelFor(model => model.ChequeBanque, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                <div class="input-group">
+
+                                                                    <input type="text" class="form-control input-sel" name="ChequeBanque" id="ChequeBanque" value="@Model.ChequeBanque" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.ChequeBanque, "", new { @class = "text-danger" })
+                                                            </div>
+                                                            <div class="col-3">
+                                                                @Html.LabelFor(model => model.ChequeMontantCFA, htmlAttributes: new { @class = "control-label mt-2" })
+                                                                <div class="input-group">
+
+                                                                    <input type="number" class="form-control input-sel" name="ChequeMontantCFA" id="ChequeMontantCFA" value="@Model.ChequeMontantCFA" />
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.ChequeMontantCFA, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+
+                                    </details>
+
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+
+                </div>
+                <hr />
+                <button id="btn-submit" class="btn btn-primary"><i class="fas fa-check"></i> Valider</button>
+            </div>
+            <!-- end card body -->
+
+        </div>
+
+    </div>
+
+</div>
+
+@Scripts.Render("~/Content/js")
+@Scripts.Render("~/Content/wizard")
+<script>
+    $(document).ready(function () {
+        $('.actions').hide();
+        $('#btn-valid').click(function () {
+            document.getElementById('formcreate').submit();
+        });
+        $('.td-data').hover(function () {
+            try {
+                this.style.padding = '0px';
+                var _ph = this.offsetHeight;
+                $(this).children()[0].style.display = 'none';
+                $(this).children()[1].style = 'display:initial;height:'+_ph+'px';
+            } catch (e) {
+
+            }
+        });
+        $('.td-data').mouseleave(function () {
+            try {
+                this.style.padding = '10px';
+                $(this).children()[1].style.display = 'none';
+                $(this).children()[0].textContent = $(this).children()[1].value;
+                $(this).children()[0].style.display = 'initial';
+            } catch (e) {
+
+            }
+        });
+        $('#btn-submit').click(function () {
+            if (confirm('Confirmez vous la validation des données?')) {
+                document.getElementById('form-edit').submit();
+            }
+        });
+    });
+</script>

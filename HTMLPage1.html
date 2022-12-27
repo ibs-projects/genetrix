@@ -1,0 +1,403 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+</head>
+ $@"
+<body>
+
+    <div id='content-inner-left'>
+        <article class='actus-details'>
+            <div id='lettre' style=''>
+                <div id='entete'>
+                    <table style='width:100%' border='0'>
+                        <tr>
+                            <td>
+                                <div id='logo-banque'>
+                                    <img src='{model.logo}' />
+                                    Logo de la banque
+                                </div>
+                            </td>
+                            <td id='titre'>
+                                <h1 style='font-weight: bolder; font-size: 2.1em; color: #5aa39f'>ORDRE DE VIREMENT</h1>
+                                <p style='color: #5aa39f; font-size: 1.2em; '>Merci de signer puis réintroduit ce formulaire sur GENETRIX</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id='corp' style='border:1px solid #dcdcdc;font-family:Arial;font-size:12px'>
+                    <h2>DONNEUR D'ORDRE</h2>
+                    <div class='cont01'>
+                        <div class='p-elt'>
+                            <p class='elt' style=''>Nom et Prénom ou Raison sociale : </p>
+                            <p class='donnee'>{model.client}</p>
+                        </div>
+                        <div>
+
+                        </div>
+                        <div class='p-elt'>
+                            <table class='a' style='width: 100%; margin-left: -3px'>
+                                <tr>
+                                    <th style='text-align:left'>
+                                        <p class='elt' style=''>Compte à débiter : </p>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='text-align:left'>
+                                        <input type='checkbox' id='deviseeuro' name='deviseeuro' value='en euro' />
+                                        <label for='deviseeuro'> en euro</label>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='text-align:left'>
+                                        <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                        <label for='autredevise'> en autre devise</label>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.etbc1}</div>
+                                            <div>{model.etbc2}</div>
+                                            <div>{model.etbc3}</div>
+                                            <div>{model.etbc4}</div>
+                                            <div>{model.etbc5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code Etablissement </p>
+                                    </th>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.agc1}</div>
+                                            <div>{model.agc2}</div>
+                                            <div>{model.agc3}</div>
+                                            <div>{model.agc4}</div>
+                                            <div>{model.agc5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code agence </p>
+                                    </th>
+                                    <th style='width:121px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.ncc1}</div>
+                                            <div>{model.ncc2}</div>
+                                            <div>{model.ncc3}</div>
+                                            <div>{model.ncc4}</div>
+                                            <div>{model.ncc5}</div>
+                                            <div>{model.ncc7}</div>
+                                            <div>{model.ncc8}</div>
+                                            <div>{model.ncc9}</div>
+                                            <div>{model.ncc10}</div>
+                                            <div>{model.ncc11}</div>
+                                            <div>{model.ncc12}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Numéro de compte</p>
+                                    </th>
+                                    <th style='width:30px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.clc1}</div>
+                                            <div>{model.clc2}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Clé</p>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <h2>Ordre de virement</h2>
+                    <div class='cont01'>
+                        <table class='a' style='width: 100%;margin-left:-6px'>
+                            <tr>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='deviseeuro' name='deviseeuro' value='en euro' />
+                                    <label for='deviseeuro'>
+                                        Virement tiers (par défaut)
+                                    </label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement de trésorie</label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement urgent<sup>1</sup></label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement chèque<sup>2</sup></label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                            </tr>
+                        </table>
+                        <table ble class='a' style='width: 100%; margin-left: -3px'>
+                            <tr>
+                                <th style='text-align:left;width:20%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'>Devise : </p>
+                                        <p class='donnee' type='text' id='devise' name='devise'>{model.devise}</p>
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                                <th style='text-align:left;width:40%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'> Montant en devise (en chiffres) : </p>
+                                        <input type='text' id='montantdevise' name='montantdevise' value='{model.montantdevise}' />
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                                <th style='text-align: left; width: 40%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'> Equivalent en CFA : </p>
+                                        <input type='text' id='montantdevise' name='montantdevise' value='{model.montantxaf}' />
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                        <div class='pan'>
+                            <div class='p-elt'>
+                                <p class='elt'>Montant en lettres : </p>
+                                <p class='donnee' type='text' id='montantlettre'>{model.montantlettre}</p>
+                                <p></p>
+                                <hr />
+                            </div>
+                            <div class='p-elt'>
+                                <p class='elt'>Motif de l'opération' : </p>
+                                <p class='donnee' type='text' id='motif'>{model.motif}</p>
+                                <p></p>
+                                <hr />
+                            </div>
+                            <div class='p-elt' style='margin-top:-10px'>
+                                <p style='color:transparent'>Motif de l'opération' : </p>
+                                <p class='donnee' type='text' id='devise' name='devise' value='devise'></p>
+                                <p></p>
+                                <hr />
+                            </div>
+                        </div>
+                        <table class='a' style='width: 100%; margin-left: -3px'>
+                            <tr>
+                                <th style='text-align: left; width: 160px '>
+                                    <label for='deviseeuro'>
+                                        Répartition des frais :
+                                    </label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left;'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais partagés (par défaut)</label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais à la charge du donneur d'ordre</label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais à la charge du Bénéficiaire</label>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <h2>bénéficiaire de D'ORDRE</h2>
+                    <div class='cont01'>
+                        <div class='p-elt'>
+                            <table class='a' style='width: 100%; margin-left: -2px'>
+                                <tr>
+                                    <th style='text-align:left;width:25px;'>
+                                        <hr />
+                                        IBAN :
+                                        <p></p>
+                                    </th>
+                                    <th style='width:95%'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.ibanf1}</div>
+                                            <div>{model.ibanf2}</div>
+                                            <div>{model.ibanf3}</div>
+                                            <div>{model.ibanf4}</div>
+                                            <div>{model.ibanf5}</div>
+                                            <div>{model.ibanf6}</div>
+                                            <div>{model.ibanf7}</div>
+                                            <div>{model.ibanf8}</div>
+                                            <div>{model.ibanf9}</div>
+                                            <div>{model.ibanf10}</div>
+                                            <div>{model.ibanf11}</div>
+                                            <div>{model.ibanf12}</div>
+                                            <div>{model.ibanf13}</div>
+                                            <div>{model.ibanf14}</div>
+                                            <div>{model.ibanf15}</div>
+                                            <div>{model.ibanf16}</div>
+                                            <div>{model.ibanf17}</div>
+                                            <div>{model.ibanf18}</div>
+                                            <div>{model.ibanf19}</div>
+                                            <div>{model.ibanf20}</div>
+                                            <div>{model.ibanf21}</div>
+                                            <div>{model.ibanf22}</div>
+                                            <div>{model.ibanf23}</div>
+                                            <div>{model.ibanf24}</div>
+                                            <div>{model.ibanf25}</div>
+                                            <div>{model.ibanf26}</div>
+                                            <div>{model.ibanf27}</div>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>ou à defaut le numéro de compte complet : </p>
+                            <p style='' class='donnee' type='text' id='devise' name='devise' value='devise'>{model.numcomf}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Nom et prénom ou Raison sociale : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.fourn}</p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Adresse : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.addresf}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <table style='width: 100%; margin-left: -2px'>
+                                <tr>
+                                    <th>
+                                        <div class='p-elt' style='text-align:left'>
+                                            <p class='elt'>Ville : </p>
+                                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.villef}</p>
+                                            <p></p>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class='p-elt' style='text-align:left'>
+                                            <p class='elt'>Pays : </p>
+                                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.paysf}</p>
+                                            <p></p>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <h2>Banque du bénéficiaire</h2>
+                    <div class='cont01'>
+                        <div class='p-elt'>
+                            <p class='elt' style='padding-top:5px;'>Code RIB : </p>
+                            <table class='a' style='margin-left:15px'>
+                                <tr>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.etbf1}</div>
+                                            <div>{model.etbf2}</div>
+                                            <div>{model.etbf3}</div>
+                                            <div>{model.etbf4}</div>
+                                            <div>{model.etbf5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code Etablissement </p>
+                                    </th>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.agf1}</div>
+                                            <div>{model.agf2}</div>
+                                            <div>{model.agf3}</div>
+                                            <div>{model.agf4}</div>
+                                            <div>{model.agf5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code agence </p>
+                                    </th>
+                                    <th style='width:121px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.ncf1}</div>
+                                            <div>{model.ncf2}</div>
+                                            <div>{model.ncf3}</div>
+                                            <div>{model.ncf4}</div>
+                                            <div>{model.ncf5}</div>
+                                            <div>{model.ncf7}</div>
+                                            <div>{model.ncf8}</div>
+                                            <div>{model.ncf9}</div>
+                                            <div>{model.ncf10}</div>
+                                            <div>{model.ncf11}</div>
+                                            <div>{model.ncf12}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Numéro de compte</p>
+                                    </th>
+                                    <th style='width:30px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{model.clf1}</div>
+                                            <div>{model.clf2}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Clé</p>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                    <div class='cont01'>
+                        <div class='p-elt'>
+                            <p class='elt'>Nom de la banque : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.banquef}</p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Adresse de la banque : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.addrbanquef}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Ville ou Agence : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{model.viellebanquef}</p>
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <div class='h2'>
+                        <div class='p-elt'>
+                            <h2 style='flex:1'>DATE</h2>
+                            <h2 style='flex:1'>SIGNATURE DU CLIENT</h2>
+                        </div>
+                    </div>
+                    <div class='cont01'>
+                        <div class='p-elt'>
+                            <div class='sign'><p id='date'>{model.date}</p></div>
+                            <div class='sign sign2'></div>
+                        </div>
+                    </div>
+                </div>
+                <div class='footer'>
+                    <ol>
+                        <li>Une commission est additionnelle est prélévée au donneur d'ordre dès l'emmission, si la  case est cochée</li>
+                        <li>Sans frais pour le donneur d'ordre, à l'exception des frais de charge, de service d'urgent ou en cas des commission additionnelle</li>
+                    </ol>
+                </div>
+            </div>
+        </article>
+    </div>
+</body>
+</html>
+                ";

@@ -1,0 +1,192 @@
+﻿@using genetrix.Models
+@model VariablGlobales
+@{
+    ViewBag.Title = "Tableau de bord";
+    ViewBag.pTitle = "Tableau de bord";
+    ViewBag.pageTitle = (ViewBag.ModeName == genetrix.Contants.LAYOUT_VERTICAL) ? "Minible" : "Layouts";
+    // Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+@*  card Statistique *@
+
+<div class="row">
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <a href="@Url.Content("~/Dossiers/Index?st=encours")">
+                    <div class="float-end mt-2 ">
+                        <div id="total-revenue-chart1">
+                            <img class="rounded avatar-xl" alt="100x100" style="height:60px;width:60px" src="~/assets/images/IU/encours.png" data-holder-rendered="true">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@( ViewData["_encours"] as InfoDocAcueil).Nbr</span></h4>
+                        <p class="text-muted mb-0">Dossiers en cours de traitement</p>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        <span class="text-danger me-1"><i class="mdi mdi-arrow-down-bold me-1"></i>@((ViewData["_encours"] as InfoDocAcueil).GetPercentage())%</span> @( (ViewData["_encours"] as InfoDocAcueil).GetDuree())
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div> <!-- end col-->
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <a href="@Url.Content("~/Dossiers/Index?st=aapurer")">
+                    <div class="float-end mt-2">
+                        <div id="orders-chart1">
+                            <img class="rounded avatar-xl" alt="100x100" style="height:60px;width:60px" src="~/assets/images/IU/aapurer.png" data-holder-rendered="true">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(ViewData["_AApurer"] as InfoDocAcueil).Nbr</span></h4>
+                        <p class="text-muted mb-0">Dossiers à apurer</p>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        <span class="text-danger me-1"><i class="mdi mdi-arrow-down-bold me-1"></i>@((ViewData["_AApurer"] as InfoDocAcueil).GetPercentage())%</span> @((ViewData["_AApurer"] as InfoDocAcueil).GetDuree())
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div> <!-- end col-->
+
+    <div class="col-md-6 col-xl-3">
+        <div class="card">
+            <div class="card-body">
+                <a href="@Url.Content("~/Dossiers/Index?st=apure")">
+                    <div class="float-end mt-2">
+                        <div id="customers-chart1">
+                            <img class="rounded avatar-xl" alt="100x100" style="height:60px;width:60px" src="~/assets/images/IU/apure.png" data-holder-rendered="true">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@((ViewData["_Apuré"] as InfoDocAcueil).Nbr)</span></h4>
+                        <p class="text-muted mb-0">Dossiers apurés</p>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        <span class="text-danger me-1"><i class="mdi mdi-arrow-down-bold me-1"></i>@((ViewData["_Apuré"] as InfoDocAcueil).GetPercentage())%</span> @((ViewData["_Apuré"] as InfoDocAcueil).GetDuree())
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div> <!-- end col-->
+
+    <div class="col-md-6 col-xl-3">
+
+        <div class="card">
+            <div class="card-body">
+                <a href="@Url.Content("~/Dossiers/Index?st=echu")">
+                    <div class="float-end mt-2">
+                        <div id="growth-chart1">
+                            <img class="rounded avatar-xl" alt="100x100" style="height:60px;width:60px" src="~/assets/images/IU/echus.png" data-holder-rendered="true">
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="mb-1 mt-1"><span data-plugin="counterup">@((ViewData["_Echus"] as InfoDocAcueil).Nbr)</span></h4>
+                        <p class="text-muted mb-0">Dossiers échus</p>
+                    </div>
+                    <p class="text-muted mt-3 mb-0">
+                        @*mdi-arrow-up-bold*@
+                        <span class="text-danger me-1"><i class="mdi mdi-arrow-down-bold me-1"></i>@((ViewData["_Echus"] as InfoDocAcueil).GetPercentage())%</span> @((ViewData["_Echus"] as InfoDocAcueil).GetDuree())
+                    </p>
+                </a>
+            </div>
+        </div>
+    </div> <!-- end col-->
+</div>
+
+<!-- end row-->
+
+@* Card Derniers transferts *@
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Derniers Transferts</h4>
+                @{
+                    try
+                    {
+                        if (!(bool)HttpContext.Current.Session["isAdmin"])
+                        {
+                            @Html.Partial("~/Views/_Shared/PartialViews/Dossiers_Client.cshtml", Model.GetDossiers())
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+
+<!-- apexcharts -->
+<script src="~/assets/libs/apexcharts/apexcharts.min.js"></script>
+<script src="~/assets/js/pages/dashboard.init.js"></script>
+<script>
+    var _datas = [];
+    @{ 
+        List<string> _list = new List<string>();
+        string st = "";int i = 0;
+        foreach (var b in Model.BanqueClients)
+        {
+            if (i==0)
+            {
+                st = "{ name: \"" + b.Banque.Nom + "\", type: \"column\", data:[23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30] }";
+            }
+            else
+            {
+                st += ",{ name: \"" + b.Banque.Nom + "\", type: \"column\", data:[23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30] }";
+            }
+            //_list.Add("{ name: \""+b.Banque+"\", type: \"column\", data:[23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30] }");
+            i++;
+        }
+    }
+    var dd = '@(Html.Raw(st))';
+    eval("var _tab=" + dd);
+    alert(_tab);
+    //for (var i = 0; i < dd.length;i++) {
+    //    alert(dd[i]);
+    //   // _datas.push({ name: "" + item., type: "column", data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30] });
+    //}
+
+    //[
+    //    { name: "BGFI", type: "column", data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30] },
+    //    { name: "UBA", type: "column", data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43] },
+    //    { name: "BICIG", type: "column", data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39] }
+    //]
+
+    options = {
+        chart: { height: 339, type: "line", stacked: !1, toolbar: { show: !1 } },
+        stroke: { width: [0, 2, 4], curve: "smooth" },
+        plotOptions: { bar: { columnWidth: "30%" } },
+        colors: ["#5b73e8", "#dfe2e6", "#f1b44c"],
+        series: [JSON.parse(dd)],
+        fill: {
+            opacity: [.85, .25, 1],
+            gradient: { inverseColors: !1, shade: "light", type: "vertical", opacityFrom: .85, opacityTo: .55, stops: [0, 100, 100, 100] }
+        }, labels: ["01/01/2003", "02/01/2003", "03/01/2003", "04/01/2003", "05/01/2003", "06/01/2003", "07/01/2003", "08/01/2003", "09/01/2003", "10/01/2003", "11/01/2003"],
+        markers: { size: 0 }, xaxis: { type: "datetime" }, yaxis: { title: { text: "Points" } },
+        tooltip: { shared: !0, intersect: !1, y: { formatter: function (e) { return void 0 !== e ? e.toFixed(0) + " points" : e } } },
+        grid: { borderColor: "#f1f1f1" }
+    };
+    (chart = new ApexCharts(document.querySelector("#sales-analytics-chart"), options)).render();
+</script>
+
+
+<script src="~/assets/js/app.js"></script>
+

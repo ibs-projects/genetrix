@@ -1,0 +1,116 @@
+﻿<form action="~/Dossiers_banque/ModifEtatDossierNJS" method="post" id="njs" class="hidden">
+    @Html.AntiForgeryToken()
+    <input type="number" id="etat" name="etat" value="" />
+    <input type="number" id="idDossier" name="idDossier" value="" />
+    <input type="checkbox" id="Estgroupe" name="Estgroupe" value="" />
+    <input type="number" id="idOpSwft" name="idOpSwft" value="" />
+    <input type="number" id="idRef" name="idRef" value="" />
+    <input type="text" id="message" name="message" value="" />
+    <input type="text" id="date" name="date" value="" />
+    <input type="text" id="itemsRejet" name="itemsRejet" value="" />
+</form>
+<script>
+    $('.change-etat').click(function () {
+            var _message = "",itemSelectiones="";
+            try {
+                if ($('#raison-rejet').val()) {
+                    _message = $('#raison-rejet').val();
+                }
+                if ($('#note-renvoi').val()) {
+                    _message = $('#note-renvoi').val();
+                }
+            } catch (e) {
+
+            }
+            try {
+                if (_message) {
+                    itemSelectiones = $('#items-rejet').val();
+                }
+            } catch (e) {
+
+            }
+
+            var _etat = this.getAttribute("value"), _idDossier = '@Model.Dossier_Id', _Estgroupe = false, _idRef = null, _message = _message;
+            var info = "";
+            switch (_etat) {
+                case '232':
+                case '15':
+                    info = 'Etes-vous sûr de vouloir transmettre ce dossier pour validation à la BEAC?';
+                    break;
+                default:
+                    info = 'Etes-vous sûr de vouloir exécuter cette opération?';
+                    break;
+            }
+            if (confirm(info)) {
+                //modification du curseur
+                this.style = 'cursor:wait';
+                //Affiche loader
+                var ii = document.createElement('i');
+                ii.classList.add("mdi");
+                ii.classList.add("mdi-spin");
+                ii.classList.add("mdi-loading");
+                try {
+                    if (this.tagName=='INPUT') {
+                        this.parentElement.insertBefore(ii, this);
+                        this.style.display = 'none';
+                    }
+                } catch (e) {
+
+                }
+                var childs1 = this.childNodes;
+                for (var i = 0; i < childs1.length; i++) {
+                    if (childs1[i].tagName=="I" || childs1[i].tagName=="i") {
+                        childs1[i].style.display = 'none';
+                        this.insertBefore(ii, childs1[i]);
+                    }
+                }
+
+                // modification necessitant une date
+                try {
+                    if (this.getAttribute("modif-date")) {
+                        //document.getElementById("show-modal-date-motif").click();
+                    }
+                } catch (e) {
+
+                }
+                var _date = $('#date-modif').val();
+                var moi = this;
+                try {
+                    $(this.id + "-0").hide();
+                    $(this.id + "-1").show();
+                } catch (e) {
+
+                }
+                var idOpSwft = 0;
+                try {
+                    if (this.getAttribute('href1')) {
+                        idOpSwft = this.getAttribute('idOpSwft');
+                        if (this.getAttribute('etat')) {
+                            _etat = this.getAttribute('etat');
+                        }
+                    }
+                } catch (e) {
+
+                }
+                try {
+                    document.getElementById('show-loader').click();
+                } catch (e) {
+
+                }
+                $('#etat').val(_etat);
+                $('#idDossier').val(_idDossier);
+                $('#Estgroupe').val(_Estgroupe);
+                $('#idRef').val(_idRef);
+                $('#message').val(_message);
+                $('#date').val(_date);
+                $('#idOpSwft').val(idOpSwft);
+                $('#itemsRejet').val(itemSelectiones);
+
+                document.getElementById('njs').submit();
+            } else {
+                //location.reload();
+                //alert("Annulation de l'opération en cours...");
+            }
+        });
+
+</script>

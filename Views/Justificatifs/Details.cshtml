@@ -1,0 +1,363 @@
+﻿@model genetrix.Models.Justificatif
+
+@{
+    ViewBag.Title = "Facture du dossier n°" + Model.DossierId;
+    ViewBag.pTitle = "Détail de la facture";
+    ViewBag.pageTitle = "Facture du dossier n°" + Model.DossierId;
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+
+    bool edtionClient = false;
+    try
+    {
+        if (Model.Dossier.EtapesDosier == null || Model.Dossier.EtapesDosier == -1 || Model.Dossier.EtapesDosier == 0)
+        {
+            edtionClient = true;
+        }
+    }
+    catch (Exception)
+    { }
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<style>
+    details > summary {
+        padding: 4px;
+        width: 300px;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.1em;
+        color: #2689a6;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        @{
+            if (edtionClient)
+            {
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Supprimer", "Delete", new { id = Model.Id }) 
+                    @*<a href="@Url.Content("~/dossiers/edit?id="+Model.DossierId)">Acceder au dossier</a>*@
+                </p>
+            }
+        }
+        <div class="card">
+            <div class="card-header">
+                <h5 class="text-danger">@ViewBag.info</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <dl class="dl-horizontal">
+
+                            @*<dt>
+                                    @Html.DisplayNameFor(model => model.Libellé)
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.Libellé)
+                                </dd>*@
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.FournisseurJustif)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.FournisseurJustif)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MontantJustif)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.MontantJustif)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MontantPartiel)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.MontantPayeString)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MontantRestant)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.MontantRestantString)
+                            </dd>
+                            <dt>
+                                Devise
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(model => model.DeviseJustif)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.NumeroJustif)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.NumeroJustif)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateEmissioJustif)
+                            </dt>
+
+                            <dd>
+                                @Model.DateEmissioJustif.ToString("dd/MM/yyyy")
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateCreaAppJustif)
+                            </dt>
+
+                            <dd>
+                                @Model.DateCreaAppJustif.ToString("dd/MM/yyyy")
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateModifJustif)
+                            </dt>
+
+                            <dd>
+                                @Model.DateModifJustif.ToString("dd/MM/yyyy")
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.NbrePieces)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.NbrePieces)
+                            </dd>
+
+                            @*<dt>
+                                    @Html.DisplayName("Utilisateur")
+                                </dt>
+
+                                <dd>
+                                    @Html.DisplayFor(model => model.UtilisateurId)
+                                </dd>*@
+
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <details>
+                <summary>Fichier</summary>
+                @{
+                    int ii = 0;
+                    if (Model.GetImages != null)
+                    {
+
+                        foreach (var item in Model.GetImages)
+                        {
+                            ii++;
+                            var estPdf = false;
+                            try
+                            {
+                                estPdf = item.EstPdf;
+                            }
+                            catch (Exception)
+                            { }
+                            <hr />
+                            <div class="@(Model.MontantRestant>0?"bg-warning":"bg-success") p-2">
+                                @item.Titre
+                            </div>
+                            <div class="col-lg-12 bg-gradient-dark" id="img-quit-parent" style="max-height:100%;">
+                                <div class="row">
+                                    <div class="col-1 p-0">
+                                        @{
+                                            if (!estPdf)
+                                            {
+                                                <a infoImage="img-docTrans-parent" imgid="img-@ii" infoInputImg="upload-img-@ii" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-docTrans-parent" imgid="img-@ii" infoInputImg="upload-img-@ii" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                if (edtionClient)
+                                                {
+                                                    <a infoImage="img-docTrans-parent" imgid="img-@ii" infoInputImg="upload-img-@ii" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                }
+                                            }
+                                        }
+                                    </div>
+                                    <div class="col-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                        @{
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = item.Id;
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                <iframe id="iframe-2" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=false&idDossier="+Model.DossierId+"&estJustif=true")" style="max-width:221mm;height:143mm"></iframe>
+                                            }
+                                            else
+                                            {
+                                                <img class="card-img img-fluid imf-taille" src="@(!string.IsNullOrEmpty(item.GetImage())?item.GetImage():"#")" id="img-@ii" alt="Erreur lecture du fichier" />
+                                            }
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        }
+                    }
+                }
+            </details>
+        </div>
+
+        <div class="card">
+            <details>
+                <summary>Dossiers associés</summary>
+                @{
+                    if (Model.DossiersReglParts != null)
+                    {
+                        <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="check-all" name="name" class="form-check-input" value="" style="left:0" />
+                                    </th>
+                                    <th class="hidden">
+                                        Actions
+                                    </th>
+                                    <th>
+                                        Référence
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Client")
+                                    </th>
+
+                                    <th>
+                                        Fournisseur
+                                    </th>
+
+                                    <th>
+                                        Montant
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Devise")
+                                    </th>
+                                    <th>
+                                        @Html.DisplayName("Statut")
+                                    </th>
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="tb-000">
+                                @{
+                                    int i = 0;
+                                    string color = "";
+                                }
+                                @foreach (var item in Model.DossiersReglParts.OrderByDescending(d => d.DateModif))//.Where(d => d.EtapesDosier <= 5))
+                                {
+                                    color = "";
+                                    
+                                    i++;
+                                    <tr data*-id="@item.Dossier_Id" style="cursor:pointer;" id="id-@item.Dossier_Id" idd="link-@item.Dossier_Id" class="ligne">
+                                        <td class="att" style="@color">
+                                            @{
+                                                if (string.IsNullOrEmpty(item.GetReference) && item.DFX6FP6BEAC == 1 && item.EtapesDosier < 15)
+                                                {
+                                                    <input type="checkbox" ref="@item.GetReference" id="@item.Dossier_Id" montant="@item.Montant" name="name" class="form-check-input check-one float-left" value="" />
+                                                }
+                                                else
+                                                {
+                                                    <script>
+                                            document.getElementById('id-@item.Dossier_Id').classList.add('row-nondfx');
+                                                    </script>
+                                                }
+                                            }
+                                        </td>
+                                        <td class="att hidden">
+                                            <i class="fa fas fa-ellipsis-v fs-5 icon-action" estBeac="@item.DFX6FP6BEAC" doss-id="@item.Dossier_Id"></i>
+                                        </td>
+                                        <td>
+                                            @{
+                                                if (!string.IsNullOrEmpty(item.GetReference))
+                                                {
+                                                    try
+                                                    {
+                                                        <label>@item.GetReference</label>
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    <label>Non attribuée</label>
+                                                }
+                                            }
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.GetClient)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.GetFournisseur)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.MontantString)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.DeviseToString)
+                                        </td>
+
+                                        <td>
+                                            @Html.Partial("~/Views/_Shared/PartialViews/StatusDossiers.cshtml", item)
+                                        </td>
+
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+
+                    }
+                }
+            </details>
+        </div>
+    </div>
+</div>
+@{
+    if (edtionClient)
+    {
+        <p>
+            @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+            @Html.ActionLink("Supprimer", "Delete", new { id = Model.Id }) 
+            @*<a href="@Url.Content("~/dossiers/edit?id="+Model.DossierId)">Acceder au dossier</a>*@
+        </p>
+    }
+}
+@Html.Partial("~/Views/_Shared/PartialViews/GestionImage_script.cshtml")
+
+@* Modal detail image *@
+@Html.Partial("~/Views/_Shared/PartialViews/Detail_image.cshtml")
+@* <fin modal detail image *@
+
+@* Print modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Printer_contenair.cshtml")
+@* finprintmodal *@
+
+@*@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")*@
+@Scripts.Render("~/Content/js")
+<script>
+    $('.img-sup').hide();
+    $('.img-fluid').css({ "max-height": "300px", "max-width": "50%", "height": "300px", "width": "auto" });
+    $('.img-fluid').parent({ "height": "auto", "width": "auto" });
+</script>

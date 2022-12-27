@@ -1,0 +1,146 @@
+﻿@model IEnumerable<genetrix.Models.Fonctions.FileItemModel>
+@{ 
+    var action = false;
+    var labcolor = @ViewBag.labcolor == "Tout" ? true : false;
+}
+<style>
+    .avance{
+        display:none;
+    }
+    .th{
+        text-align:left
+    }
+</style>
+<div class="card">
+    @*<div class="card-header bg-gradient-primary text-white"></div>*@
+    <div class="card-body">
+        <div class="form-check" style="display:inline-block;float:right;margin-bottom:-45px" dir="ltr">
+            <input type="checkbox" class="form-check-input" style="margin-left:0px;margin-top:15px;position:relative;z-index:800;cursor:pointer" id="plus-info-input">
+            <label class="form-check-label" for="plus-info-input" style="margin-left:5px;margin-top:12px">Plus d'information</label>
+        </div>
+        <div class="table-responsive clearfix" style="clear: both;">
+            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead class="bg-gradient-info text-white">
+                    <tr style="text-align:left">
+                        <th>
+                            <input type="checkbox" id="check-all" name="name" class="form-check-input float-left" value="" style="left:0" />
+                        </th>
+                        <th>
+                            Donneur d'ordre
+                        </th>
+                        <th>
+                            Intitulé
+                        </th>
+                        <th>
+                            Fournisseur
+                        </th>
+                        <th>
+                            Devise
+                        </th>
+                        <th>
+                            Montant
+                        </th>
+                        <th>Categorie</th>
+                        <th>Référence</th>
+                        <th class="partage">Gestionnaire</th>
+                        <th class="partage">Agence</th>
+                        <th class="partage avance">Responsables</th>
+                        <th class="avance">Taille</th>
+                        <th class="avance">Arrivée agence</th>
+                        <th class="avance">Arrivée back-office</th>
+                        <th class="avance">Arrivée conformité</th>
+                        <th class="avance">Arrivée transfert</th>
+                        <th class="avance">Envoie Beac</th>
+                        <th class="avance">Reception devise</th>
+                        <th class="avance">Traité</th>
+                        <th class="avance">Apuré</th>
+                        <th class="avance">Date archivage</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                    <tr data*-id="@item.Id" style="cursor:pointer;" idd="link-@item.Id" class="ligne">
+                        <td class="att" style="text-align:center">
+                            <input type="checkbox" id="@item.Id" name="name" class="form-check-input check-one" style="" value="" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ClientName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FournisseurName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Devise)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MontantString)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GetCategorie)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GetReference)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GestionnaireName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.GetAgenceName)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.GetResponsables)
+                        </td>
+                        <td class="avance">@item.GetTaille</td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.DateDepot)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape4)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape6)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape9)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape15)
+                        </td> 
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.ObtDevise)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape22)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.Date_Etape24)
+                        </td>
+                        <td class="avance">
+                            @Html.DisplayFor(modelItem => item.DateArchivage)
+                        </td>
+
+                    </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        @{
+            if (action)
+            {
+                <style>
+                    #tb-action {
+                        display: initial;
+                    }
+                </style>
+
+            }
+        }
+    </div>
+</div>

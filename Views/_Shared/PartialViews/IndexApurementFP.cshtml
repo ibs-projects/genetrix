@@ -1,0 +1,103 @@
+﻿@using genetrix.Models
+@model IEnumerable<InfoDocAcueil3>
+@{
+    Layout = null;
+    var aapAcomp = Model.Where(d => d.EtapeDossier == 22 || d.EtapeDossier == 23 || d.EtapeDossier == -230 || d.EtapeDossier == -231 || d.EtapeDossier == -232 || d.EtapeDossier == -250).Count();
+    var aapAval = Model.Where(d => d.EtapeDossier == 230 || d.EtapeDossier == 231 || d.EtapeDossier == 250).Count();
+    var ech = Model.Where(d => d.EtapeDossier == 25 || d.EtapeDossier == 250).Count();
+    var aapBEAC = Model.Where(d => d.EtapeDossier == 232).Count();
+    var ap = Model.Where(d => d.EtapeDossier == 24).Count();
+}
+
+<a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=aapurer&type=dfx")">
+    <div class="card card-item" id="doss-recu">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1">
+                        <p class="mdi mdi-folder-clock-outline icon0"></p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@(aapAcomp + aapAval + ech)</span></h4>
+                    <p class="text-muted mb-0 fs-5">Dossiers à apurer</p>
+                </div>
+                <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                    <span title="Dossiers au niveau du client" class="racourci-dfx" style="margin-left:0px" href="aapurer-acc">
+                        <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-text me-1"></i>@(aapAcomp)</span> <span style="text-transform:uppercase">à</span> completer
+                    </span>
+                    <span title="Dossiers à votre niveau" class="racourci-dfx" href="aapurer-av">
+                        <span class="text-info me-1"><i style="font:bolder" class="mdi mdi-folder-text me-1"></i>@(aapAval)</span> <span style="text-transform:uppercase">à</span> valider
+                    </span>
+                    <span title="Dossiers échus" class="racourci-dfx" style="margin-left:0px" href="echu">
+                        <span class="text-danger me-1"><i style="font:bolder" class="mdi mdi-folder-alert me-1"></i>@(ech) </span><span style="text-transform:uppercase">é</span>chus
+                    </span>
+                </p>
+            </div>
+        </div>
+    </div>
+</a>
+<a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=aapurer-beac&type=dfx")">
+    <div class="card card-item" id="doss-recu">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1">
+                        <p class="mdi mdi-folder-sync-outline icon0"></p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@aapBEAC</span></h4>
+                    <p class="text-muted mb-0 fs-5">Dossiers à la BEAC</p>
+                </div>
+                @*<p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                        <span title="Dossiers en local" class="racourci-dfx" href="ech-av">
+                            <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-text me-1"></i>@(Model[4])</span> <span style="text-transform:uppercase">à</span> valider
+                        </span>
+                        <span title="Dossiers rejetés" class="racourci-dfx" href="echu-rej">
+                            <span class="text-danger me-1"><i style="font:bolder" class="mdi mdi-folder-alert me-1"></i>@(Model[5])</span> @("Rejetés")
+                        </span>
+                    </p>*@
+            </div>
+        </div>
+    </div>
+</a>
+
+<a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=apure&type=dfx")">
+    <div class="card card-item" id="doss-recu">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1">
+                        <p class="uil uil-folder-check icon0"></p>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@ap</span></h4>
+                    <p class="text-muted mb-0 fs-5">Dossiers apurés</p>
+                </div>
+                <p class="text-white p-1 bg-gradient-success" style="position:absolute; bottom: 0; width: 40%;font-size:small;height:30px;margin-left:-20px;">
+                    Apurés
+                </p>
+            </div>
+        </div>
+    </div>
+</a>
+
+@* Tableau recapitulatif des dossiers *@
+<div numero="11">
+    <div class="ck-toolbar__separator mb-2 p-1"><hr class="fs-2 m-0" style="height:15%!important" /></div>
+
+    <div class="alert alert-border alert-border-success alert-dismissible fade show mt-0" role="alert">
+        <i class="mdi mdi-folder-clock font-size-16 text-success me-2"></i>
+        Tableau recapitulatif des transferts
+        <div class="mt-3">
+            @Html.Partial("~/Views/_Shared/PartialViews/ListeFPBanque.cshtml", Model)
+        </div>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+        </button>
+
+    </div>
+
+</div>

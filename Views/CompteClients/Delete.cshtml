@@ -1,0 +1,85 @@
+﻿@model genetrix.Models.CompteClient
+@{
+    ViewBag.Title = "Utilisateur";
+    ViewBag.pTitle = "Suppression de l'Utilisateur ";
+    ViewBag.pageTitle = "Utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer cet utilisateur?</h3></div>
+    <div class="card-body">
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Prenom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Prenom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Sexe)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Sexe)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Tel2)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Tel2)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Tel1)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Tel1)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.UserName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.UserName)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

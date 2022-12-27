@@ -1,0 +1,453 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@using genetrix.Models;
+@{
+    ViewBag.nb_mails = Session["new_mail"];
+    ViewBag.nb_broui = Session["nb_broui"];
+    ViewBag.nb_asoum = Session["nb_asoum"];
+    ViewBag.nb_soum = Session["nb_soum"];
+    ViewBag.nb_encou = Session["nb_encou"];
+    ViewBag.nb_aapure = Session["nb_aapure"];
+    ViewBag.nb_echu = Session["nb_echu"];
+
+    int nbrAdress = 0;
+    try
+    {
+        nbrAdress = Convert.ToInt32(Session["nbr_add"].ToString());
+    }
+    catch (Exception)
+    { }
+}
+<style>
+        .separateur {
+            font: bolder !important;
+            font-size: 14px !important;
+            color: lightseagreen !important;
+            background-color: rgb(91, 115, 232, 0.12) !important
+        }
+
+        .blue-ligth:hover {
+            background-color: #1f359d
+        }
+
+        .blue-faible:hover {
+            background-color: rgb(255, 255, 255, 0.36);
+        }
+
+        .bg-gd {
+            /*        background-image: linear-gradient(to right, rgb(56 170 167), rgb(208, 185, 60, 1));
+    */ background-image: linear-gradient(to right, rgb(56 170 167), rgb(56 170 167));
+        }
+        /* a span,i{
+            color:#d3c9c9;
+        }*/
+</style>
+
+<div class="vertical-menu " style="background-color: #2689a6; height: 100% !important;">
+
+    <!-- LOGO -->
+    <div class="navbar-brand-box" style="background-color: #2689a6;">
+        <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="40">
+            </span>
+        </a>
+
+        <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="35">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="35">
+            </span>
+        </a>
+    </div>
+
+    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+        <i class="fa fa-fw fa-bars"></i>
+    </button>
+
+    <div data-simplebar class="sidebar-menu-scroll">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu" style="background-color: #2689a6">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu" style="">
+                <li class="separateur">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-select-group"></i>
+                        <span>Menu principal</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+
+                        <li>
+                            <a _action_requied_loader="0" id="tb-principal" href=@Url.Action("Index", "index")>
+                                <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                                <span _action_requied_loader="0">Tableau de bord</span>
+                            </a>
+                        </li>
+
+                        <li class="hidden1">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-email-open-multiple-outline"></i>
+                                <span>Messagérie</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a class="" style="display:none" id="mailing" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="mailing_lab"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a _action_requied_loader="0" id="_mail" href=@Url.Action("index", "mails")>
+                                        Mails
+                                        <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                        @{
+                                            if (ViewBag.nb_mails != null && (int)ViewBag.nb_mails > 0)
+                                            {
+                                                <span class="badge rounded-pill bg-secondary float-end ">@(ViewBag.nb_mails)</span>
+                                            }
+                                        }
+                                    </a>
+                                </li>
+                                <!--<li>
+                                    <a _action_requied_loader="0" href="#">
+                                        Chats
+                                        <i class="mdi mdi-circle-medium float-lg-start"></i>-->
+                                        @*<span class="badge rounded-pill bg-primary float-end">01</span>*@
+                                    <!--</a>
+                                </li>-->
+
+                            </ul>
+                        </li>
+                        <li class="hidden">
+                            <a href="#">
+                                Courriers
+                                <i class="mdi mdi-file-document-multiple-outline float-lg-start"></i>
+                                @*<span class="badge rounded-pill bg-primary float-end">0</span>*@
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@Url.Content("~/dossiers/create")" onclick="newDossier()" id="nouveau-transfert" class="waves-effect">
+                                <i class="uil-folder-plus"></i>
+                                <span>Nouveau transfert</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="separateur">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-file-document-multiple"></i>
+                        <span>Gestion des dossiers</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li>
+                            <a class="" style="display:none" id="rien" href=@Url.Content("#")>
+                                <i class="mdi mdi-hand-pointing-right"></i>
+                                <span id="rien_lab"></span>
+                            </a>
+                        </li>
+                        <li class="hidden">
+                            <a _action_requied_loader="0" class="" id="brouil" href=@Url.Content("~/Dossiers/Index?st=brouil")>
+                                Brouillon
+                                <i class="mdi mdi-format-strikethrough float-lg-start"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_broui ==0 || ViewBag.nb_broui ==null)?"hidden":"")">@ViewBag.nb_broui </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" id="assoum" href=@Url.Content("~/Dossiers/Index?st=assoum") class=" waves-effect">
+                                <i class="mdi mdi-folder-clock-outline"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_asoum ==0 || ViewBag.nb_asoum ==null)?"hidden":"")">@ViewBag.nb_asoum </span>
+                                <span>Dossiers à soumettre</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" class="" id="soumis" href=@Url.Content("~/Dossiers/Index?st=soumis")>
+                                Dossiers soumis
+                                <i class="mdi mdi-arrange-send-backward float-lg-start"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_soum ==0 || ViewBag.nb_soum ==null)?"hidden":"")">@ViewBag.nb_soum </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" id="encours" href=@Url.Content("~/Dossiers/Index?st=encours") class=" waves-effect">
+                                <i class="mdi mdi-progress-wrench"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_encou==0 || ViewBag.nb_encou==null)?"hidden":"")">@ViewBag.nb_encou</span>
+                                <span>Dossiers en cours</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" id="aapure" href=@Url.Content("~/Dossiers/Index?st=aapure") class=" waves-effect">
+                                <i class="mdi mdi-folder-move-outline"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_aapure ==0 || ViewBag.nb_aapure ==null)?"hidden":"")">@ViewBag.nb_aapure</span>
+                                <span>Dossiers à apurer</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" class="" id="echu" href=@Url.Content("~/Dossiers/Index?st=echu")>
+                                Dossiers échus
+                                <i class="mdi mdi-folder-alert text-danger float-lg-start"></i>
+                                <span class="badge rounded-pill bg-warning float-end @(((int)ViewBag.nb_echu ==0 || ViewBag.nb_echu ==null)?"hidden":"")">@ViewBag.nb_echu</span>
+                            </a>
+                        </li>
+                        @*<li>
+                                <a _action_requied_loader="0" class="" id="supp" href=@Url.Content("~/Dossiers/Index?st=supp")>
+                                    Dossiers supprimés
+                                    <i class="mdi mdi-delete-variant float-lg-start"></i>
+                                </a>
+                            </li>*@
+                        @*<li>
+                                <a _action_requied_loader="0" class="" id="archive" href=@Url.Content("~/Dossiers/Index?st=archive")>
+                                    Dossiers archivés
+                                    <i class="mdi mdi-archive-outline float-lg-start"></i>
+                                </a>
+                            </li>*@
+
+
+                        @*<li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="mdi mdi-folder-search"></i>
+                                    <span>Traitements dossiers</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li>
+                                        <a href=@Url.Content("~/Dossiers/Create")>
+                                            Nouveau dossier
+                                            <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Content("~/Dossiers/Index?mode_gp=gp")>
+                                            Dossiers groupés
+                                            <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href=@Url.Content("~/Dossiers/Index?mode_gp=uq")>
+                                            Dossiers uniques
+                                            <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href=@Url.Content("~/Dossiers/Index")>
+                                            Tous
+                                            <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>*@
+
+                        @*<li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="uil-invoice"></i>
+                                    <span>Factures</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href=@Url.Action("Index", "InvoicesList")>Liste de factures</a></li>
+                                    <li><a href=@Url.Action("Index", "InvoicesDetail")>Détails</a></li>
+                                </ul>
+                            </li>*@
+
+                    </ul>
+                </li>
+
+
+                <li class="separateur">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-gamepad-up"></i>
+                        <span>Gestion des tiers</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li>
+                            <a _action_requied_loader="0" href=@Url.Content("~/BanqueClients/Index")>
+                                <i class="mdi mdi-bank"></i>
+                                @*Banques*@
+                                Agences
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" href=@Url.Content("~/Fournisseurs/Index")>
+                                <i class="mdi mdi-account-tie"></i>
+                                Fournisseurs
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" href=@Url.Content("~/Importateurs/Index")>
+                                <i class="mdi mdi-contacts"></i>
+                                Importateurs
+                            </a>
+                        </li>
+                        <li>
+                            <a _action_requied_loader="0" href=@Url.Content("~/Contacts/Index")>
+                                <i class="mdi mdi-contacts"></i>
+                                Contacts
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                @{
+                    try
+                    {
+                        var admin = false;
+
+                        if (((bool)HttpContext.Current.Session["isAdmin"] == true))
+                        {
+                            admin = true;
+                            <li class="menu-title separateur">Configurations</li>
+                        }
+
+                        <li class="separateur">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="fas fa-handshake"></i>
+                                <span>@(admin? "Clients":"Entreprise")</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                @{
+                                    if (!admin)
+                                    {
+                                        var clientId = HttpContext.Current.Session["clientId"];
+                                        <li><a _action_requied_loader="0" href=@Url.Content("~/clients/details/"+clientId)>Configurations <i class="mdi mdi-face-agent float-lg-start"></i></a></li>
+                                    }
+                                }
+                                @{
+                                    if (admin)
+                                    {
+                                        <li><a _action_requied_loader="0" href=@Url.Action("Index", "Create")>Créer un client <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                        <li><a _action_requied_loader="0" href=@Url.Action("Index", "Clients")>Listes des clients <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                        <li><a _action_requied_loader="0" href=@Url.Action("Index", "UneImages")>Archives clienst<i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    }
+                                }
+                                <li><a _action_requied_loader="0" href=@Url.Action("Index", "compteclients")>Utilisateurs <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                            </ul>
+                        </li>
+                        if (admin)
+                        {
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bxs-bank"></i>
+                                    <span>Banques</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Create", "Banques")>Créer une Banque <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "Banques")>Listes de Banques <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="fas fa-folder"></i>
+                                    <span>Dossiers</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormElements")>Créer un client <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormValidation")>Listes des clients <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormAdvanced")>Historiques <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="dripicons-gear"></i>
+                                    <span>Parametres</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "DeviseMonetaires")>Devise <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "Clients")>Clients <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "StatutDossiers")>Statuts dossiers <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="uil-analytics"></i>
+                                    <span>Reporting & déclarations</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormElements")>Analyses <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormValidation")>Rapports <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a _action_requied_loader="0" href=@Url.Action("Index", "FormAdvanced")>Déclarations <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+
+                <li class="separateur" style="overflow-x:hidden1">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-archive"></i>
+                        Archivage
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        @*<li><a _action_requied_loader="0" href=@Url.Content("~/archivage/Index")>Vue moyenne <i class="mdi mdi-view-carousel-outline float-lg-start"></i></a></li>*@
+                        <li><a _action_requied_loader="0" href=@Url.Content("~/archivage2/Index?_id=archives")>Dossiers archivés<i class="uil-minus-path float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+                @*<li class="separateur" style="position: absolute; bottom: 0; width: 100%;">
+
+                </li>*@
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<a href="javascript: void(0);" id="affichie-lievechat" title="Live chat" class="btn btn-rounded bg-success text-white"  style="position: fixed; bottom: 0;right:0;margin-bottom:5px;margin-right:5px;z-index:999">
+    <i class="mdi mdi-wechat"></i>
+    <span id="live-text" style="display:none"> Live chat</span>
+</a>
+<a id="new-dossier" class="hidden" _action_requied_loader="0" href=@Url.Action("Create", "Dossiers")></a>
+<!-- Left Sidebar End -->
+<script>
+     function newDossier() {
+         var nbrAdress = Number('@nbrAdress');
+        if (nbrAdress > 0) {
+            document.getElementById("new-dossier").click();
+        } else {
+            alert("Aucune adresse mail est associée à votre compte. Veuillez ajouter au-moins une adresse dans les configurations de l'entreprise...");
+            return false;
+        }
+    }
+</script>
+<script>
+    //
+    var nv = "@(ViewBag.navigation)";
+    if (nv == "rien") {
+        document.getElementById("rien_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    } else if (nv =="mailing") {
+        document.getElementById("mailing_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    }
+    document.getElementById("" + nv).classList.add("active");
+    document.getElementById("" + nv).parentElement.classList.add("mm-active");
+</script>
+<script>
+    var uls = document.getElementsByTagName("li");
+    var st = "";
+    for (var i = 0; i < uls.length; i++) {
+        try {
+            st = uls[i].classList + "";
+            if (st.trim() == "") {
+                uls[i].classList.add("blue-ligth");
+            } else {
+                //uls[i].classList.add("blue-faible1");
+            }
+        } catch (e) {
+            alert("erreur");
+        }
+    }
+</script>
+<script>
+    document.getElementById('affichie-lievechat').addEventListener('mouseover', function () {
+        $('#live-text').show(100);
+    });
+    document.getElementById('affichie-lievechat').addEventListener('mouseleave', function () {
+        $('#live-text').hide(100);
+    });
+</script>

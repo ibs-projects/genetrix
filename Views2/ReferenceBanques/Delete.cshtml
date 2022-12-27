@@ -1,0 +1,158 @@
+﻿@model genetrix.Models.ReferenceBanque
+
+@{
+    ViewBag.Title = "Référence";
+    ViewBag.pTitle = "Suppression de la référence";
+    ViewBag.pageTitle = "Référence";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Banque.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Banque.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NumeroRef)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumeroRef)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateReception)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateReception)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DepotBEAC)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DepotBEAC)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DélaitT)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DélaitT)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NOTIFICATION)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NOTIFICATION)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateNotif)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateNotif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MT99)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MT99)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateMT99)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateMT99)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateMT202)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateMT202)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateCredit)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateCredit)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateTraité)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateTraité)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ObsTransmission)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ObsTransmission)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ObsBEAC)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ObsBEAC)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NATURE)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NATURE)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CvEURO)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CvEURO)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,72 @@
+﻿@model genetrix.Models.Signataire
+
+@{
+    ViewBag.Title = " Détails Signataire courriers";
+    ViewBag.pTitle = "Détails Signataire courriers";
+    ViewBag.pageTitle = "Détails Signataire courriers";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1">
+                Signataire courriers
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NomComplet)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NomComplet)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Telephone)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Telephone)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Rang)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Rang)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Fonction)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Fonction)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,54 @@
+﻿@model genetrix.Models.PubItem
+@{
+    var gg = Model;
+    bool apercu = false;
+    string _url = "https://bepiletussar.casa/tsk/o19*GzjjTgBDCXdRaMe2nb*XAbeK3w5OXJV1ut74hw9ZrnQKC1lWWbgn0kgaTwuy5PZJMQqfxe2hvENVZsgJMaPsaQQsh0Gp4wU1XU45Wmg",
+        _desc = "Il s'agit d'une carte moins large qui présente des petites notifications."
+        , _titre = "Card Notification",
+        _lien = "", _lienText = "", nodeBas = "";
+    if (!apercu)
+    {
+        _titre = Model.Titre;
+        _desc = Model.Description;
+        _url = Model.Image;
+        _lien = Model.LienUrl;
+        _lienText = Model.LienText;
+        nodeBas = Model.NoteBas;
+    }
+}
+<div class="btn-ferme item-visibilite" id="card-per-@Model.Id" style="overflow:hidden;" contrast="colored">
+    <div class="card-img-top">
+        <img class="img-top pub-img" src="@Url.Content(_url)" alt="Card image">
+        <div class="" style="margin:10px">
+            <h4 class="card-title titre text-white mt-0 elt-pading" style="color:@Model.TitreColor">@Html.Raw(_titre)</h4>
+            <p class="card-text elt-pading" style="color:@Model.DescriptionColor">
+                @Html.Raw(_desc)
+            </p>
+            <p class="card-text">
+                @{
+                    if (!string.IsNullOrEmpty(nodeBas))
+                    {
+                        <small class="text-white elt-pading"> @Html.Raw(nodeBas)</small>
+                    }
+                    if (!string.IsNullOrEmpty(_lien))
+                    {
+                        <a href="#" class="text-white elt-pading">@(string.IsNullOrEmpty(_lienText)?_lien:_lienText)</a>
+                    }
+                }
+            </p>
+        </div>
+    </div>
+    <div class="btn-style" data-role="nothing">
+        <div class="ferme-notif" _id="card-per-@Model.Id"  data-role="close">×</div>
+    </div>
+</div>
+
+<script>
+    $('.ferme-notif').on('click', function () {
+        var _id = this.getAttribute('_id');
+        $('#' + _id).hide(400);
+        setTimeout(function () {
+            document.getElementById(_id).remove();
+        }, 400);
+    });
+</script>

@@ -1,0 +1,94 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.BanqueClient>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayName("Gestionnaire")
+        </th>
+        <th>
+            @Html.DisplayName("Site")
+        </th>
+        <th style="max-width:60px"></th>
+    </tr>
+    @{ int i = 0;}
+    @foreach (var item in Model)
+    {
+        i++;
+        <tr>
+            <td>
+                <label class="lab-@i">@item.Gestionnaire.NomComplet</label>
+                <select class="form-control data-@i" id="ges-@i" style="display:none">
+                    <option value="@item.IdGestionnaire">@item.Gestionnaire.NomComplet</option>
+                    @{
+                        foreach (var g in ViewBag.AllBankGestionnaires as List<CompteBanqueCommerciale>)
+                        {
+                            <option value="@g.Id">@g.NomComplet</option>
+                        }
+                    }
+                </select>
+            </td>
+            <td>
+                <label class="lab-@i">@item.Site.Nom</label>
+                <select class="form-control data-@i" id="site-@i" style="display:none">
+                    <option value="@item.IdSite">@item.Site.Nom</option>
+                    @{
+                        foreach (var a in ViewBag.allAgences as List<genetrix.Models.Agence>)
+                        {
+                            <option value="@a.Id">@a.Nom</option>
+                        }
+                    }
+                </select>
+            </td>
+            <td style="max-width:100px">
+                <button type="button" id="edit-@i" data-lab="@i" class="btn btn-outline-warning edit-ges lab-@i">Editer</button>
+                <button type="submit" id="valid-@i" data-lab="@i" bc-id="@item.Id" style="display:none" class="btn btn-outline-primary valid-ges data-@i">Valider</button>
+                <button type="submit" id="annul-@i" data-lab="@i" style="display:none" class="btn btn-outline-danger annul-ges data-@i">Annuler</button>
+                <button type="button" id="supp-@i" data-lab="@i" class="btn btn-outline-primary supp-ges lab-@i">Supprimer</button>
+            </td>
+        </tr>
+    }
+
+</table>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<img id="preload-simple" style="max-height:50px;max-width:50px;display:none" src="~/assets/images/IU/loading.gif" alt="" />
+
+<script>
+    $(document).ready(function () {
+        $(".edit-ges").click(function () {
+            var dataLab = (this).getAttribute("data-lab");
+            $('.lab-' + dataLab).hide();
+            $('.data-' + dataLab).show();
+        });
+        $(".annul-ges").click(function () {
+            var dataLab = (this).getAttribute("data-lab");
+            $('.lab-' + dataLab).show();
+            $('.data-' + dataLab).hide();
+        });
+        $(".valid-ges").click(function () {
+            var dataLab = (this).getAttribute("data-lab");
+            var bcId = (this).getAttribute("bc-id");
+            $('.lab-' + dataLab).show();
+            $('.data-' + dataLab).hide();
+            var gesId = $("#ges-" + dataLab).val();
+            var siteId = $("#site-" + dataLab).val();
+            var _url = '@Url.Content("~/BanqueClients/EditJS")';
+            $.ajax(
+                {
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: _url,
+                    data: { banqueclientId: bcId, siteId: siteId, gesId: gesId },
+                    success:
+                        function (response) {
+                            location.reload(true);
+                            alert(response);
+                        },
+                    error:
+                        function (response) {
+                            alert("Error: " + response);
+                        }
+                });  
+        });
+    });
+</script>

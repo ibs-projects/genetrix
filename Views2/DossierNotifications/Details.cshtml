@@ -1,0 +1,66 @@
+﻿@model genetrix.Models.DossierNotification
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>DossierNotification</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Dossier.Intitule)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Dossier.Intitule)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Desactive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Desactive)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Lue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Lue)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Titre)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Titre)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Detail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Detail)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,38 @@
+﻿@model genetrix.Models.ModifsTransfert
+
+@{
+    ViewBag.Title = " Suppression du transfert";
+    ViewBag.pTitle = "Suppression du transfert";
+    ViewBag.pageTitle = "Suppression du transfert";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header Compte XAF"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer cet utilisateur?</h3></div>
+    <div class="card-body">
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Intitule)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Intitule)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

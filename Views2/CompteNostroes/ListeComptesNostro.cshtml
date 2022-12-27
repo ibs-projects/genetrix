@@ -1,0 +1,47 @@
+﻿@model IEnumerable<genetrix.Models.CompteNostro>
+
+<div class="table-responsive">
+    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <tbody>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Correspondant.NomBanque)
+                </th>
+                <th>
+                    Devise
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Libellé)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Numero)
+                </th>
+                <th></th>
+            </tr>
+        </tbody>
+
+        <tfoot>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Correspondant.NomBanque)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Devise.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Libellé)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Numero)
+                    </td>
+                    <td>
+                        <a href="@Url.Content("~/CompteNostroes/edit?id="+ item.Id )">Editer</a> |
+                        <a href="@Url.Content("~/CompteNostroes/delete?id="+ item.Id )">Supprimer</a> 
+                    </td>
+                </tr>
+            }
+        </tfoot>
+    </table>
+</div>

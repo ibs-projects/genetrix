@@ -1,0 +1,57 @@
+﻿@model IEnumerable<genetrix.Models.TypeStructure>
+
+@{
+    ViewBag.Title = "Structures";
+    ViewBag.pTitle = "Liste de structures";
+    ViewBag.pageTitle = "Structures";
+    ViewBag.pageImage = "~/assets/images/IU/fournisseur.png";
+
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<p>
+    <a class="" href="@Url.Action("Create","typestructures")">
+        <i class="dripicons-plus me-2"></i>
+        Ajouter
+    </a>
+</p>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">Types de structures</div>
+            <div class="card-body">
+                <p class="text-danger">@ViewBag.msg</p>
+                <h4 class="card-title"></h4>
+
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Intitule)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Intitule)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

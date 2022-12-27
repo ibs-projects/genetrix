@@ -1,0 +1,55 @@
+﻿<style>
+
+    #preloader {
+        background-color:rgb(255, 255, 255, 0.42)!important;
+    }
+    .vertical-center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left:47%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+</style>
+<style>
+    .lds-ring {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+        .lds-ring div {
+            box-sizing: border-box;
+            display: block;
+            position: absolute;
+            width: 44px;
+            height: 44px;
+            margin: 5px;
+            border: 6px solid #2689a6;
+            border-radius: 50%;
+            animation: lds-ring 0.7s linear infinite;
+            border-color: #2689a6 transparent transparent transparent;
+        }
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+</style>
+<div id="preloader">
+    <div class="lds-ring vertical-center"><div></div><div></div><div></div><div></div></div>
+</div>

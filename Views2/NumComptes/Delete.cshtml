@@ -1,0 +1,53 @@
+﻿@model genetrix.Models.NumCompte
+
+@{
+    ViewBag.Title = "Compte";
+    ViewBag.pTitle = "Suppression du compte";
+    ViewBag.pageTitle = "Compte";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Numero)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Numero)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Cle)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Cle)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(model=>model.Id)
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-danger" /> |
+            <a href="@Url.Content("~/clients/details?id=1")">Retour</a>
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

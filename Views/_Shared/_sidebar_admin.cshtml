@@ -1,0 +1,121 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@using genetrix.Models;
+@{ 
+    try
+    {
+        ViewBag.nb_mails = Session["new_mail"];
+    }
+    catch 
+    {}
+}
+<style>
+    .separateur {
+        font: bolder !important;
+        font-size: 14px !important;
+        color: white !important;
+        background-color: rgb(91, 115, 232, 0.12)!important
+    }
+</style>
+
+<div class="vertical-menu" style="height:100%!important">
+
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <a href=@Url.Action("IndexAdmin", "index") _action_requied_loader="0" class="logo logo-dark">
+            <span class="logo-sm">
+                @*<img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">*@
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                @*<img src="~/assets/images/logo/logo-dark1.png" alt="" height="40">*@
+                <img src="~/assets/images/logo/logo-dark1.png" alt="" height="40">
+            </span>
+        </a>
+
+        <a href=@Url.Action("IndexAdmin", "index") _action_requied_loader="0" class="logo logo-light">
+            <span class="logo-sm">
+                @*<img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">*@
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="35">
+            </span>
+            <span class="logo-lg">
+                @*<img src="~/assets/images/logo/logo-light1.png" alt="" height="30">*@
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="35">
+            </span>
+        </a>
+    </div>
+
+    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+        <i class="fa fa-fw fa-bars"></i>
+    </button>
+
+    <div data-simplebar class="sidebar-menu-scroll">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                @{
+                    try
+                    {
+                       
+
+                        if (((bool)HttpContext.Current.Session["isAdmin"]==true))
+                        {
+                            <li class="menu-title separateur">Configurations</li>
+
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bxs-bank"></i>
+                                    <span>Banques</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href=@Url.Action("register", "auth")>Créer une Banque <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a href=@Url.Action("Index", "Banques")>Listes de Banques <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+                           
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="dripicons-gear"></i>
+                                    <span>Parametres</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href=@Url.Action("Index", "DeviseMonetaires")>Devise <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a href=@Url.Action("Index", "Clients")>Clients <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a href=@Url.Action("Index", "StatutDossiers")>Statuts dossiers <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+                           
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="uil-analytics"></i>
+                                    <span>Reporting & déclarations</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="#">Analyses <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a href="#">Rapports <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                    <li><a href="#">Déclarations <i class="mdi mdi-circle-medium float-lg-start"></i></a></li>
+                                </ul>
+                            </li>
+
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->
+<script>
+    var nv = "@(ViewBag.navigation)";
+    if (nv == "rien") {
+        document.getElementById("rien_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    }
+    document.getElementById("" + nv).classList.add("active");
+    document.getElementById("" + nv).parentElement.classList.add("mm-active");
+</script>

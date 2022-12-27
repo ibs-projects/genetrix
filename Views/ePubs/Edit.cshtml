@@ -1,0 +1,246 @@
+﻿@model genetrix.Models.ePub
+@using genetrix.Models;
+@{
+    ViewBag.Title = "Configuration ePub";
+    ViewBag.pTitle = "Configuration ePub";
+    ViewBag.pageTitle = "Configuration ePub";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    fieldset{
+        border:1px solid #ebe9e9
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card" style="">
+            <div class="card-header card-header1">Configuration ePub</div>
+            <div class="card-body">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            <h4>ePub</h4>
+                            <hr />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            @Html.HiddenFor(model => model.Id)
+
+                            <div class="form-group mb-3">
+                                @Html.LabelFor(model => model.Etat, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-10">
+                                    @Html.EditorFor(model => model.Etat, new { htmlAttributes = new { @class = "form-control",min="0",max="1" } })
+                                    @Html.ValidationMessageFor(model => model.Etat, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group mb-3 col-6">
+                                    <fieldset>
+                                        <legend>Carte gauche(CG)</legend>
+                                        <div class="col-md-12">
+                                            <div class="checkbox">
+                                                @Html.LabelFor(model => model.CardLeft, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CardLeft)
+                                                @Html.ValidationMessageFor(model => model.CardLeft, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.PostionCarteLeftV, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.PostionCarteLeftV, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PostionCarteLeftV, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.PostionCarteLeftH, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.PostionCarteLeftH, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PostionCarteLeftH, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.NbrMaxAffCG, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.NbrMaxAffCG, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.NbrMaxAffCG, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.NbrPosteAffCG, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.NbrPosteAffCG, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.NbrPosteAffCG, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.WidhtCG, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.WidhtCG, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.WidhtCG, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.HeigthCG, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.HeigthCG, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.HeigthCG, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.DelaitAttCG, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.DelaitAttCG, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.DelaitAttCG, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <div class="form-group mb-3 col-6">
+                                    <fieldset>
+                                        <legend>Carte droite(CD)</legend>
+                                        <div class="col-md-12">
+                                            <div class="checkbox">
+                                                @Html.LabelFor(model => model.CardRigth, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CardRigth)
+                                                @Html.ValidationMessageFor(model => model.CardRigth, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.PostionCarteRigthtV, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.PostionCarteRigthtV, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PostionCarteRigthtV, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.PostionCarteRigthtH, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.PostionCarteRigthtH, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.PostionCarteRigthtH, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.NbrMaxAffCD, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.NbrMaxAffCD, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.NbrMaxAffCD, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div> 
+                                        <div class="">
+                                            @Html.LabelFor(model => model.NbrPosteAffCD, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.NbrPosteAffCD, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.NbrPosteAffCD, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.WidhtCD, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.WidhtCD, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.WidhtCD, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.HeigthCD, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.HeigthCD, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.HeigthCD, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="">
+                                            @Html.LabelFor(model => model.DelaitAttCD, htmlAttributes: new { @class = "control-label" })
+                                            <div class="col-md-10">
+                                                @Html.EditorFor(model => model.DelaitAttCD, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.DelaitAttCD, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group mb-3 col-6">
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.LabelFor(model => model.CardTop, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CardTop)
+                                            @Html.ValidationMessageFor(model => model.CardTop, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mb-3 col-6">
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.LabelFor(model => model.CardBottom, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CardBottom)
+                                            @Html.ValidationMessageFor(model => model.CardBottom, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="form-group mb-3">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        @{ 
+            var publics = new List<PubItem>();
+            try
+            {
+                publics = Model.PubItems.Where(p=>p.Acive).ToList();
+            }
+            catch (Exception)
+            {}
+        }
+        @Html.Partial("~/Views/ePubs/Publications.cshtml", publics)
+    </div>
+    <!-- end col -->
+</div>
+
+<a href="#" id="show-modal" data-bs-toggle="modal" data-bs-target="#modal-config-pub"></a>
+@Html.Partial("~/Views/ePubs/Modal_Config_pub.cshtml")
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<script>
+    $(document).ready(function () {
+        $('.configurer').click(function () {
+            $('#IdePub').val(this.getAttribute('_id'));
+            $('#dateDebut').val(this.getAttribute('_dateDebut'));
+            $('#dateFin').val(this.getAttribute('_dateFin'));
+            $('#heureDebut').val(this.getAttribute('_heureDebut'));
+            $('#heureFin').val(this.getAttribute('_heureFin'));
+            $('#chaqueHeure').val(this.getAttribute('_chaqueHeure'));
+            $('#dureeApp').val(this.getAttribute('_dureeApp'));
+            $('#dureeAtt').val(this.getAttribute('_dureeAtt'));
+            $('#acive').val(this.getAttribute('_active'));
+            document.getElementById('show-modal').click();
+        });
+    });
+</script>
+<script>
+    try {
+        $(function () {
+            var dtToday = new Date();
+            var month = dtToday.getMonth() + 1;
+            var day = dtToday.getDate();
+            var year = dtToday.getFullYear();
+            if (month < 10)
+                month = '0' + month.toString();
+            if (day < 10)
+                day = '0' + day.toString();
+
+            var maxDate = year + '-' + month + '-' + day;
+            $('.date').attr('min', maxDate);
+        });
+
+    } catch (e) {
+
+    }
+</script>

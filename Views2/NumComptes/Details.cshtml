@@ -1,0 +1,50 @@
+﻿@model genetrix.Models.NumCompte
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>NumCompte</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.BanqueClient.IdGestionnaire)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BanqueClient.IdGestionnaire)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Numero)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Numero)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.RIB)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RIB)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

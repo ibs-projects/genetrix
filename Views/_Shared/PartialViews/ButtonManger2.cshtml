@@ -1,0 +1,208 @@
+﻿@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+
+<script>
+    $(document).ready(function () {
+        var pagination = $(".actions")[0].children[0].children;
+
+
+        try {
+            document.getElementById("btn-terminer").addEventListener("click", function () {
+                document.getElementById("EtapesDosier").value = 0;
+            });
+        } catch (e) {
+
+        }
+        document.addEventListener(`click`, e => {
+            const origin = e.target.closest("a", "input", "buttom");
+            if (origin) {
+                if (origin.textContent == "Suivant") {
+                    var dones = document.getElementsByClassName("done");
+                    var DeviseMonetaireId = document.getElementById("DeviseMonetaireId").value;
+                    var BanqueId = document.getElementById("BanqueId").value;
+                    var reste = 0;
+                    var Montant = document.getElementById("Montant").value;
+                    var FournisseurId = document.getElementById("FournisseurId").value;
+                    var instruction = document.getElementById("img-1").getAttribute("src");
+                    var instructionpdf = document.getElementById("iframe-img-1").getAttribute("src");
+                    var dateSignInst = $("#DateSignInst").val();
+                    //Fichier de l'instruction obligation
+                    if ("@ViewBag.afficheInstruct"== "False") {
+                        document.getElementById('vertical-example-t-0').click();
+                        alert("Veuillez insérer l'instruction !");
+                        pagination[0].click();
+                    }
+                    try {
+                        //Date instruction inferieure à 15 jour
+                        var apurement = false;
+                        try {
+                            apurement = '@ViewBag.apurement' == 'True';
+                            document.getElementById('legende-inst').classList.add('bg-danger');
+                            document.getElementById('vertical-example-t-0').click();
+                            document.getElementById('detail-transfert').click();
+                        } catch (e) {
+
+                        }
+                        if (!apurement && ((new Date() - new Date(dateSignInst)) / (1000 * 3600 * 24) >= 15)) {
+                            alert("Veillez noter que l'instruction doit dater de moins de 15 jours. Ainsi nous vous invitons à insérer une version actualisée de celle-ci.")
+                            document.getElementById('DateSignInst').style='border:1px solid red';
+                            document.getElementById('vertical-example-t-0').click();
+                            document.getElementById('detail-transfert').click();
+                            return;
+                        }
+                    } catch (e) {
+
+                    }
+                    if (dones.length>6) {
+                        $(".soumValid").prop('disabled', false);
+                    }
+                    $(".img-input").prop('disabled', false);
+                    $(".fact-btn").prop('disabled', false);
+                    if (DeviseMonetaireId==0 || !BanqueId || FournisseurId==0 || Montant == 0 || Montant == '0,000' || !Montant || (instruction == "#" && (instructionpdf == "" || instructionpdf == "#")) ) {
+                        document.getElementById('vertical-example-t-0').click();
+                        $(".scan-bt").prop('disabled', true);
+                        $(".img-input").prop('disabled', true);
+                        $(".fact-btn").prop('disabled', true);
+                        $(".input-instruct").prop('disabled', false);
+                        try {
+                            $('.surbrouillon').css('border-color', '#cbc8c8');
+                            if (FournisseurId == 0) {
+                                alert("Le fournisseur est obligatoire !");
+                                document.getElementById("FournisseurId").focus();
+                                document.getElementById("FournisseurId").classList.add('surbrouillon');
+                                document.getElementById("FournisseurId").style = 'border:1px solid red';
+                                document.getElementById('detail-beneficiaire').click();
+                            }
+                            else if (Montant == 0 || Montant == '0.00'|| Montant == '0,00' || !Montant) {
+                                alert("Le montant est obligatoire !");
+                                document.getElementById("Montant").focus();
+                                document.getElementById("Montant").classList.add('surbrouillon');
+                                document.getElementById("Montant").style = 'border:1px solid red';
+                                document.getElementById('detail-transfert').click();
+                            }
+                            else if (DeviseMonetaireId == 0) {
+                                //alert("Veuillez renseigner toutes les informations de l'instruction pour continuer l'opération !");
+                                alert("La devise est obligatoire !");
+                                document.getElementById("DeviseMonetaireId").focus();
+                                document.getElementById("DeviseMonetaireId").classList.add('surbrouillon');
+                                document.getElementById("DeviseMonetaireId").style = 'border:1px solid red';
+                                document.getElementById('detail-transfert').click();
+                            } else if (instruction == "#" && dones.length >= 2 && (instructionpdf == "" || instructionpdf == "#")) {
+                                alert("Veuillez ajouter le fichier de l'instruction !");
+                                document.getElementById("instruction-parent").classList.add('surbrouillon');
+                                document.getElementById("instruction-parent").style='border:1px solid red';
+                            } else {
+
+                            }
+                            if (instruction == "#" && dones.length >= 1 && (instructionpdf == "" || instructionpdf == "#")) {
+                                document.getElementById('dossier-form-create').submit();
+                                document.getElementById('link-preload').submit();
+                            } else {
+                                return;
+                            }
+                        } catch (e) {
+
+                        }
+                    } else {
+                        if ($("#id_dossier").val() == 0) {
+                            document.getElementById('link-preload').submit();
+                            $("#dossier-form-create").submit();
+                        }
+                        else if (dones.length >= 2) {
+                            var nb_factures = document.getElementById("nb_factures").value;
+                            var lettre_url = document.getElementById("img-lettre").getAttribute('src');
+                            var lettre_url2 = document.getElementById("iframe-img-lettre").getAttribute('src');
+
+                            var quit_url = document.getElementById("img-quit").getAttribute('src');
+                            var quit_url2 = document.getElementById("iframe-img-quit").getAttribute('src');
+
+                            var nb_docsTransp = document.getElementById("nbrDocTransp").value;
+
+                            //Restriction DIB- Declaration d'importation
+                            var quit_dp = document.getElementById("img-dp").getAttribute('src');
+                            var quit_dp2 = document.getElementById("iframe-img-dp").getAttribute('src');
+                            if (dones.length == 6 && (!quit_dp && !quit_dp2 || quit_dp == "#" && quit_dp2 == "")) {
+                                document.getElementById('vertical-example-t-5').click();
+                                alert("La déclaration d'importation est obligatoire pour continuer l'opération !");
+                                pagination[0].click();
+                                //return;
+                            }
+
+                            //Restriction DIB- Domiciliation d'importation
+                            quit_dp = document.getElementById("img-doImp").getAttribute('src');
+                            quit_dp2 = document.getElementById("iframe-img-doImp").getAttribute('src');
+                            if (dones.length == 7 && (!quit_dp && !quit_dp2 || quit_dp == "#" && quit_dp2 == "")) {
+                                document.getElementById('vertical-example-t-6').click();
+                                alert("La domiciliation d'importation est obligatoire pour continuer l'opération !");
+                                pagination[0].click();
+                                //return;
+                            }
+
+                            //verifie les factures
+                            if (nb_factures == 0) {
+                                document.getElementById('vertical-example-t-1').click();
+                                alert("Veuillez ajouter les factures pour continuer l'opération !");
+                                $(".scan-bt").prop('disabled', true);
+                                $(".img-input").prop('disabled', true);
+                                return;
+                            }
+                            //Bouton Marchandise est déjà arrivé
+                            else if (!document.getElementById("customSwitchsizelg").checked && (!lettre_url && !lettre_url2 || lettre_url == "#" && lettre_url2 == "")) {
+                                //pagination[0].click();
+                                document.getElementById('vertical-example-t-2').click();
+                                alert("La lettre d'engagement est obligatoire pour continuer l'opération !");
+                                pagination[0].click();
+                                //vertical-example-t-2
+                                $(".scan-bt").prop('disabled', true);
+                                $(".img-input").prop('disabled', true);
+                                $("#upload-img-4").prop('disabled', false);
+                                return;
+                            }
+                            else {
+                                alert("fff:" + dones.length)
+                                if ( document.getElementById("customSwitchsizelg").checked) {
+                                    if (dones.length ==4  &&(!quit_url && !quit_url2 || quit_url == "#" && quit_url2 == "")) {
+                                        document.getElementById('vertical-example-t-3').click();
+                                        alert("La quittance de paiement est obligatoire pour continuer l'opération !");
+                                        pagination[0].click();
+                                        return;
+                                    }
+                                    else if (dones.length == 5 && nb_docsTransp == 0) {
+                                        document.getElementById('vertical-example-t-4').click();
+                                        alert("Document(s) de transport obligatoire(s) pour continuer l'opération !");
+                                        pagination[0].click();
+                                        return;
+                                    }
+                                }
+
+                                $(".scan-bt").prop('disabled', false);
+                                $(".img-input").prop('disabled', false);
+                                if (dones.length>6) {
+                                    document.getElementById("btn-terminer").disabled = false;
+                                    document.getElementById("btn-terminer").classList.remove("btn-outline-info");
+                                    document.getElementById("btn-terminer").classList.add("btn-info");
+                                    document.getElementById("btn-terminer").setAttribute("title", "Vous pouvez terminer l'enregistrement et envoyer le dossier à la banque");
+                                }
+                                alert("ddd:" + dones.length)
+                            }
+                        }
+                    }
+                    //si modification recharge reflesh
+                    try {
+                        if (document.getElementById("refleshAfertModifie").textContent) {
+                            try {
+                                document.getElementById("sauv_auto").style.display = "initial";
+                            } catch (e) {
+
+                            }
+                            setMontant();
+                            document.getElementById('form-edit').submit();
+                            document.getElementById('link-preload').click();
+                        }
+                    } catch (e) {
+
+                    }
+                }
+            }
+        });
+    });
+</script>

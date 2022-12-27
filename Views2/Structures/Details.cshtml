@@ -1,0 +1,120 @@
+﻿@model genetrix.Models.Structure
+
+@{
+    ViewBag.Title = "Structure";
+    ViewBag.pTitle = "Details structure";
+    ViewBag.pageTitle = "Structure";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1 text-white">Creation</div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Responsable.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Responsable.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.TypeStructure.Intitule)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.TypeStructure.Intitule)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Adresse)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Adresse)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Ville)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Ville)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Pays)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Pays)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Telephone)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Telephone)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Telephone2)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Telephone2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NiveauDossier)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NiveauDossier)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EstAgence)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EstAgence)
+                    </dd>
+
+                </dl>
+            </div>
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>

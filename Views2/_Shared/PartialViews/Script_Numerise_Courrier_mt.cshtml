@@ -1,0 +1,183 @@
+﻿<script src="~/assets/cfunctions.js"></script>
+<script>
+            try {
+                try {
+                    //modal ajout courrier;
+                    document.getElementById('upload-courrier').onchange = evt => {
+                        const [file] = evt.target.files;
+                        if (file) {
+                            if (file.type == "application/pdf") {
+                                document.getElementById('img-courrier').style.display = 'none';
+                                var frame = document.getElementById('iframe-img-courrier');
+                                frame.setAttribute('src', URL.createObjectURL(file));
+                                frame.style.display = 'initial';
+                                frame.classList.remove("hidden");
+                                var pw = Number(frame.parentElement.offsetWidth);
+                                frame.style = 'height:179mm;width:' + pw + 'px';
+                            } else {
+                                document.getElementById('iframe-img-courrier').style.display = 'none';
+                                document.getElementById('img-courrier').style.display = 'initial';
+                                $('#img-courrier').attr('src', URL.createObjectURL(file));
+                            }
+                            //courrier-file-size
+                            $('#courrier-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                        }
+                    }
+                } catch (e) {
+
+                }
+                try {
+                    //modal ajout recap;
+                    document.getElementById('upload-recap').onchange = evt => {
+                        const [file] = evt.target.files;
+                        if (file) {
+                            if (file.type == "application/pdf") {
+                                document.getElementById('img-recap').style.display = 'none';
+                                var frame = document.getElementById('iframe-img-recap');
+                                frame.setAttribute('src', URL.createObjectURL(file));
+                                frame.style.display = 'initial';
+                                frame.classList.remove("hidden");
+                                var pw = Number(frame.parentElement.offsetWidth);
+                                frame.style = 'height:179mm;width:' + pw + 'px';
+                            } else {
+                                document.getElementById('iframe-img-recap').style.display = 'none';
+                                document.getElementById('img-recap').style.display = 'initial';
+                                $('#img-recap').attr('src', URL.createObjectURL(file));
+                            }
+                            //courrier-file-size
+                            $('#courrier-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                            $('#recap-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                        }
+                    }
+                } catch (e) {
+
+                }
+
+                try {
+                    document.getElementById('btn-valider-courrier').addEventListener('click', function () {
+                        if (confirm('Voulez-vous enregistrer le courrier?')) {
+                            document.getElementById('show-loader').click();
+                            var file = document.getElementById('upload-courrier').cloneNode();
+                            document.getElementById('form-content-courrier').appendChild(file);
+                            try {
+                                var fileRecap = document.getElementById('upload-recap').cloneNode();
+                                document.getElementById('form-content-courrier').appendChild(fileRecap);
+                            } catch (e) {
+
+                            }
+                            document.getElementById('form-courrier').submit();
+                        }
+                    });
+                } catch (e) {
+
+                }
+            } catch (e) {
+
+            }
+</script>
+<script>
+            try {
+                //modal ajout MT;
+                document.getElementById('upload-MT').onchange = evt => {
+                    const [file] = evt.target.files;
+                    if (file) {
+                        if (file.type == "application/pdf") {
+                            document.getElementById('img-mt').style.display = 'none';
+                            var frame = document.getElementById('iframe-img-mt');
+                            frame.setAttribute('src', URL.createObjectURL(file));
+                            frame.style.display = 'initial';
+                            frame.classList.remove("hidden");
+                            var pw = Number(frame.parentElement.offsetWidth);
+                            frame.style = 'height:179mm;width:' + pw + 'px';
+                        } else {
+                            document.getElementById('iframe-img-mt').style.display = 'none';
+                            document.getElementById('img-mt').style.display = 'initial';
+                            $('#img-mt').attr('src', URL.createObjectURL(file));
+                        }
+                        $('#mt-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                    }
+                }
+                document.getElementById('btn-valider-mt').addEventListener('click', function () {
+                    if (confirm('Voulez-vous enregistrer le MT 298?')) {
+                        document.getElementById('show-loader').click();
+                        document.getElementById('val-MT').value='1';
+                        var file = document.getElementById('upload-MT').cloneNode();
+                        document.getElementById('form-content-courrier').appendChild(file);
+                        document.getElementById('form-courrier').submit();
+                    }
+                });
+            } catch (e) {
+
+            }
+</script>
+<script>
+    try {
+                //modal ajout Mise en demeure;
+                document.getElementById('upload-endemeur1').onchange = evt => {
+                    const [file] = evt.target.files;
+                    if (file) {
+                        if (file.type == "application/pdf") {
+                            document.getElementById('img-MED').style.display = 'none';
+                            var frame = document.getElementById('iframe-img-MED');
+                            frame.setAttribute('src', URL.createObjectURL(file));
+                            frame.style.display = 'initial';
+                            frame.classList.remove("hidden");
+                            var pw = Number(frame.parentElement.offsetWidth);
+                            frame.style = 'height:179mm;width:' + pw + 'px';
+                        } else {
+                            document.getElementById('iframe-img-MED').style.display = 'none';
+                            document.getElementById('img-MED').style.display = 'initial';
+                            $('#img-MED').attr('src', URL.createObjectURL(file));
+                        }
+                        $('#MED-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                    }
+                }
+                //document.getElementById('btn-valider-mt').addEventListener('click', function () {
+                //    if (confirm('Voulez-vous enregistrer le MT?')) {
+                //        document.getElementById('show-loader').click();
+                //        document.getElementById('val-MT').value='1';
+                //        var file = document.getElementById('upload-MT').cloneNode();
+                //        document.getElementById('form-content-courrier').appendChild(file);
+                //        document.getElementById('form-courrier').submit();
+                //    }
+                //});
+            } catch (e) {
+
+            }
+</script>
+<script>
+    try {
+                //modal ajout accusé de reception Mise en demeure;
+                document.getElementById('upload-endemeur2').onchange = evt => {
+                    const [file] = evt.target.files;
+                    if (file) {
+                        if (file.type == "application/pdf") {
+                            document.getElementById('img-ARMD').style.display = 'none';
+                            var frame = document.getElementById('iframe-img-ARMD');
+                            frame.setAttribute('src', URL.createObjectURL(file));
+                            frame.style.display = 'initial';
+                            frame.classList.remove("hidden");
+                            var pw = Number(frame.parentElement.offsetWidth);
+                            frame.style = 'height:179mm;width:' + pw + 'px';
+                        } else {
+                            document.getElementById('iframe-img-ARMD').style.display = 'none';
+                            document.getElementById('img-ARMD').style.display = 'initial';
+                            $('#img-ARMD').attr('src', URL.createObjectURL(file));
+                        }
+                        $('#ARMD-file-size').text("    Taille du fichier: " + getFilesize(file.size));
+                    }
+                }
+                //document.getElementById('btn-valider-mt').addEventListener('click', function () {
+                //    if (confirm('Voulez-vous enregistrer le MT?')) {
+                //        document.getElementById('show-loader').click();
+                //        document.getElementById('val-MT').value='1';
+                //        var file = document.getElementById('upload-MT').cloneNode();
+                //        document.getElementById('form-content-courrier').appendChild(file);
+                //        document.getElementById('form-courrier').submit();
+                //    }
+                //});
+            } catch (e) {
+
+            }
+</script>
+

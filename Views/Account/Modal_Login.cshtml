@@ -1,0 +1,13 @@
+﻿@model string
+<div id="modal-login" class="modal fade" tabindex="-1" aria-labelledby="#add-mt" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-gradient-info">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color:transparent">
+                @Html.Partial(Model)
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

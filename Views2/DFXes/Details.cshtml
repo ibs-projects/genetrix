@@ -1,0 +1,498 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.DFX
+
+@{
+    string userId = "";
+    bool actions_content_visible = false;
+    double montantDfx = 0;
+    try
+    {
+        montantDfx = Convert.ToDouble(Session["MontantDFX"]);
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        userId = (string)Session["userId"];
+    }
+    catch (Exception)
+    { }
+
+    bool ecrire = false;
+    int min = 0, max = 0, niveauSite = 0;
+    try
+    {
+        min = Convert.ToInt32(Session["userSIteMinNiveau"].ToString());
+        max = Convert.ToInt32(Session["userSIteMaxNiveau"].ToString());
+        niveauSite = min;
+    }
+    catch (Exception)
+    { }
+    ViewBag.estDfx = "True";
+    ViewBag.Title = "Détails DFX";
+    ViewBag.pTitle = "Détails DFX";
+    ViewBag.pageTitle = "Détails groupés";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+    string details = " non associée";
+    try
+    {
+        var txt = Model.Dossiers != null ? (Model.Dossiers.FirstOrDefault() != null ? Model.Dossiers.FirstOrDefault().GetEtapDossier()[0] : "") : "";
+        if (!string.IsNullOrEmpty(txt))
+        {
+            details = txt;
+        }
+    }
+    catch (Exception)
+    { }
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    th {
+        border-right: 2px solid #ddcbcb;
+        padding: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .change-etat {
+        cursor: pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12" style="">
+        <div class="card" style="display:block">
+            <div class="border-2 bg-gradient-light border border-1" id="actions-content" style="padding-bottom:10px;padding-top:10px;width:100%">
+                <table id="tab1">
+                    <tr>
+                        <th class="hidden">
+                            @{
+                                if (Model.EtapesDosier < 15 && min == 9)
+                                {
+                                    <button class="btn btn-outline-warning mb-1" action="0" id="edition"><i class="fas fa-pencil-alt"></i> Edit</button>
+                                }
+                            }
+                            <button class="btn btn-outline-danger mb-1" action="0" id="cancelling"><i class="mdi mdi-cancel"></i> Annuler</button>
+                            <button _action_requied_loader="0" class="btn btn-outline-success mb-1" action="0" id="saving"><i class="mdi mdi-content-save-edit"></i> Enrégistrer</button>
+                            <button class="btn btn-outline-primary hidden mb-1 float-end" action="0" id="actions"><i class="mdi mdi-view-list"></i> Actions</button>
+                        </th>
+                        @{
+                            if (min == 9 && Model.EtapesDosier <= 19)
+                            {
+                                //if (Model.EtapesDosier == 13 || Model.EtapesDosier == 14)
+                                {
+                                    bool courrierExiste = false, mtExiste = false;
+                                    try
+                                    {
+                                        if (Model.Courrier != null)
+                                        {
+                                            courrierExiste = true;
+                                        }
+                                        if (Model.MT != null)
+                                        {
+                                            mtExiste = true;
+                                        }
+                                    }
+                                    catch (Exception)
+                                    { }
+                                    actions_content_visible = true;
+                                    //Formalités BEAC en cours
+
+                                    if (Model.EtapesDosier < 19)
+                                    {
+                                        <th class="hidden">
+                                            <a id="btn-gen-recap" href="@Url.Content("~/dossiers_banque/GetcvsFile?dfx_iden="+Model.Id)" class="btn @(Model.Telechargements>0?"btn-success":"btn-outline-info")" title="ETAT RECAPITULATIF DES ORDRES DE PAIEMENT INFERIEURS OU EGAUX A 50 MILLIONS XAF">
+                                                <i class="mdi mdi-file-excel" id="btn-gen-courr-0"></i>
+                                                <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                                Générer le Recap
+                                            </a>
+                                        </th>
+                                        <th>
+                                            <button id="btn-ext-recap" class="btn @(Model.Telechargements>0?"btn-success":"btn-outline-info")" title="ETAT RECAPITULATIF DES ORDRES DE PAIEMENT INFERIEURS OU EGAUX A 50 MILLIONS XAF" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier0">
+                                                <i class="mdi mdi-file-excel" id="btn-gen-courr-0"></i>
+                                                <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                                Extraire le recapittulatif
+                                            </button>
+                                        </th>
+                                        <th>
+                                            <button numero="1" id="btn-gen-courr" onclick="document.getElementById('show-modal-gener-courrier').click()" type="button" class="btn @(courrierExiste?"btn-success":"btn-outline-info ") btn-action" title="Générer le courrier">
+                                                <i class="mdi @(courrierExiste?"mdi-eye":"mdi-file-document-edit")" id="btn-gen-courr-0"></i>
+                                                <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                                Générer courrier
+                                            </button>
+                                        </th>
+                                        <th style="">
+                                            <button numero="2" id="btn-gen-courr" type="button" class="btn @(courrierExiste?"btn-success":"btn-outline-info ") btn-action" title="Numériser le courrier" data-bs-toggle="modal" data-bs-target="#modal-ajout_courrier">
+                                                <i class="mdi @(courrierExiste?"mdi-eye":"mdi-file-document-edit")" id="btn-gen-courr-0"></i>
+                                                <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                                Numériser le courier
+                                            </button>
+                                        </th>
+                                    }
+                                }
+                                if (Model.Get_Courrier != "#")
+                                {
+                                    actions_content_visible = true;
+                                    if (Model.EtapesDosier < 15)
+                                    {
+                                        <th>
+                                            @*<div numero="102" id="btn-inv" class=" form-check form-switch form-switch-lg mb-1" style="display:inline-block!important" dir="ltr">*@
+                                            <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                                <input @(Model.Get_Courrier != "#" ? "" : "disabled") type="checkbox" numero="6" name="envoie_beac" class="form-check-input change-etat btn-action" href1="@Url.Content("~/dfxes/ModifEtatDossierJS?etat=15&idDfx="+Model.Id)" style="margin-left:0px;margin-top:15px" id="envoyer-beac" value="15">
+                                                <label class="form-check-label" for="envoyer-beac" style="margin-left:5px;margin-top:12px">Envoyé à la BEAC</label>
+                                            </div>
+                                        </th>
+                                    }
+                                    if (Model.EtapesDosier == 15)
+                                    {
+                                        //reception couverture beac
+                                        actions_content_visible = true;
+                                        <th>
+                                            <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                                <input numero="9" type="checkbox" name="recept_couverture_beac" class="form-check-input btn-action" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac-open-modal" value="20">
+                                                <label class="form-check-label" for="recept-couvert-beac-open-modal" style="margin-left:5px;margin-top:12px">Devise reçue</label>
+                                            </div>
+                                        </th>
+                                    }
+                                }
+                                if (Model.EtapesDosier < 19 && Model.EtapesDosier >= 13)
+                                {
+                                    <th>
+                                        <button numero="10" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                                            <i class="mdi mdi-cancel"></i>
+                                            Rejeter
+                                        </button>
+                                    </th>
+                                }
+
+                            }
+                            if ((Model.EtapesDosier == 19 || Model.EtapesDosier == 20) && min == 1)
+                            {
+                                //reception couverture beac
+                                actions_content_visible = true;
+                                <th>
+                                    <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                        <input numero="11" type="checkbox" name="devise_recu" class="form-check-input change-etat btn-action" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac" href1="@Url.Content("~/dfxes/ModifEtatDossierJS?etat=22&idDfx="+Model.Id)" value="22">
+                                        <label class="form-check-label" for="devise_recu" style="margin-left:5px;margin-top:12px">Traité</label>
+                                    </div>
+                                </th>
+                            }
+                        }
+                    </tr>
+                </table>
+                @Html.AntiForgeryToken()
+
+
+            </div>
+            <hr />
+        </div>
+        <div id="details-contener1" class="row1 ">
+            <div class="card ">
+                <div class="card-header text-white bold" style="background-color: #2689a6">
+                    Etat DFX 420 : <mark>@(details)</mark>
+                    <button class="float-end hidden" id="reduit-details" style="display:none1"><i id="icon-details-of" class="mdi mdi-eye-off"></i></button>
+                </div>
+                @using (Html.BeginForm("edit", "dfxes", FormMethod.Post, new { id = "edit-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="card-body" id="details-body">
+                        <fieldset>
+                            <div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <dl class="dl-horizontal">
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.NumeroRef)
+                                            </dt>
+
+                                            <dd>
+                                                <span class="details-data1">@Model.NumeroRef</span>
+                                            </dd>
+
+                                            <dt>
+                                                Devise
+                                            </dt>
+                                            <dd>
+                                                @Model.DeviseToString
+                                            </dd>
+                                            <dt>
+                                                Montant en devise
+                                            </dt>
+                                            <dd>
+                                                <span class="details-data1">@Model.MontantString</span>
+                                            </dd>
+                                        </dl>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <dl class="dl-horizontal">
+                                            <dt>
+                                                Montant XAF
+                                            </dt>
+                                            <dd>
+                                                <span class="details-data1">@Model.MontantCVString</span>
+                                            </dd>
+                                            <dt>
+                                                Date debut
+                                            </dt>
+
+                                            <dd>
+                                                @Model.DateDebut.ToString("dd/MM/yyyy")
+                                            </dd>
+                                            <dt>
+                                                Date fin
+                                            </dt>
+
+                                            <dd>
+                                                @Model.DateFin.ToString("dd/MM/yyyy")
+                                            </dd>
+
+
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                }
+            </div>
+        </div>
+        <hr />
+        <div class="card" style="">
+            <fieldset>
+                <div class="card-header fs-3 bold">Dossiers associés </div>
+                <div class="card-body">
+                    @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiers_DFX.cshtml", Model.Dossiers)
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+
+@* Raison du rejet dossier modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Raison_Rejet_Dossier.cshtml")
+
+<a class="hidden" id="show-loader" _action_requied_loader="0"></a>
+
+
+@* finraisonmodal *@
+<form action="~/dfxes/AddCourier" style="" id="form-courrier" method="post" enctype="multipart/form-data" class="hidden">
+    @Html.AntiForgeryToken()
+    <input type="number" name="IdRef" value="@Model.Id" style="" />
+    <input type="number" name="MT" id="val-MT" value="0" />
+    <div id="form-content-courrier">
+
+    </div>
+</form>
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Courrier_DFX.cshtml", Model)
+@Html.Partial("~/Views/_Shared/PartialViews/Script_Numerise_Courrier_mt.cshtml")
+
+<a href="#" id="show-modal-gener-courrier" class="hidden bg-danger" data-bs-toggle="modal" data-bs-target="#EditCourrier"></a>
+@Html.Partial("~/Views/_Shared/PartialViews/EditCourrierDFX.cshtml", Model)
+
+@* finraisonmodal *@
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Selection_Operateur_Swift.cshtml", Model.Id)
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Extraire_DFX.cshtml")
+
+<a href="#" id="link-change-etat"></a>
+<a href="#" id="link-modal-sel-op-swift" data-bs-toggle="modal" data-bs-target="#modal-sel-op-swift"></a>
+<script>
+    $('.change-etat').click(function () {
+        try {
+            //modification du curseur
+            this.parentNode.style = 'cursor:wait';
+            //Affiche loader
+            var ii = document.createElement('i');
+            ii.classList.add("mdi");
+            ii.classList.add("mdi-spin");
+            ii.classList.add("mdi-loading");
+            var childs1 = this.childNodes;
+            this.parentNode.insertBefore(ii, this);
+            this.style.display = 'none';
+        } catch (e) {
+
+        }
+        var _url = this.getAttribute("href1");
+        if (this.id =='btn-valid-raison-rejet') {
+            _url = '@Url.Content("~/dfxes/ModifEtatDossierJS?etat=-3&idreference=" + Model.Id)';
+        }
+        document.getElementById("link-change-etat").setAttribute("href", _url.replace('amp;', ''));
+        document.getElementById("link-change-etat").click();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        //Extrait recap
+        $('#lab-info0').text("Un fichier csv du recapitulatif du DFX va être envoyé aux adresses associées");
+        try {
+            $('#btn-modal-extraction-doss0').click(function () {
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/GetcvsFileByEmail?dfx_iden="+Model.Id)' + '&emails=' + document.getElementById('agentemails01').value,
+                    success: function (responce) {
+                        if (responce != "ok") {
+                            alert(responce);
+                        } else {
+                            alert("Extraction du DFX terminée.")
+                        }
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+        } catch (e) {
+
+        }
+        //Griser les boutons suivants avant l'execution de la precedent
+        try {
+            var actions = $('.btn-action');
+            var num = 0;
+            var num2 = 0;
+            var sortie = false;
+            for (var i = 0; i < actions.length; i++) {
+                if (actions[i].classList.contains('btn-success')) {
+                    num = Number(actions[i].getAttribute("numero"))
+                    num = Number(actions[i].getAttribute("numero"));
+                    for (var j = 0; j < actions.length; j++) {
+                        num2 = Number(actions[j].getAttribute("numero"));
+                        if (num2 == Number(num + 1)) {
+                            actions[i].disabled = false;
+                            sortie = true;
+                            break;
+                        }
+                    }
+                }
+                if (sortie) {
+                    break;
+                }
+            }
+        } catch (e) {
+
+        }
+        //select opérateur swift
+        try {
+            $('#recept-couvert-beac-open-modal').click(function () {
+                try {
+                    //modification du curseur
+                    this.parentNode.style = 'cursor:wait';
+                    //Affiche loader
+                    var ii = document.createElement('i');
+                    ii.classList.add("mdi");
+                    ii.classList.add("mdi-spin");
+                    ii.classList.add("mdi-loading");
+                    var childs1 = this.childNodes;
+                    this.parentNode.insertBefore(ii, this);
+                    this.style.display = 'none';
+                } catch (e) {
+
+                }
+                $.ajax({
+                    url: '@Url.Content("~/banques/SelOp")',
+                    success: function (responce) {
+                        var daySelect = document.getElementById('sel-op-swift');
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+                        daySelect.options[daySelect.options.length] = new Option('', '');
+
+                        $.each(responce, function (index, item) {
+                            daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                        });
+                        document.getElementById('link-modal-sel-op-swift').click();
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+        } catch (e) {
+
+        }
+
+        $('.edit-data').hide();
+        $('#saving').hide();
+        $('#cancelling').hide();
+        $('.details-data').each(function (i, obj) {
+            if (!obj.textContent) {
+                obj.textContent = "NULL";
+            }
+        });
+
+        $('#edition').click(function () {
+            $('.details-data').hide(300);
+            $('.edit-data').show(300);
+            $('#edition').hide(100);
+            $('#cancelling').show();
+            $('#saving').show();
+        });
+
+        $('#cancelling').click(function () {
+            $('.edit-data').hide();
+            $('.details-data').show(300);
+            $('#cancelling').hide(100);
+            $('#saving').hide(100);
+            $('#edition').show(300);
+        });
+
+        $('#saving').click(function () {
+            $('#edit-form').submit();
+        });
+
+        $('#actions').click(function () {
+            if ($('#actions-content').attr('action') == '0') {
+                $('#actions-content').attr('action', '1');
+                $('#actions-content').show(300);
+            } else {
+                $('#actions-content').attr('action', '0');
+                $('#actions-content').hide(100);
+            }
+        });
+
+        $('#btn-envoye-beac').click(function () {
+            if (confirm('Vous êtes sur le point de soumettre le dossier à la BEAC. Voulez-vous confirmer?')) {
+                document.getElementById('EnvoieBEAC').checked = true;
+                document.getElementById('EnvoieBEAC').value = true;
+                $('#edit-form').submit();
+            } else {
+                location.reload();
+            }
+        });
+
+        $('#btn-apure').click(function () {
+            if (confirm("Vous êtes sur le point d'apurer la refererence. Voulez-vous continuer?")) {
+                document.getElementById('Apuré').checked = true;
+                document.getElementById('Apuré').value = true;
+                $('#edit-form').submit();
+            } else {
+                location.reload();
+            }
+        });
+    });
+</script>
+<script>
+    @{
+        if (actions_content_visible)
+        {
+            @: document.getElementById('actions-content').classList.remove('hidden');
+        }
+    }
+</script>
+<script>
+    $('#affiche-mail-info').click(function () {
+        var mailinfo = document.getElementById('mail-info');
+        if (mailinfo.classList.contains("hidden0")) {
+            $(mailinfo).show(300);
+            mailinfo.classList.remove('hidden0');
+        } else {
+            mailinfo.classList.add('hidden0');
+            $(mailinfo).hide(300);
+        }
+    });
+</script>
+<script>
+    var colCount = $("#tab1 tr th").length;
+    if (colCount == 1) {
+        document.getElementById('actions-content').style.display = 'none';
+    }
+</script>

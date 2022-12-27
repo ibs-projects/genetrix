@@ -1,0 +1,118 @@
+﻿@using genetrix.Models;
+@using genetrix.Models.Fonctions;
+@model IEnumerable<genetrix.Models.Dossier>
+@using System.Globalization;
+<style>
+    .ligne:hover {
+        background-color: #0094ff;
+        color: white;
+    }
+    th,td {
+        min-height: 130px;
+    }
+</style>
+<div class="table-responsive">
+    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th class="hidden1" style="min-height: 230px">
+                    D'onneur d'ordre
+                </th>
+                <th class="hidden1">
+                    @Html.DisplayName("Fournisseur")
+                </th>
+                <th>
+                    @Html.DisplayName("Devise")
+                </th>
+                <th>
+                    Montant devise
+                </th>
+                <th style="min-height:130px">
+                    Montant XAF
+                </th>
+                <th>
+                    Statut
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i = 0; double tdev = 0, txaf = 0;}
+
+            @foreach (var item in Model.OrderByDescending(d => d.DateModif))
+            {
+                tdev += item.Montant;
+                txaf += item.MontantCV;
+                i++;
+                <tr style="cursor:pointer" idd="link-@item.Dossier_Id" class="ligne">
+                    <td class="hidden1" style="min-height: 230px">
+                        @Html.DisplayFor(modelItem => item.Client.Nom)
+                    </td>
+                    <td class="hidden1">
+                        @Html.DisplayFor(modelItem => item.Fournisseur.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeviseToString)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MontantString)
+                    </td>
+                    <td style="min-width:130px">
+                        @Fonctions.ConvertMontantEnChaine(item.MontantCV,0)
+                        @*@Html.DisplayFor(modelItem => item.MontantCVstring)*@
+                    </td>
+
+                    <td>
+                        @Html.Partial("~/Views/_Shared/PartialViews/StatusDossiers.cshtml", item)
+                    </td>
+                    <td>
+                        <a id="link-@item.Dossier_Id" href="@Url.Content("~/dossiers_banque/details/"+item.Dossier_Id+"?unit=ok")"><i class="fa fa-eye-dropper1"></i> Détails</a>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+        <tfoot>
+            <tr style="">
+                <td colspan="2" style="border:none"></td>
+                <td>TOTAL</td>
+                <td id="t-mdevise" style="width: auto"></td>
+                <td id="t-mxaf" style="width:auto"></td>
+                <td style="border:none;"></td>
+                <td style="border:none;"></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<script>
+    var lignes = document.getElementsByClassName('ligne');
+    for (var i = 0; i < lignes.length; i++) {
+        lignes[i].addEventListener("click", function () {
+            document.getElementById('' + this.getAttribute('idd')).click();
+        });
+    }
+</script>
+@{
+    string _tdev = "", _txaf = "";
+    try
+    {
+        _tdev = Fonctions.ConvertMontantEnChaine(tdev);
+        _txaf = Fonctions.ConvertMontantEnChaine(txaf, 0);
+        //NumberFormatInfo nfi = new NumberFormatInfo { NumberGroupSeparator = " ", NumberDecimalDigits = 2 };
+        //_tdev = tdev.ToString("n", nfi);
+        //_txaf = txaf.ToString("n", nfi);
+        //if (_txaf.Contains(",") )
+        //{
+        //    _txaf = _txaf.Split(',')[0];
+        //}if (_txaf.Contains(".") )
+        //{
+        //    _txaf = _txaf.Split('.')[0];
+        //}
+    }
+    catch (Exception)
+    { }
+}
+<script>
+    document.getElementById('t-mdevise').textContent = '@_tdev';
+    document.getElementById('t-mxaf').textContent = '@_txaf';
+</script>

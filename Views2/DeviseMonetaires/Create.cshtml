@@ -1,0 +1,68 @@
+﻿@model genetrix.Models.DeviseMonetaire
+
+
+@{
+    ViewBag.Title = "Dévise";
+    ViewBag.pTitle = "Nouvelle Dévises";
+    ViewBag.pageTitle = "Dévise";
+    ViewBag.pageImage = "~/assets/images/IU/devise.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.Hidden("Id")
+
+            <div class="card">
+                <div class="card-header card-header1 text-white">
+                    <div class="col-md-12">
+                        <h4 class="card-title mb-41 text-white" style="display:inline!important">Nouveau dossier de transfert</h4>
+                        <button type="submit" value="Enregistrer" class="btn btn-outline-info" style="float:right!important;padding-right:10px!important">
+                            <i class="far fa-save me-2"></i>
+                            Enrégistrer
+                        </button>
+                    </div>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <div class="mb-3">
+                        @Html.LabelFor(model => model.Nom)
+                        <div>
+                            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Libelle, htmlAttributes: new { @class = "control-label" })
+                        <div >
+                            @Html.EditorFor(model => model.Libelle, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Libelle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        @Html.LabelFor(model => model.ParitéXAF)
+                        <div>
+                            @Html.EditorFor(model => model.ParitéXAF, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.ParitéXAF, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <p>
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,99 @@
+﻿@model genetrix.Models.Dossier
+@{
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Suppression du Dossier";
+    ViewBag.pageTitle = "Dossier";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    @{
+        if (ViewBag.msg != null)
+        {
+            string msg = "" + ViewBag.msg;
+            if (!string.IsNullOrEmpty(msg))
+            {
+                <div class="alert alert-border alert-border-danger alert-dismissible fade show" style="" role="alert">
+                    <i class="uil uil-exclamation-triangle font-size-16 text-danger me-2"></i>
+                    @Html.Raw(ViewBag.msg)
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+                <hr />
+            }
+        }
+    }
+    <div class="card-header"><h3 class="text-danger" style="">Êtes-vous sûr de vouloir supprimer ce dossier?</h3></div>
+    <div class="btn m-0 p-0" title="Dossier à @(Model.Percentage)%" style="">
+        <div class="progress bg-danger">
+            <div class="progress-bar bg-gradient-success" role="progressbar" style="width: @(Model.Percentage)%;" aria-valuenow="@(Model.Percentage)" aria-valuemin="0" aria-valuemax="100">@(Model.Percentage)%</div>
+        </div>
+    </div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateModif)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateModif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NbreJustif)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NbreJustif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Montant)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Montant)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Fournisseur)
+            </dt>
+
+            <dd>
+                @Model.GetFournisseur
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateCreationApp)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateCreationApp)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ApplicationUser)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ApplicationUser)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

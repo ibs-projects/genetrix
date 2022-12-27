@@ -1,0 +1,71 @@
+﻿
+<div class="modal fade" id="modal-entete-cvs-dfx" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="csvdfx" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="csvdfx">Entête du CSV DFX</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body text-info" style="font-size:15px">
+               <div class="row">
+                   <div class="col-6">
+                       <div class="col-lg-12">
+                           Intitulé:
+                           <div class="mb-3">
+                               <input type="text" name="annexe" value="Annexe 1" class="form-control" id="annexe" />
+                           </div>
+                       </div> 
+                       <div class="col-lg-12">
+                           N° DFX:
+                           <div class="mb-3">
+                               <input type="text" name="numDFX" class="form-control" id="numDFX" />
+                           </div>
+                       </div>
+                       <div class="col-lg-12">
+                           Pays:
+                           <div class="mb-3">
+                               <input type="text" name="pays" class="form-control" id="pays" />
+                           </div>
+                       </div>
+                   </div>      
+                   <div class="col-6">
+                       <div class="col-lg-12">
+                           Nom de la Banque:
+                           <div class="mb-3">
+                               <input type="text" name="banque" class="form-control" id="banque" />
+                           </div>
+                       </div> 
+                       <div class="col-lg-12 row">
+                           <div class="col-6">
+                               Date debut:
+                               <div class="mb-3 ">
+                                   <input type="date" name="dateDebut" placeholder="01/01/2022" class="form-control" id="dateDebu" />
+                               </div>
+                           </div>
+                           <div class="col-6">
+                               Date fin:
+                               <div class="mb-3 ">
+                                   <input type="date" name="dateFin" placeholder="07/01/2022" class="form-control" id="dateFin" />
+                               </div>
+                           </div>
+                       </div>
+                       <div class="col-lg-12">
+                           Référence:
+                           <div class="mb-3">
+                               <input type="text" name="reference" class="form-control" id="reference" />
+                           </div>
+                       </div>
+                   </div>  
+                   <hr />
+                   <div>
+                       <button type="button" class="btn btn-outline-info" id="btn-generer-csv-dfx">
+                           <i class="mdi mdi-file-excel-box"></i>
+                           Générer
+                       </button>
+                   </div>
+               </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

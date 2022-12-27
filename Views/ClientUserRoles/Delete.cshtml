@@ -1,0 +1,102 @@
+﻿@model genetrix.Models.ClientUserRole
+@{
+    ViewBag.Title = "Rôle utilisateur";
+    ViewBag.pTitle = "Rôle utilisateur";
+    ViewBag.pageTitle = "Rôle utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer le rôle?</h3></div>
+    <div class="card-body">
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreerDossier)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreerDossier)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SoumettreDossier)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SoumettreDossier)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreerUser)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreerUser)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SuppUser)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SuppUser)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ModifUser)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ModifUser)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CreerBenef)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CreerBenef)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.SuppBenef)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.SuppBenef)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.ModifBenef)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.ModifBenef)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

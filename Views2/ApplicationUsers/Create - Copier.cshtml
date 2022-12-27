@@ -1,0 +1,127 @@
+﻿@model genetrix.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Utilisateur";
+    ViewBag.pTitle = "Nouvel utilisateur";
+    ViewBag.pageTitle = "Utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm("addUser", "auth",FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal card">
+                <div class="card-header">Utilisateur</div>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="card-body">
+
+                <div class="row">
+                    <div class="form-group mb-3 col-lg-6">
+                        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3 col-lg-6">
+                        @Html.LabelFor(model => model.Prenom, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Prenom, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Prenom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="form-group mb-3 col-lg-6">
+                        @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="form-group mb-3 col-lg-6">
+                        @Html.Label("Nom d'utilisateur", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.NomUtilisateur, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NomUtilisateur, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3 col-lg-6">
+                        @Html.Label("Mot de passe", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <input type="password" name="PasswordHash" class="form-control" value="" />
+                            @Html.ValidationMessageFor(model => model.PasswordHash, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <div class="card-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#home1" role="tab">
+                                <span class="d-block d-sm-none1"><i class="fas fa-user"></i></span>
+                                <span class="d-none d-sm-block">Role</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#profile1" role="tab">
+                                <span class="d-block d-sm-none1"><i class="fas fa-home"></i></span>
+                                <span class="d-none d-sm-block">Agence</span>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content p-3 text-muted">
+                      
+                        <div class="tab-pane" id="profile1" role="tabpanel">
+                            @Html.Label("Agence", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <select class="form-control" name="RoleId">
+                                    <option value="0"></option>
+                                    @{
+                                        foreach (var item in ViewBag.Agences)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+                <div class="card-footer">
+                    <div class="form-group mb-3">
+                        <button type="submit" value="Enregistrer" class="btn btn-outline-info">
+                            <i class="far fa-save me-2"></i>
+                            Enrégistrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

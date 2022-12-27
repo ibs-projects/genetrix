@@ -1,0 +1,62 @@
+﻿@model IEnumerable<genetrix.Models.DeviseMonetaire>
+
+@{
+    ViewBag.Title = "Dévise";
+    ViewBag.pTitle = "Liste de Dévises";
+    ViewBag.pageTitle = "Dévise";
+    ViewBag.pageImage = "~/assets/images/IU/devise.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<p>
+    <a class="" href="@Url.Action("Create","DeviseMonetaires")">
+        <i class="dripicons-plus me-2"></i>
+        Nouvelle Dévise
+    </a>
+</p>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+           <div class="card-header card-header1 text-white">Liste de dévises</div>
+            <div class="card-body">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Nom)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Libelle)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.ParitéXAF)
+                        </th>
+                        <th></th>
+                    </tr>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Libelle)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.ParitéXAF)
+                            </td>
+                            <td>
+                                @Html.ActionLink("Editer", "Edit", new { id = item.Id }) |
+                                @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

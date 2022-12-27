@@ -1,0 +1,209 @@
+﻿@model IEnumerable<genetrix.Models.Mail>
+@{
+    ViewBag.Title = "Mail";
+    ViewBag.pTitle = "Mail";
+    ViewBag.pageTitle = "Mail";
+    ViewBag.pageImage = "~/assets/images/IU/mail.png";
+    Layout = null;
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<style>
+    .unread {
+        color: #0e519a
+    }
+    
+</style>
+<div class="main-content1">
+    <div class="page-content1">
+        <div id="container0" class="container-fluid1" style="">
+            <div class="row">
+                <div class="col-10 offset-1">
+                    <!-- Left sidebar -->
+                    <div class="email-leftbar card">
+                        <div class="mail-list mt-4">
+                            <a href=@Url.Content("~/mails/Index?st=recus&dos_filtre="+ViewBag.DosssierId) class="@(ViewBag.st=="new"?"active":"")">
+                                <i class="mdi mdi-email-plus-outline align-middle me-2"></i> Nouveau mail
+                            </a>
+                            <a href=@Url.Content("~/mails/Index?st=recus") class="@(ViewBag.st=="recus"?"active":"")">
+                                <i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> Mails reçus
+                            </a>
+                            <a href=@Url.Content("~/mails/Index?st=envoi") class="@(ViewBag.st=="envoi"?"active":"")"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>Mails envoyés</a>
+                            <a href=@Url.Content("~/mails/Index?st=brouil") class="@(ViewBag.st=="brouil"?"active":"")"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>Brouillon</a>
+                            <a href=@Url.Content("~/mails/Index?st=all") class="@(ViewBag.st=="all"?"active":"")"><i class="mdi mdi-email-mark-as-unread font-size-16 align-middle me-2"></i>Tous</a>
+                            <a href=@Url.Content("~/mails/Index?st=corb") class="@(ViewBag.st=="corb"?"active":"")"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>Corbeille</a>
+                            <a href=@Url.Content("~/mails/Index?st=aut") class="@(ViewBag.st=="aut"?"active":"")"><i class="mdi mdi-auto-fix font-size-16 align-middle me-2"></i>Genetrix</a>
+                        </div>
+
+                    </div>
+                    <!-- End Left sidebar -->
+                    <!-- Right Sidebar -->
+                    <div class="email-rightbar mb-3">
+
+                        <div class="card" style="min-height:310px!important;padding:10px">
+                            <div class="btn-toolbar p-3" role="toolbar">
+                                <div class="btn-group me-2 mb-2 mb-sm-0">
+                                    @*<button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-inbox"></i></button>
+                                        <button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-exclamation-circle"></i></button>*@
+                                    <a href="" id="remove-mails" class="btn btn-danger waves-light waves-effect"><i class="far fa-trash-alt"></i></a>
+                                </div>
+                                <div class="btn-group me-2 mb-2 mb-sm-0">
+                                    <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fas fa-mail-bulk"></i> <i class="mdi mdi-chevron-down ms-1"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-eye"></i> Lus</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-eye-off"></i> Non lus</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-star"></i> Tout</a>
+                                    </div>
+                                </div>
+                                <div class="btn-group me-2 mb-2 mb-sm-0">
+                                    <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-tag"></i> <i class="mdi mdi-chevron-down ms-1"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-link"></i> Avec pièces joites</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-link-off"></i> Sans pièces joites</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-star"></i> Tout</a>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group me-2 mb-2 mb-sm-0">
+                                    <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Plus <i class="mdi mdi-dots-vertical ms-2"></i>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-bookmark-outline"></i> Marquer comme non lu</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-bookmark-outline"></i> Marquer comme important</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-bookmark-off"></i> Muet</a>
+                                        <a class="dropdown-item" href="#"><i class="mdi mdi-star"></i> Tous</a>
+                                    </div>
+                                </div>
+                            </div>
+                            @{
+                                if (ViewBag.st != "new")
+                                {
+                                    <form action="~/Mails/MultipleDelete" id="form-mails" method="post">
+                                        <ul class="message-list" style="min-height:100%;">
+                                            @{
+                                                foreach (var item in Model)
+                                                {
+                                                    <li class="@(item.Lu?"unread":"")">
+                                                        <div class="col-mail col-mail-1">
+                                                            <div class="checkbox-wrapper-mail">
+                                                                <input type="checkbox" id="chk_@item.Id" name="chk_@item.Id">
+                                                                <label for="chk_@item.Id" class="toggle"></label>
+                                                            </div>
+                                                            <a href="#" class="title bold">@Html.Raw(item.Objet)</a><span class="star-toggle far fa-star"></span>
+                                                        </div>
+                                                        <div class="col-mail col-mail-2">
+                                                            <a href=@Url.Content("~/mails/details/"+item.Id) class="subject">
+                                                                @Html.Raw(item.AdresseDest)|  @Html.Raw(item.Objet)
+                                                            </a>
+                                                            <div class="date">@item.Date.Value.ToString("dd/mm/yyyy")</div>
+                                                        </div>
+                                                    </li>
+                                                }
+                                            }
+                                        </ul>
+                                    </form>
+                                }
+                                else
+                                {
+                                    @Html.Partial("~/Views/Mails/NewMail.cshtml")
+                                }
+                            }
+                        </div> <!-- card -->
+
+                        <div class="row">
+                            <div class="col-7">
+                                Affichage 1 - 20 of 1,524
+                            </div>
+                            <div class="col-5">
+                                <div class="btn-group float-end">
+                                    <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-left"></i></button>
+                                    <button type="button" class="btn btn-sm btn-success waves-effect"><i class="fa fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div> <!-- end Col-9 -->
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- End row -->
+<!-- Modal -->
+@Html.Partial("~/Views/Mails/Modal_NewMail.cshtml")
+
+<div class="modal fade" id="composemodal" tabindex="-1" role="dialog" aria-labelledby="composemodalTitle" aria-hidden="true">
+    <div class="modal-dialog  modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="composemodalTitle">Nouveau Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/Mails/NewMail.cshtml")
+                @*<form>
+            <div class="mb-3">
+                <input type="email" class="form-control" placeholder="à">
+            </div>
+
+            <div class="mb-3">
+                <input type="text" class="form-control" placeholder="Objet">
+            </div>
+            <div class="mb-3">
+                <form method="post">
+                    <textarea id="email-editor" name="area"></textarea>
+                </form>
+            </div>
+
+        </form>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send <i class="fab fa-telegram-plane ms-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<!--<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>-->
+
+<!--tinymce js-->
+<!--<script src="~/assets/libs/tinymce/tinymce.min.js"></script>-->
+
+<!-- email editor init -->
+<!--<script src="~/assets/js/pages/email-editor.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>-->
+<style>
+    .gg{
+       overflow-y:hidden
+    }
+</style>
+<script>
+    document.getElementById('remove-mails').addEventListener('click', function () {
+        document.getElementById('form-mails').submit();
+    });
+    $('#new-mail').click(function () {
+        $('#ifram-new-mail').attr('src', '');
+        $('#ifram-new-mail').attr('src', '@Url.Content("~/mails/NewMail")');
+    })
+    $(document).ready(function () {
+        document.getElementsByTagName('body')[0].style.backgroundColor = 'transparent';
+        document.getElementsByTagName('body')[0].style.overflowX = 'hidden';
+    })
+</script>

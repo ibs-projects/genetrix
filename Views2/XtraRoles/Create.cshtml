@@ -1,0 +1,105 @@
+﻿@model genetrix.Models.XtraRole
+
+@{
+    ViewBag.Title = "Rôle";
+    ViewBag.pTitle = "Nouveau rôle";
+    ViewBag.pageTitle = "Rôle";
+    ViewBag.pageImage = "~/assets/images/IU/role.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal card">
+                <div class="card-header">Rôle</div>
+                <div class="card-body">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="form-group mb-3 mb-3">
+                        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.NiveauDossier, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.NiveauDossier, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NiveauDossier, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                    @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.IdStructure, "IdStructure", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("IdStructure", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.IdStructure, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+                    @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.NiveauDossier, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.NiveauDossier, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NiveauDossier, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirDossiersAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirDossiersAutres)
+                                @Html.ValidationMessageFor(model => model.VoirDossiersAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirUsersAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirUsersAutres)
+                                @Html.ValidationMessageFor(model => model.VoirUsersAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirClientAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirClientAutres)
+                                @Html.ValidationMessageFor(model => model.VoirClientAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.EstBackOffice, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.EstBackOffice)
+                                @Html.ValidationMessageFor(model => model.EstBackOffice, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <div class="form-group mb-3 mt-3">
+                            <button type="submit" value="Enregistrer" class="btn btn-outline-info">
+                                <i class="far fa-save me-2"></i>
+                                Enrégistrer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Voir la liste", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

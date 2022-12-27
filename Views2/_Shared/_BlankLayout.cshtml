@@ -1,0 +1,63 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title | Genetrix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Suivi des dossiers de transfert & obtention de devises" name="description" />
+    <meta content="Themesbrand" name="author" />
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
+
+    <!-- Bootstrap Css -->
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Icons Css -->
+    <link href="~/assets/css/icons.min.css" rel="stylesheet" />
+    <!-- App Css-->
+    <link href="~/assets/css/app.min.css" rel="stylesheet" />
+
+    @RenderSection("styles", required: false)
+    <style>
+                .bg {
+                    /*background-image:*/ /*url(../assets/images/setup-analytics-amico.svg),*/ /*url(../assets/images/IU/login-back.svg);*/
+                    /*                    background-color: #cccccc;
+        */
+                }
+    </style>
+</head>
+
+<body class="authentication-bg bg" id="_body">
+    @RenderBody()
+
+    <!-- JAVASCRIPT -->
+    <script src="~/assets/libs/jquery/jquery.min.js"></script>
+    <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="~/assets/libs/node-waves/waves.min.js"></script>
+    <script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+    <script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+    @RenderSection("scripts", required: false)
+    <!-- App js -->
+    <script src="~/assets/js/app.js"></script>
+    <i class="mdi mdi-spin mdi-loading fs-1 text-dark" id="img-loarder" style="display:none"></i>
+
+</body>
+</html>
+<script>
+    $('.card-item').click(function () {
+        // var img = document.createElement("img");
+        var img = document.getElementById("img-loarder");
+        img.style.display = "initial";
+        img.setAttribute("width", "50");
+        img.setAttribute("height", "50");
+        img.style.position = 'absolute';
+        img.style.left = (this.offsetWidth / 2-25) + 'px'
+        img.style.top = (this.offsetHeight / 2-25) + 'px'
+        //img.setAttribute('src', '(Url.Content("~/assets/images/IU/loading.gif"))');
+        this.appendChild(img);
+    });
+</script>

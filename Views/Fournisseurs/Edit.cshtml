@@ -1,0 +1,135 @@
+﻿@model genetrix.Models.Fournisseurs
+
+
+@{
+    ViewBag.Title = "Fournisseur";
+    ViewBag.pTitle = "Edition du fournisseur";
+    ViewBag.pageTitle = "Fournisseur";
+    ViewBag.pageImage = "~/assets/images/IU/fournisseur.png";
+}
+<link href="~/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="card">
+                <div class="card-header card-header1 text-white">Edition du fournisseur</div>
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        <h4>Fournisseurs</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+
+                    <div class="row">
+                        <div class="form-group mb-3 col-6">
+                            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label " })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 col-6">
+                            @Html.LabelFor(model => model.CodeEts, htmlAttributes: new { @class = "control-label " })
+                            <div class="col-md-12">
+                                <input type="text" class = "form-control" maxlength="5" name="CodeEts" id="CodeEts" value="@Model.CodeEts" />
+                                @Html.ValidationMessageFor(model => model.CodeEts, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group mb-3 col-6">
+                            @Html.LabelFor(model => model.Tel1, htmlAttributes: new { @class = "control-label " })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Tel1, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Tel1, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 col-6">
+                            @Html.LabelFor(model => model.Tel2, htmlAttributes: new { @class = "control-label " })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Tel2, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Tel2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group mb-3 col-6">
+                            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 mb-3 col-6">
+                            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 hidden">
+                            @Html.LabelFor(model => model.ClientId, "ClientId", htmlAttributes: new { @class = "control-label " })
+                            <div class="col-md-12">
+                                @Html.DropDownList("ClientId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" value="Enregistrer" class="btn btn-outline-info" style="float:right!important;padding-right:10px!important">
+                        <i class="far fa-save me-2"></i>
+                        Enrégistrer
+                    </button>
+                    <p>
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+@*form wizard init*@
+<script src="~/assets/js/pages/form-wizard.init.js"></script>
+
+<!-- form repeater js -->
+<script src="~/assets/libs/jquery.repeater/jquery.repeater.min.js"></script>
+
+<script src="~/assets/js/pages/form-repeater.int.js"></script>
+<!-- Magnific Popup-->
+<script src="~/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- lightbox init js-->
+<script src="~/assets/js/pages/lightbox.init.js"></script>
+
+ <script src="~/assets/js/app.js"></script>
+

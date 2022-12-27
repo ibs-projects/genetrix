@@ -1,0 +1,41 @@
+﻿@model genetrix.Models.PubItem
+@{
+    var gg = Model;
+    bool apercu = false;
+    string _url = "https://bepiletussar.casa/tsk/o19*GzjjTgBDCXdRaMe2nb*XAbeK3w5OXJV1ut74hw9ZrnQKC1lWWbgn0kgaTwuy5PZJMQqfxe2hvENVZsgJMaPsaQQsh0Gp4wU1XU45Wmg",
+        _desc = "Il s'agit d'une carte moins large qui présente des petites notifications."
+        , _titre = "Card Notification";
+    if (!apercu)
+    {
+        _titre = Model.Titre;
+        _desc = Model.Description;
+        _url = Model.Image;
+    }
+}
+<div class="btn-ferme item-visibilite" id="card-per-@Model.Id" contrast="colored">
+    <div class="item-fond-col item-mise-enforme">
+        <div class="pub-tiltre">
+            <img class="logo-taille item-mise-enforme" src="//juristarx.cam/s/t/bd.png"><span class="_1ayqZ">Information </span><span class="_2Pf3p">•</span><span class="_dOEv">now</span>
+            <img class="taille1" src="//juristarx.cam/s/t/arr-d-g.png">
+        </div>
+        <div class="online0 item-mise-enforme online-visib">
+            <img class="img-taille01 item-mise-enforme" src="@Url.Content(_url)">
+        </div>
+        <div class="text-dispo">
+            <div class="pub-tiltre1" style="color:@Model.TitreColor">@Html.Raw(_titre)</div>
+            <div class="pub-desc" style="color:@Model.DescriptionColor">@Html.Raw(_desc)</div>
+        </div>
+    </div>
+    <div class="btn-style" data-role="nothing">
+        <div class="ferme-notif" _id="card-per-@Model.Id" data-role="close">×</div>
+    </div>
+</div>
+<script>
+    $('.ferme-notif').on('click', function () {
+        var _id = this.getAttribute('_id');
+        $('#' + _id).hide(400);
+        setTimeout(function () {
+            document.getElementById(_id).remove();
+        }, 400);
+    });
+</script>

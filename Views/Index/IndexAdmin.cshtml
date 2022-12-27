@@ -1,0 +1,14 @@
+﻿@using genetrix.Models
+@model VariablGlobales
+@{
+    ViewBag.Title = "Tableau de bord administrateur";
+    ViewBag.pTitle = "Tableau de bord administrateur";
+    //ViewBag.pageTitle = (ViewBag.ModeName == genetrix.Contants.LAYOUT_VERTICAL) ? "Minible" : "Layouts";
+    //Layout = "~/Views/_Shared/Layouts/_layout_horizontal.cshtml";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h2>IndexAdmin</h2>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

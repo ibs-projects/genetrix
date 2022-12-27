@@ -1,0 +1,544 @@
+﻿@using genetrix.Models
+@model VariablGlobales
+@{
+    genetrix.Models.ApplicationDbContext db = new genetrix.Models.ApplicationDbContext();
+    string devise = Model.GetDevise().Count > 0 ? Model.GetDevise()[0] : "";
+    ViewBag.Title = "Tableau de bord";
+    ViewBag.pTitle = "Tableau de bord";
+    ViewBag.pageTitle = "Acceuil";// (ViewBag.ModeName == genetrix.Contants.LAYOUT_VERTICAL) ? "Minible" : "Layouts";
+    ViewBag.pageImage = "~/assets/images/IU/home.png";
+    string comp = ViewBag.comp + "";
+    string banqueName = "";
+    try
+    {
+        banqueName = Session["banqueName"].ToString();
+    }
+    catch (Exception)
+    { }
+}
+
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+
+<style>
+    .card-item {
+        min-height: 150px;
+        height: 150px;
+        border: 1px solid #5fcbcb;
+    }
+
+    .card-item1 {
+        border: 1px solid #5fcbcb
+    }
+
+    .card-item:hover {
+        box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+    }
+
+    .racourci-comp:hover {
+        background-color: rgb(174, 203, 55, 0.90);
+        height: 55px;
+        color: white
+    }
+</style>
+@*  card Statistique *@
+
+@{
+    if (string.IsNullOrEmpty(comp) || comp != "apurement")
+    {
+
+
+        <div class="row">
+
+            @{
+                var nbrBrouil = Model.GetDataByEtape(1000).Nbr;
+                var nbrAenvoyé = Model.GetDataByEtape(0).Nbr;
+                var nbrtransmi = Model.GetDataByEtape(-1).Nbr;
+                var nbr = nbrAenvoyé + nbrBrouil + nbrtransmi;
+            }
+            @*  *@
+            <a _action_requied_loader="0" href="@Url.Content("~/Dossiers/Index?st=local")" class="col-md-6 col-xl-4">
+                <div class="card card-item">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2">
+                                <div id="orders-chart1" style="padding-top:0px">
+                                    <p class="mdi mdi-folder-pound-outline icon0">
+                                    </p>
+                                    @*<img class="rounded avatar-xl" alt="100x100" style="height:60px;width:60px" src="~/assets/images/IU/aapurer.png" data-holder-rendered="true">*@
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@nbr</span></h4>
+                                <p class="text-muted mb-0" style="font-weight:bolder">Dossiers <span>@Session["client"]</span> </p>
+                            </div>
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                @{
+                                    //Notification
+                                    <span title="Dossiers au brouillon" class="racourci-comp hidden" href="brouil">
+                                        <span class="text-warning1 me-1"><i style="font:bolder" class="mdi mdi-folder-cog me-1"></i>@nbrBrouil @("Brouillon")</span>
+                                    </span>
+                                    <span title="Dossiers à envoyer à la banque" class="racourci-comp" href="assoum">
+                                        <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-cog-outline me-1"></i>@(nbrAenvoyé+nbrBrouil) </span><span style="text-transform:uppercase">à</span> envoyer
+                                    </span>
+                                    <span title="Dossiers rejetés" class="racourci-comp" href="rej">
+                                        &emsp;
+                                        <span class="@(nbrtransmi>0?"text-danger":"text-info1") me-1"><i style="font:bolder" class="mdi mdi-folder-alert-outline me-1"></i>@(nbrtransmi) </span>Rejetés
+                                    </span>
+                                }
+                        </div>
+                    </div>
+                </div>
+            </a> 
+
+            @{
+                var nbrEncour = Model.GetDataByEtapes(new int?[] { -2, -3, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 }).Nbr;
+                var nbrsoumis = Model.GetDataByEtapes(new int?[] { 1 }).Nbr;
+                var nbrValide = Model.GetDataByEtapes(new int?[] { 19, 20, 21 }).Nbr;
+                nbr = nbrEncour + nbrsoumis + nbrValide;
+            }
+            <a _action_requied_loader1="0" href="@Url.Content("~/Dossiers/Index?st=encours")" class="col-md-6 col-xl-4">
+                <div class="card card-item">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2 ">
+                                <div id="total-revenue-chart1">
+                                    <p class="mdi mdi-basket-unfill icon0"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@nbr</span></h4>
+                                <p class="text-muted mb-0" style="font-weight:bolder">Dossiers envoyés@*<span>@banqueName</span>*@</p>
+                            </div>
+                            @*<p class="text-muted mt-3 mb-0">
+                                    <span class="text-warning me-1"><i class="mdi mdi-alert me-1"></i>@info.NbrAnciens</span> @info.GetDureeString()
+                                </p>*@
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                @{
+                                    //Notification
+                                    <span title="Dossiers transmis" class="racourci-comp" href="soumis">
+                                        <span class="text-info me-1"><i class="mdi mdi-folder-clock-outline me-1"></i>@(nbrsoumis) </span>Non lus
+                                    </span>
+                                    <span title="Dossiers en cours" class="racourci-comp" href="encours">
+                                        <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-refresh-outline me-1"></i>@nbrEncour </span>En cours
+                                    </span>
+                                    <span title="Dossiers validés" class="racourci-comp" href="traite">
+                                        <span class="text-success me-1"><i style="font:bolder" class="uil uil-folder-check me-1"></i>@(nbrValide) </span>Validés
+                                    </span>
+
+                                }
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a> <!-- end col-->
+            @{
+                var nbrAapure = Model.GetDataByEtapes(new int?[] { 22, 23, -230, -250, 230, 231, -231, -232, 232, 250, -250 }).Nbr;
+                var nbrApure = Model.GetDataByEtape(24).Nbr;
+                var nbrEchu = Model.GetDataByEtape(25).Nbr;
+                nbr = nbrAapure + nbrApure + nbrEchu;
+            }
+            <a _action_requied_loader1="0" href="@Url.Content("~/Index/Index?st=apurement")" class="col-md-6 col-xl-4">
+                <div class="card  card-item">
+                    <div class="card-body">
+                        <div>
+                            <div class="float-end mt-2 ">
+                                <div id="total-revenue-chart1">
+                                    <p class="mdi mdi-folder-clock-outline icon0"></p>
+                                </div>
+                            </div>
+                            <div>
+                                <h4 class="mb-1 mt-1"><span data-plugin="counterup">@nbr</span></h4>
+                                <p class="text-muted mb-0"><span style="font-weight:bolder">Dossiers Apurements</span> </p>
+                            </div>
+                            <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                                @{
+                                    //Notification
+                                    <span title="Dossiers à apurer" class="racourci-comp" href="aapurer">
+                                        <span class="text-warning me-1"><i style="font:bolder" class="mdi mdi-folder-sync-outline me-1"></i>@nbrAapure </span>En cours
+                                    </span>
+                                    <span title="Dossiers échus" class="racourci-comp" href="echu">
+                                        <span class="text-danger me-1"><i style="font:bolder" class="mdi mdi-alert-remove-outline me-1"></i>@(nbrEchu) </span><span style="text-transform:uppercase">é</span>chus
+                                    </span>
+                                    <span title="Dossiers apurés" class="racourci-comp" href="apure">
+                                        <span class="text-success me-1"><i style="font:bolder" class="uil uil-folder-check me-1"></i>@(nbrApure) </span>Apurés
+                                    </span>
+                                }
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- end row-->
+        @* Card activite banquaires, information du compte *@
+        if (false)
+        {
+            <div class="row">
+                <div class="col-xl-8">
+                    <div class="card card-item1">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
+                                       data-bs-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">
+                                        <span class="fw-semibold">Trier par:</span> <span id="devise-lab" class="text-muted">@devise<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
+                                        @{
+                                            foreach (var item in Model.GetDevise())
+                                            {
+                                                <a class="dropdown-item devise" id="@item" href="#">@item</a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="card-title mb-4">Activités des banques</h4>
+
+                            <div class="mt-1">
+                                <ul class="list-inline main-chart mb-0">
+                                    <li class="list-inline-item chart-border-left me-0 border-0">
+                                        <h3 class="text-primary">$<span data-plugin="counterup">0</span><span class="text-muted d-inline-block font-size-15 ms-3">Monant</span></h3>
+                                    </li>
+                                    <li class="list-inline-item chart-border-left me-0">
+                                        <h3>
+                                            <span data-plugin="counterup">@Model.TotalDossiers</span><span class="text-muted d-inline-block font-size-15 ms-3">Dossiers</span>
+                                        </h3>
+                                    </li>
+                                    <li class="list-inline-item chart-border-left me-0">
+                                        <h3><span data-plugin="counterup">0</span>%<span class="text-muted d-inline-block font-size-15 ms-3">Pourcentage</span></h3>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-3" id="parent-graphe">
+                                <div id="sales-analytics-chart-client" class="apex-charts" dir="ltr"></div>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end col-->
+
+                <div class="col-xl-4">
+                    <div class="card card-item1 bg-primary">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-sm-9">
+                                    <p class="text-white font-size-18">Information sur le Compte</p>
+                                    <a _action_requied_loader="0" href=@Url.Content("~/clients/details?id=0000") class="btn btn-warning">Terminer la configurer de votre entreprise</a>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="mt-0 mt-sm-0">
+                                        <img src="~/assets/images/setup-analytics-amico.svg" class="img-fluid1" alt="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+
+                    <div class="card hidden">
+                        <div class="card-body">
+                            <div class="float-end">
+                                <div class="dropdown">
+                                    <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton1"
+                                       data-bs-toggle="dropdown" aria-haspopup="true"
+                                       aria-expanded="false">
+                                        <span class="fw-semibold">Trier par:</span> <span class="text-muted">Année<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                    </a>
+
+                                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                                        <a class="dropdown-item" href="#">Mois</a>
+                                        <a class="dropdown-item" href="#">Semaine</a>
+                                        <a class="dropdown-item" href="#">Année</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h4 class="card-title mb-4 hidden">Les banques les plus productives</h4>
+                            <div style="min-height:214px;display:none">
+                                @{
+                                    foreach (var item in Model.GetBanquesClient())
+                                    {
+                                        <div class="row align-items-center g-0 mt-3" title="@item.Banque">
+                                            <div class="col-sm-5">
+                                                <p class="text-truncate mt-1 mb-0"><i class="mdi mdi-circle-medium text-@item.CssCalssColor me-2"></i>@item.Banque  </p>
+                                            </div>
+                                            <div class="col-sm-7">
+                                                <div class="progress mt-1" style="height: 6px;">
+                                                    <div class="progress-bar progress-bar bg-@item.CssCalssColor @item.Percentage" role="progressbar"
+                                                         style="width: @(item.Percentage)%" aria-valuenow="45" aria-valuemin="0"
+                                                         aria-valuemax="@item.Percentage">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+
+                                }
+                            </div>
+                            @*@Html.Partial("_ProductionBanque", Model.GetBanquesClient())*@
+                        </div> <!-- end card-body-->
+                    </div> <!-- end card-->
+                </div> <!-- end Col -->
+            </div>
+
+        }
+
+        @* Card Derniers transferts *@
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-item1">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Tableau recapitulatif des transferts</h4>
+                        @{
+                            try
+                            {
+                                //if (!(bool)HttpContext.Current.Session["isAdmin"])
+                                {
+                                    <div>
+                                        @Html.Partial("~/Views/_Shared/PartialViews/Dossiers_Client.cshtml", Model.GetDossiers())
+                                    </div>
+                                }
+                            }
+                            catch (Exception)
+                            { }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- end row-->
+        @* Cards gestions, fournisseurs *@
+
+        <div class="row" style="">
+            <div class="col-xl-6">
+                <div class="card card-item1">
+                    <div class="card-body">
+                        <div class="float-end">
+                            <div class="dropdown">
+                                <a class=" dropdown-toggle" href="#" id="dropdownMenuButton2"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-muted">Tous<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton2">
+                                    @{
+                                        foreach (var item in Model.BanqueClients)
+                                        {
+                                            <a class="dropdown-item" href="#">@item.Site.Nom</a>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="card-title mb-4">Gestionnaires de la banque banques</h4>
+
+                        <div data-simplebar style="min-height: 200px;">
+                            <div class="table-responsive">
+                                <table class="table table-borderless table-centered table-nowrap">
+                                    <tbody>
+                                        @{
+                                            foreach (var item in Model.Gestionnaires)
+                                            {
+                                                <tr>
+                                                    <td style="width: 20px;"><img src="~/assets/images/IU/user.png" class="avatar-xs rounded-circle " alt="..."></td>
+                                                    <td>
+                                                        <h6 class="font-size-15 mb-1 fw-normal">@item.NomComplet</h6>
+                                                        <p class="text-muted font-size-13 mb-0"><i class="mdi mdi-phone"></i> @item.Tel | <span class="text-muted font-size-13 mb-0"><i class="mdi mdi-email"></i> <a _action_requied_loader="0" href=@Url.Action("Index", "mails")>@item.Email</a></span></p>
+                                                    </td>
+                                                    <td><span class="badge bg-soft-danger font-size-12 pl-3 pr-3">@item.Banque </span></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div> <!-- enbd table-responsive-->
+                        </div> <!-- data-sidebar-->
+                    </div><!-- end card-body-->
+                </div> <!-- end card-->
+            </div><!-- end col -->
+
+            <div class="col-xl-6">
+                <div class="card card-item1">
+                    <div class="card-body">
+                        <div class="float-end">
+                            <div class="dropdown">
+                                <a class=" dropdown-toggle" href="#" id="dropdownMenuButton2"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="text-muted">Tous<i class="mdi mdi-chevron-down ms-1"></i></span>
+                                </a>
+
+                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton2">
+                                    <a class="dropdown-item" href="#">Par pays</a>
+                                    <a class="dropdown-item" href="#">Par nom</a>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="card-title mb-4">Mes fournisseurs</h4>
+
+                        <div data-simplebar style="min-height: 200px;">
+                            <div class="table-responsive">
+                                <table class="table table-borderless table-centered table-nowrap">
+                                    <tbody>
+                                        @{
+                                            foreach (var item in Model.Fournisseurs)
+                                            {
+                                                <tr>
+                                                    <td><img src="~/assets/images/IU/user.png" class="avatar-xs rounded-circle " alt="..."></td>
+                                                    <td>
+                                                        <h6 class="font-size-15 mb-1 fw-normal">@(item.Nom)</h6>
+                                                        <p class="text-muted font-size-13 mb-0"><i class="mdi mdi-map-marker"></i> @item.Pays</p>
+                                                    </td>
+                                                    <td><span class="badge1 font-size-12"><i class="mdi mdi-phone"></i> @item.Tel1</span></td>
+                                                    <td><span class="badge1 font-size-12"><i class="mdi mdi-email"></i> @item.Email</span></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div> <!-- enbd table-responsive-->
+                        </div> <!-- data-sidebar-->
+                    </div><!-- end card-body-->
+                </div> <!-- end card-->
+            </div><!-- end col -->
+
+        </div>
+        <!-- end row -->
+
+    }
+    else
+    {
+        <div class="row">
+            @Html.Partial("~/Views/Index/ApurementClient.cshtml", Model)
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card card-item1">
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Tableau recapitulatif des transferts</h4>
+                        @{
+                            try
+                            {
+                                ViewBag.apurement = true;
+                                <div>
+                                    @Html.Partial("~/Views/_Shared/PartialViews/Dossiers_Client.cshtml", Model.GetDossiers(true))
+                                </div>
+                            }
+                            catch (Exception)
+                            { }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<a id="link-partial-docs" href="#"></a>
+<!-- end row -->
+<!-- JAVASCRIPT -->
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+<script>
+     @{
+        int annee = DateTime.Now.Year;
+    }
+    var year = '@(annee)';
+
+    $(document).ready(function () {
+        $('.racourci-comp').click(function (e) {
+            var _url = '@Url.Content("~/Dossiers/Index?st=")' + this.getAttribute("href");
+            var self = document.getElementById('link-partial-docs');
+            self.setAttribute("href", _url);
+            e.preventDefault(); // prevent default any way
+            self.click();
+        });
+
+        grapheInit(year);
+         //Traitement du dossier
+        $('.devise').click(function () {
+            grapheInit(year);
+        })
+
+    });
+
+    function grapheInit(year) {
+        devise = $('#devise-lab').text();
+        loader();
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            cache: false,
+            url: '@Url.Content("~/Dossiers/GrapheInit")',
+            data: { annee: year, devise: devise },
+            success: function (response, textStatus, jqXHR) {
+                var _datas = [];
+                var donnees = [];
+                var labels = [];
+                $.each(response, function (index, item) {
+                    try {
+                        var dd = { name: response[index].NomBanque, type: "column", data: response[index].Donnees };
+                        donnees.push(dd);
+                    } catch (e) {
+
+                    }
+                });
+
+                options = {
+                    chart: { height: 339, type: "line", stacked: !1, toolbar: { show: !1 } },
+                    stroke: { width: [0, 2, 4], curve: "smooth" },
+                    plotOptions: { bar: { columnWidth: "30%" } },
+                    colors: ["#5b73e8", "#dfe2e6", "#f1b44c"],
+                    series: donnees,
+                    fill: {
+                        opacity: [.85, .25, 1],
+                        gradient: { inverseColors: !1, shade: "light", type: "vertical", opacityFrom: .85, opacityTo: .55, stops: [0, 100, 100, 100] }
+                    }, labels: ["01/01/" + year, "02/01/" + year, "03/01/" + year, "04/01/" + year, "05/01/" + year, "06/01/" + year, "07/01/" + year, "08/01/" + year, "09/01/" + year, "10/01/" + year, "11/01/" + year, "12/01/" + year],
+                    markers: { size: 0 }, xaxis: { type: "datetime" }, yaxis: { title: { text: "Montant" } },
+                    tooltip: { shared: !0, intersect: !1, y: { formatter: function (e) { return void 0 !== e ? e.toFixed(0) + " " + devise : e } } },
+                    grid: { borderColor: "#f1f1f1" }
+                };
+                (chart = new ApexCharts(document.querySelector("#sales-analytics-chart-client"), options)).render();
+                hideLoader();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                hideLoader();
+            }
+        });
+    }
+
+    function loader() {
+        try {
+                var img = document.getElementById("loarder-img");
+                var pg = document.getElementById("sales-analytics-chart-client");
+                img.setAttribute("width", "60");
+                img.setAttribute("height", "60");
+                //img.style.position = 'absolute';
+                img.style.left = (pg.offsetWidth / 2 - 30) + 'px'
+                img.style.top = (pg.offsetHeight / 2 - 30) + 'px'
+                img.setAttribute('src', '@(Url.Content("~/assets/images/IU/loading.gif"))');
+                pg.appendChild(img);
+                img.style.display = 'initial';
+        } catch (e) {
+
+        }
+    }
+
+    function hideLoader() {
+        try {
+            var img = document.getElementById("loarder-img");
+            var pg = document.getElementById("sales-analytics-chart-client");
+            img.style.display = 'none';
+            pg.removeChild(img);
+        } catch (e) {
+
+        }
+    }
+</script>

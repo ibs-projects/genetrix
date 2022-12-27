@@ -1,0 +1,83 @@
+﻿@model IEnumerable<genetrix.Models.PubItem>
+
+<div>
+
+    <div class="float-end hidden">
+        <form class="d-inline-flex mb-3">
+            <label class="form-check-label my-2 me-2" for="order-selectinput">Orders</label>
+            <select class="form-select" id="order-selectinput">
+                <option selected>All</option>
+                <option value="1">Active</option>
+                <option value="2">Unpaid</option>
+            </select>
+        </form>
+
+    </div>
+    <a href="@Url.Content("~/PubItems/create")" class="btn btn-success waves-effect waves-light mb-3"><i class="mdi mdi-chat-plus me-1"></i> Publier</a>
+</div>
+<div class="table-responsive mb-4">
+    <table class="table table-centered datatable dt-responsive nowrap table-card-list" style="border-collapse: collapse; border-spacing: 0 12px; width: 100%;">
+        <thead>
+            <tr class="bg-transparent">
+                <th>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Titre)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.ePubItemType)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateDebut)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateFin)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ChaqueHeure)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DureeApp)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DuréeAtt)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Titre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ePubItemType)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateDebut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateFin)
+                    </td><td>
+                        @Html.DisplayFor(modelItem => item.ChaqueHeure)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DureeApp)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DuréeAtt)
+                    </td>
+                    <td>
+                        <a href="#" id="conf-@item.Id" _dateDebut="@item.DateDebut" _dateFin="@item.DateFin" _heureDebut="@item.HeureDebut" _heureFin="@item.HeureFin" _chaqueHeure="@item.ChaqueHeure" _dureeApp="@item.DureeApp" _dureeAtt="@item.DuréeAtt" _id="@item.Id" _active="@item.Acive" class="configurer">Configurer</a> 
+                    </td>
+                </tr>
+            }
+        </table>
+</div>

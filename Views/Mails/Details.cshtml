@@ -1,0 +1,186 @@
+﻿@model genetrix.Models.Mail
+@{
+    ViewBag.Title = "Mail";
+    ViewBag.pTitle = "Mail";
+    ViewBag.pageTitle = "Mail";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-12">
+        <!-- Left sidebar -->
+        <div class="email-leftbar card">
+            <button type="button" class="btn card-header1 text-white btn-block waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#modal-new-mail">
+                Nouveau
+            </button>
+            <div class="mail-list mt-4">
+                <a href=@Url.Content("~/mails/Index?") class="@(string.IsNullOrEmpty(ViewBag.st)?"active":"")"><i class="mdi mdi-email-mark-as-unread font-size-16 align-middle me-2"></i>Tous</a>
+                <a href=@Url.Content("~/mails/Index?st=recus") class="@(ViewBag.st=="recus"?"active":"")">
+                    <i class="mdi mdi-email-outline font-size-16 align-middle me-2"></i> Mails reçus
+                    @*<span class="ms-1 float-end">(1)</span>*@
+                </a>
+                <a href=@Url.Content("~/mails/Index?st=envoi") class="@(ViewBag.st=="envoi"?"active":"")"><i class="mdi mdi-email-check-outline font-size-16 align-middle me-2"></i>Mails envoyés</a>
+                <a href=@Url.Content("~/mails/Index?st=brouil") class="@(ViewBag.st=="brouil"?"active":"")"><i class="mdi mdi-file-outline font-size-16 align-middle me-2"></i>Brouillon</a>
+                <a href=@Url.Content("~/mails/Index?st=corb") class="@(ViewBag.st=="corb"?"active":"")"><i class="mdi mdi-trash-can-outline font-size-16 align-middle me-2"></i>Corbeille</a>
+            </div>
+
+        </div>
+        <!-- End Left sidebar -->
+        <!-- Right Sidebar -->
+        <div class="email-rightbar mb-3">
+
+            <div class="card">
+                <div class="btn-toolbar p-3" role="toolbar">
+                    <div class="btn-group me-2 mb-2 mb-sm-0">
+                        <button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-inbox"></i></button>
+                        <button type="button" class="btn btn-primary waves-light waves-effect"><i class="fa fa-exclamation-circle"></i></button>
+                        <a href=@Url.Content("~/mails/delete/"+Model.Id) class="btn btn-primary waves-light waves-effect"><i class="far fa-trash-alt"></i></a>
+                    </div>
+                    <div class="btn-group me-2 mb-2 mb-sm-0">
+                        <button type="button" class="btn btn-primary waves-light waves-effect dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-folder"></i> <i class="mdi mdi-chevron-down ms-1"></i>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Team Manage</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body font-size-12">
+                    @{
+                        @*if (Model.ApplicationUser != null)
+                            {
+                                <div class="media mb-4">
+                                    <img class="d-flex me-3 rounded-circle avatar-sm" src="@(Model.ApplicationUser.GetImageProfile)" alt="Generic placeholder image">
+                                    <div class="media-body">
+                                        <h5 class="font-size-14 my-1">@(Model.ApplicationUser.NomComplet)</h5>
+                                        <small class="text-muted">@(Model.ApplicationUser.Email)</small>
+                                    </div>
+                                </div>
+
+                            }*@
+                    }
+
+                    <h5 class="mt-0">@Html.Raw(Model.Objet) <span style="float:right;font-size:small" class="text-muted">@(Model.Date!=null?Model.Date.Value.ToString("dd/mm/yyyy") :"")</span></h5>
+
+                    <div style="font-size:1em!important;">
+                        <p>@Html.Raw(Model.Message)</p>
+                    </div>
+                    <hr />
+                    <p>Fichiers</p>
+                    @foreach (var item in Model.GetFichierMails)
+                    {
+                        <a href="#" _id="@item.Id" class="btn btn-link filex">@item.Name</a>
+                    }
+                    <hr />
+                    @{
+                        if (false)
+                        {
+                            <div class="row">
+                                <div class="col-xl-2 col-6">
+                                    <div class="card border shadow-none">
+                                        <img class="card-img-top img-fluid" src="~/assets/images/small/img-3.jpg" alt="Card image cap">
+                                        <div class="py-2 text-center">
+                                            <a href="" class="fw-medium">Download</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+                    <a href="" class="btn btn-secondary waves-effect mt-4"><i class="mdi mdi-reply"></i> Répondre</a>
+                </div>
+
+            </div>
+        </div>
+        <!-- card -->
+
+    </div>
+    <!-- end Col-9 -->
+
+</div>
+<!-- end row -->
+<!-- Modal -->
+<div class="modal fade" id="composemodal" tabindex="-1" role="dialog" aria-labelledby="composemodalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="composemodalTitle">New Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <input type="email" class="form-control" placeholder="To">
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="text" class="form-control" placeholder="Subject">
+                    </div>
+                    <div class="mb-3">
+                        <form method="post">
+                            <textarea id="email-editor" name="area"></textarea>
+                        </form>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send <i class="fab fa-telegram-plane ms-1"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a class="hidden" id="ouvre-modal-file" data-bs-toggle="modal" data-bs-target="#modal-file-viewer"></a>
+<!-- Modal file viewer -->
+<div class="modal fade" id="modal-file-viewer" tabindex="-1" role="dialog" aria-labelledby="composemodalTitlev" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe src="" id="iframe-viewAutreDoc" class="loader-none"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!--tinymce js-->
+<script src="~/assets/libs/tinymce/tinymce.min.js"></script>
+
+<!-- email editor init -->
+<script src="~/assets/js/pages/email-editor.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+<script>
+    //modal action
+    $('#modal-new-mail').click(function () {
+
+    });
+    $('.filex').click(function () {
+        var _url = '@Url.Content("~/mails/GetPDF?idDoc=")' + this.getAttribute('_id');
+        $('#iframe-viewAutreDoc').attr('src', '');
+        $('#iframe-viewAutreDoc').attr('src', _url);
+    });
+    var wph = Number(window.innerHeight + 300);
+    document.getElementById('iframe-viewAutreDoc').onload = function () {
+        this.style = "height:" + wph + "px;width:100%";
+        document.getElementById('ouvre-modal-file').click();
+    };
+</script>

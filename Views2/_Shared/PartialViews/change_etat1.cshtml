@@ -1,0 +1,159 @@
+﻿
+<script>
+    $('.change-etat').click(function () {
+            var _message = "",itemSelectionés="";
+            try {
+                if ($('#raison-rejet').val()) {
+                    _message = $('#raison-rejet').val();
+                }
+                if ($('#note-renvoi').val()) {
+                    _message = $('#note-renvoi').val();
+                }
+            } catch (e) {
+
+            }
+            try {
+                if (_message) {
+                    itemSelectionés = $('#items-rejet').val();
+                }
+            } catch (e) {
+
+            }
+
+        var _etat = this.getAttribute("value"), _idDossier = '@Model.Dossier_Id', _Estgroupe = false, _idRef = null, _message = _message;
+            var info = "";
+            switch (_etat) {
+                case '232':
+                case '15':
+                    info = 'Etes-vous sûr de vouloir transmettre ce dossier pour validation à la BEAC?';
+                    break;
+                default:
+                    info = 'Etes-vous sûr de vouloir exécuter cette opération?';
+                    break;
+            }
+            if (confirm(info)) {
+                //modification du curseur
+                this.style = 'cursor:wait';
+                //Affiche loader
+                var ii = document.createElement('i');
+                ii.classList.add("mdi");
+                ii.classList.add("mdi-spin");
+                ii.classList.add("mdi-loading");
+                try {
+                    if (this.tagName=='INPUT') {
+                        this.parentElement.insertBefore(ii, this);
+                        this.style.display = 'none';
+                    }
+                } catch (e) {
+
+                }
+                var childs1 = this.childNodes;
+                for (var i = 0; i < childs1.length; i++) {
+                    if (childs1[i].tagName=="I" || childs1[i].tagName=="i") {
+                        childs1[i].style.display = 'none';
+                        this.insertBefore(ii, childs1[i]);
+                    }
+                }
+
+                // modification necessitant une date
+                try {
+                    if (this.getAttribute("modif-date")) {
+                        //document.getElementById("show-modal-date-motif").click();
+                    }
+                } catch (e) {
+
+                }
+                var _date = $('#date-modif').val();
+                var moi = this;
+                try {
+                    $(this.id + "-0").hide();
+                    $(this.id + "-1").show();
+                } catch (e) {
+
+                }
+                var idOpSwft = 0;
+                try {
+                    if (this.getAttribute('href1')) {
+                        idOpSwft = this.getAttribute('idOpSwft');
+                        if (this.getAttribute('etat')) {
+                            _etat = this.getAttribute('etat');
+                        }
+                    }
+                } catch (e) {
+
+                }
+                try {
+                    document.getElementById('show-loader').click();
+                } catch (e) {
+
+                }
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    cache: false,
+                    url: '@Url.Content("~/Dossiers_banque/ModifEtatDossierJS")',
+                    data: { etat: _etat, idDossier: _idDossier, Estgroupe: _Estgroupe, idRef: _idRef, message: _message, date: _date, idOpSwft: idOpSwft, itemsRejet: itemSelectionés },
+                    success: function (response, textStatus, jqXHR) {
+                        var _eta = 0, idDoss = 0;
+                        if (response.idDossier<0) {
+                            alert(response.result);
+                        }
+                        try {
+                           // _eta = response[0].split('_')[1];
+                            _eta = response.etat;
+                        } catch (e) {
+
+                        }
+                        try {
+                            idDoss = response.idDossier;
+                        } catch (e) {
+
+                        }
+                        try {
+                                document.getElementById("change-page").click();
+                                if (true)//_eta < 0 || _eta == 3 || _eta == 5 || _eta == 8 || _eta == 10)
+                                {
+                                    var url = '@Url.Content("~/dossiers_banque/index?"+Session["composant"])';
+                                    if (_eta == 231) {
+                                        url = '@Url.Content("~/dossiers_banque/Details?id=")' + idDoss;
+                                    }
+                                    window.location.replace("" + url);
+                                } else {
+                                    location.reload();
+                                }
+                        } catch (e) {
+
+                        }
+                        try {
+                            $(moi.id + "-0").hide();
+                            $(moi.id + "-1").show();
+                        } catch (e) {
+
+                        }
+                        try {
+                            //Actions liste dossiers
+                            /*window.parent.document.location.reload();*/
+                            window.parent.document.getElementById('iframe-model-action').setAttribute('etat', '1');
+                            document.location.reload();
+                        } catch (e) {
+                            window.location.replace("" + url);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error - ' + errorThrown);
+                        document.location.reload();
+                        try {
+                            $(moi.id + "-0").hide();
+                            $(moi.id + "-1").show();
+                        } catch (e) {
+
+                        }
+                    }
+                });
+            } else {
+                //location.reload();
+                //alert("Annulation de l'opération en cours...");
+            }
+        });
+
+</script>

@@ -1,0 +1,66 @@
+﻿@model genetrix.Models.StatutDossier
+
+
+@{
+    ViewBag.Title = "Statut";
+    ViewBag.pTitle = "Détails du status";
+    ViewBag.pageTitle = "Status";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EtatDossier)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EtatDossier)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Message)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Message)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Titre)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Titre)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Couleur)
+                    </dt>
+                    <dd style="color:white;background-color:rgb(@Model.Couleur.R, @Model.Couleur.G, @Model.Couleur.B, @Model.Couleur.A)">
+                        @Html.DisplayFor(model => model.Couleur)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Image)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Image)
+                    </dd>
+
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editer", "Edit", new { id = Model.Statut_Id }) |
+    @Html.ActionLink("Voir la liste", "Index")
+</p>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

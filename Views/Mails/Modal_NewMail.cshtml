@@ -1,0 +1,36 @@
+﻿@using genetrix.Models;
+@*@model IEnumerable<genetrix.Models.Composant>*@
+@{ 
+    string url = ViewBag.estStructure == null ? "~/XtraRoles/AddComposant" : "~/Structures/AddComposant";
+    var compos = new List<Composant>();
+    try
+    {
+        foreach (Composant item in ViewBag.Composants)
+        {
+            compos.Add(item);
+        }
+    }
+    catch (Exception)
+    {}
+}
+
+<div class="modal fade" id="modal-new-mail" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;">
+        <div class="modal-content p-0" style="text-align: left !important; position: center; border:3px solid #2689a6; background-color: #2689a6 ">
+            <div class="modal-header m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Nouveau message</h5>
+                <button type="button" class="btn-close bg-white" id="btn-ferme" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body m-0" style="overflow-x:hidden">
+                <iframe id="ifram-new-mail" class="loader-none" src="" style="width:100%;height:450px;display:none"></iframe>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    document.getElementById('ifram-new-mail').onload = function () {
+        this.style = "height:450px;width:100%";
+        this.parentElement.style.display = 'initial';
+    };
+</script>

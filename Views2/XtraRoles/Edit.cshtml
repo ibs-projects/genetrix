@@ -1,0 +1,196 @@
+﻿@model genetrix.Models.XtraRole
+
+@{
+    ViewBag.Title = "Rôle";
+    ViewBag.pTitle = "Edition du rôle";
+    ViewBag.pageTitle = "Rôle";
+    ViewBag.pageImage = "~/assets/images/IU/role.png";
+    ViewBag.RoleId= Model.RoleId;
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">
+                Rôle
+            </div>
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.RoleId)
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.IdStructure, "IdStructure", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.DropDownList("IdStructure", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.IdStructure, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.EstAdmin, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.EstAdmin)
+                                @Html.ValidationMessageFor(model => model.EstAdmin, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group mb-3">
+                        @Html.LabelFor(model => model.NiveauDossier, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.NiveauDossier, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NiveauDossier, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirDossiersAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirDossiersAutres)
+                                @Html.ValidationMessageFor(model => model.VoirDossiersAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirUsersAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirUsersAutres)
+                                @Html.ValidationMessageFor(model => model.VoirUsersAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.VoirClientAutres, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.VoirClientAutres)
+                                @Html.ValidationMessageFor(model => model.VoirClientAutres, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>                   
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.EstBackOffice, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-10">
+                            <div class="checkbox">
+                                @Html.EditorFor(model => model.EstBackOffice)
+                                @Html.ValidationMessageFor(model => model.EstBackOffice, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        <div class="form-group mb-3 mt-3">
+                            <button type="submit" value="Enregistrer" class="btn btn-outline-info">
+                                <i class="far fa-save me-2"></i>
+                                Enrégistrer
+                            </button>
+                        </div>
+                    </div>
+
+
+                </div>
+                }
+            </div>
+
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#uti" role="tab">
+                            <span class="d-block d-sm-none1"><i class="fas fa-user"></i></span>
+                            <span class="d-none d-sm-block">Utilisateurs</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#enti" role="tab">
+                            <span class="d-block d-sm-none1"><i class="fas fa-home"></i></span>
+                            <span class="d-none d-sm-block">Permitions entitées</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-bs-toggle="tab" href="#compo" role="tab">
+                            <span class="d-block d-sm-none1"><i class="fas fa-archway"></i></span>
+                            <span class="d-none d-sm-block">Permitions composants</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content p-3 text-muted">
+                    <div class="tab-pane active" id="uti" role="tabpanel">
+                        <div class="card border border-primary">
+                            <div class="card-body bg-gradient-info">
+                                <h3 class="text-white">Utilisateurs</h3>
+                                <div class="mt-0">
+                                    @Html.Partial("~/Views/_Shared/PartialViews/Utilisateurs_Role.cshtml", Model.Users)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="enti" role="tabpanel">
+                        <h3 class="text-white">Entités</h3>
+                        <div class="col-md-12">
+                            <div class="card border border-primary">
+                                <div class="card-body bg-gradient-info">
+                                    <div class="mt-0">
+                                        @Html.Partial("~/Views/_Shared/PartialViews/Entitee_Role.cshtml", Model.GetEntitee_Roles)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="compo" role="tabpanel">
+                        <div class="card border border-primary">
+                            <div class="card-body bg-gradient-info">
+                                <h3 class="text-white">Composants</h3>
+                                <div class="mt-0">
+                                    @using genetrix.Models;
+                                    @{
+                                        List<IHM> iHMs = new List<IHM>();
+                                        foreach (var item in ViewBag.ihms)
+                                        {
+                                            try
+                                            {
+                                                iHMs.Add(item as IHM);
+                                            }
+                                            catch (Exception)
+                                            { }
+                                        }
+                                    }
+                                    @Html.Partial("~/Views/_Shared/PartialViews/Composants_Role.cshtml", iHMs)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Voir la liste", "Index")
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

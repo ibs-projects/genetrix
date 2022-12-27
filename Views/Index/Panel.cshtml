@@ -1,0 +1,260 @@
+﻿
+@{
+    string username = "";
+    try
+    {
+        username = (string)Session["userName"];
+    }
+    catch (Exception)
+    { }
+    ViewBag.Title = "Portail principal";
+    Layout = "~/Views/_Shared/_BlankLayout.cshtml";
+    int nbrComposants = 0; string rowItems = "col-xl-8 offset-2";
+    try
+    {
+        nbrComposants = int.Parse("" + ViewBag.userEtape);
+        if (nbrComposants == 1)
+        {
+            rowItems = "col-xl-4";
+        }
+        else if (nbrComposants == 3)
+        {
+            rowItems = "col-xl-6";
+        }
+        else if (nbrComposants == 5)
+        {
+            rowItems = "col-xl-6 offset-2";
+        }
+    }
+    catch (Exception)
+    { }
+}
+<style>
+    .maintenance-box {
+        min-height: 200px;
+        height: 200px;
+        cursor: pointer;
+    }
+
+        .maintenance-box:hover {
+            /*-ms-transform: rotate(7deg);*/ /* IE 9 */
+            /*-webkit-transform: rotate(7deg);*/ /* Safari */
+            /*transform: rotate(7deg);*/
+            border: 1px solid #BFBFBF;
+            box-shadow: 10px 10px 5px #aaaaaa;
+            background-color: white;
+        }
+
+    .border-primary:hover {
+        background-color: rgb(75, 134, 216, 0.31);
+    }
+
+    .border-warning:hover {
+        background-color: rgb(245, 219,79, 0.52);
+    }
+
+    .border-success:hover {
+        background-color: rgb(20, 157, 44, 0.32);
+    }
+
+    .border-danger:hover {
+        background-color: rgb(255,0,0, 0.29);
+    }
+
+    body {
+        background-color: white !important;
+    }
+
+    body {
+        background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
+        height: 100vh;
+    }
+
+    @@keyframes gradient {
+        0% {
+            background-position: 0% 50%;
+        }
+
+        50% {
+            background-position: 100% 50%;
+        }
+
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+</style>
+@*
+    //exemple donnée panel=40,4,2,3:15,4,5,6:16,1,2,4
+    // string[] tab=panel.split(':');
+    //tab[0]=40,4,2,3 avec 40 n° composant, 4, 2, 3 l'etape des dossiers prise en charge
+*@
+<div class="" style="height:50px;position: fixed; top: 0; width: 100%;">
+    <a href="javascript:document.getElementById('logoutForm').submit()" class="" style="margin:10px;float:right"><i class="btn btn-primary mdi mdi-logout"></i> Deconnexion</a>
+</div>
+<div class="my-5 pt-sm-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="home-wrapper" style="margin-top:-30px">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4 col-sm-5">
+                            <div class="maintenance-img">
+                                <img src="~/assets/images/logo/logo-dark1.png" alt="" class="img-fluid mx-auto d-block">
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="mt-5">Bienvue dans le module gestion de transferts <a class="btn btn-default" href="@Url.Content("~/index/indexbanque")" title="Rerour module gestion de transfert"><i class="mdi mdi-subdirectory-arrow-right"></i> Retour</a></h4>
+                    <p class="">Utilisateur: <span class="text-success">@username</span></p>
+                    <div>
+                        <a href="@Url.Content("~/index/indexbanque?panel=11,12,13,14&ges=Gestion%20des%20apurements&acc=Gestion%20des%20apurements")" class="btn btn-light p-2"><i class="mdi mdi-folder-alert"></i> Gestion des apurements</a>
+                        <a href="@Url.Content("~/FileManage/BindingToHierarchicalStructure")" class="btn btn-light p-2" style="min-width:180px"><i class="mdi mdi-archive" style="margin-right:10px"></i> Archivage</a>
+                    </div>
+                    <hr class="text-white" style="height:10px;width:200%;margin-left:-25%;margin-right:-25%" />
+                    <script>
+                        function goBack() {
+                            //window.history.back();
+                            //location.reload();
+                            location.replace(document.referrer);
+                        }
+                    </script>
+                    <div class="row">
+                        @{
+                            if (nbrComposants < 5)
+                            {
+                                for (int i = nbrComposants; i <= 5; i++)
+                                {
+                                    if (i == 1)
+                                    {
+                                        <div class="@rowItems">
+                                            @*1_2,-2,3*@
+                                            @* 1 dossiers reçus: 2 dossiers en cours, -2 rejeté: 14 dossiers transmis  *@
+                                            @*<div id="1,1:2,2:15,-2:14,3,4,5,6,7,8,9" class="card card-item mt-4 maintenance-box border border-2 border-primary">*@
+                                            <div id="1,2,17,19" info="Accueil agence" info2="agence" class="card card-item mt-4 maintenance-box border border-2 border-primary" style="background-color:#2689a6">
+                                                <div class="card-body p-4">
+                                                    <div class="avatar-sm mx-auto mb-4">
+                                                        <div class="avatar-title rounded-circle bg-soft-primary text-primary font-size-20">
+                                                            <i class="uil uil-cloud-wifi"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="font-size-15 text-uppercase  text-white" style="font:bolder">Agence</h5>
+                                                    <p class="text-muted mb-0 tt">
+                                                        Visualisalez tous le workflord du dossier, de l'agence à la BEAC.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    if (i == 3)
+                                    {
+                                        <div class="@rowItems">
+                                            <div id="3,4,16,20" info="Accueil conformité" info2="Conformité" class="card card-item mt-4 maintenance-box  border border-2 border-success" style="background-color:#8aa7b3">
+                                                <div class="card-body p-4">
+                                                    <div class="avatar-sm mx-auto mb-4">
+                                                        <div class="avatar-title rounded-circle bg-soft-primary text-primary font-size-20">
+                                                            <i class="uil uil-clock"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="font-size-15 text-uppercase  text-white" style="font:bolder">
+                                                        Conformité
+                                                    </h5>
+                                                    <p class="text-muted mb-0">
+                                                        Vueille sur la conformité des dossiers
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    if (i == 5)
+                                    {
+                                        <div class="@rowItems">
+                                            <div id="5,6,7,8,9,10" info="Accueil service transfert" info2="Service transfert" class="card card-item mt-4 maintenance-box  border border-2 border-danger" style="background-color:#2689a6">
+                                                <div class="card-body p-4">
+                                                    <div class="avatar-sm mx-auto mb-4">
+                                                        <div class="avatar-title rounded-circle bg-soft-primary text-primary font-size-20">
+                                                            <i class="uil uil-envelope-alt"></i>
+                                                        </div>
+                                                    </div>
+                                                    <h5 class="font-size-15 text-uppercase text-white">
+                                                        Service transfert
+                                                    </h5>
+                                                    <p class="text-muted mb-0">
+                                                        Transmis les dossiers à la BEAC
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <h1 class="text-white">Bienvenue au service transfert</h1>
+                                <a class="hidden" id="stf" href="@Url.Content("~/index/indexbanque?panel=5,6,7,8,9,10&acc=Accueil%20service%20transfert&struc=Service%20transfert")">content</a>
+                                <script>
+                                    document.getElementById('stf').click();
+                                </script>
+                            }
+                        }
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end container -->
+</div>
+
+@{
+    using (Html.BeginForm("LogOff", "auth", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+    {
+        @Html.AntiForgeryToken()
+    }
+}
+
+<a href="@Url.Content("~/index/indexbanque?panel=")" id="link-sub" class="hidden"></a>
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- owl.carousel js -->
+<script src="~/assets/libs/owl.carousel/owl.carousel.min.js"></script>
+<!-- init js -->
+<script src="~/assets/js/pages/auth-carousel.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $('.maintenance-box').click(function () {
+        var url = document.getElementById("link-sub").getAttribute("href");
+        var info = this.getAttribute("info");
+        var info2 = this.getAttribute("info2");
+        url += this.id + "&acc=" + info + "&struc=" + info2;
+        document.getElementById("link-sub").setAttribute("href", url);
+        document.getElementById("link-sub").click();
+    });
+</script>
+<script>
+    $('.card-item').click(function () {
+         var img = document.createElement("img");
+        img.setAttribute("width", "50");
+        img.setAttribute("height", "50");
+        img.style.position = 'absolute';
+        img.style.left = (this.offsetWidth / 2-25) + 'px'
+        img.style.top = (this.offsetHeight / 2-25) + 'px'
+        img.setAttribute('src', '@(Url.Content("~/assets/images/IU/loading.gif"))');
+        this.appendChild(img);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("body").css({ "overflow": "hidden" });
+    });
+</script>

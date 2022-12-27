@@ -1,0 +1,177 @@
+﻿@model genetrix.Models.DFX
+
+
+@{
+    ViewBag.Title = "DFX";
+    ViewBag.pTitle = "Suppression du DFX";
+    ViewBag.pageTitle = "DFX";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Banque.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Banque.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NumeroRef)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumeroRef)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateReception)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateReception)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CompteBEACEditer)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CompteBEACEditer)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.BanqueDomiciliaire)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.BanqueDomiciliaire)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Pays)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Pays)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Ville)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Ville)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.CodeSwift)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.CodeSwift)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.IdCompteAcrediter)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.IdCompteAcrediter)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Signataire1)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Signataire1)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Signataire2)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Signataire2)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Signataire3)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Signataire3)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Signataire4)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Signataire4)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NOTIFICATION)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NOTIFICATION)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Numero)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Numero)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NumeroAnnexe)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumeroAnnexe)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateDebut)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateDebut)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateFin)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateFin)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+

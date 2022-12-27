@@ -1,0 +1,375 @@
+﻿@{
+    ViewBag.Title = "Reporting des transferts";
+    ViewBag.pTitle = "Reporting des transferts";
+    ViewBag.pageTitle = "Reporting des transferts";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+
+<style>
+    .col-4 {
+        margin-bottom: 18px;
+    }
+
+    .modal-body {
+        font-size: 14px;
+        color: blue;
+    }
+
+    ._legende {
+        cursor: pointer;
+    }
+
+    .mt_17 {
+        margin-top: -17px;
+    }
+
+    #minmax:hover {
+        background-color: #f5c9ac;
+        color: black;
+    }
+</style>
+<link href="~/assets/libs/ion-rangeslider/css/ion.rangeSlider.min.css" rel="stylesheet" type="text/css" />
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1 text-white">
+                Reporting des transferts : filtres d'extraction
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4">
+                        <label for="sel_agences"><i class="mdi mdi-bank-minus"></i> Agence</label>
+                        <select class="form-control" id="sel_agences" name="sel_agences">
+                            <option value="value"></option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="sel_gestionnaires" style="font-weight:bold"><i class="mdi mdi-account-tie-outline"></i> Gestionnaire</label>
+                        <select class="form-control" id="sel_gestionnaires" name="sel_gestionnaires">
+                            <option value=""></option>
+                            @{
+                                foreach (var item in ViewBag.agents)
+                                {
+                                    <option value="@(item.Id)">@(item.NomComplet)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <label for="sel_clients" style="font-weight:bold"><i class="mdi mdi-account-supervisor"></i> Client</label>
+                        <select class="form-control" id="sel_clients" name="sel_clients">
+                            <option value=""></option>
+                            @{
+                                foreach (var item in ViewBag.Clients)
+                                {
+                                    <option value="@(item.Id)">@(item.Nom)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <fieldset class="border border-1 p-1 mt-4">
+                    <legend class="_legende mdi mdi-chevron-right-box ouvre" _id="pan-1" style="margin-top:-15px;font-size:1em;font-weight:bolder"><span style="background-color: white;">&emsp; Details du dossiers</span></legend>
+                    <div class="row mt-2 pan-actions" id="pan-1" style="padding-bottom:0px">
+                        <div class="col-4 ligne1">
+                            <label for="sel_fournisseurs"><i class="mdi mdi-account"></i> Fournisseur</label>
+                            <select class="form-control" id="sel_fournisseurs" name="sel_fournisseurs">
+                                <option value="value"></option>
+                            </select>
+                        </div>
+                        <div class="col-4 ligne1">
+                            <label for="sel_devises" style="font-weight:bold"><i class="mdi mdi-currency-eur"></i> Devise</label>
+                            <select class="form-control" id="sel_devises" name="sel_devises">
+                                <option value=""></option>
+                                @{
+                                    foreach (var item in ViewBag.DevisesMonetaire)
+                                    {
+                                        <option value="@(item.Id)">@(item.Nom)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4 ligne1" id="pan-montant">
+                            <div class="mt_17" id="pan-minmax">
+                                <div class="col-12 minmax mt-2">
+                                    <label for="inp_montant_min" id="minmontant-lab" style="font-weight:bold"><i class="mdi mdi-numeric"></i> Montant </label><span id="minmax" class="btn mdi mdi-plus affiche"></span>
+                                    <input type="text" id="inp_montant_min" class="form-control valided" name="inp_montant_min" value="" />
+                                    <span class="text-danger" id="lab_montant_min"></span>
+                                </div>
+                                <div class="col-6 minmax" id="maxmontant" style="display:none;margin-top:17px">
+                                    <label for="inp_montant_max" style="font-weight:bold"><i class="mdi mdi-numeric"></i> Montant maximum</label>
+                                    <input type="text" id="inp_montant_max" class="form-control valided" name="inp_montant_max" value="" />
+                                    <span class="text-danger" id="lab_montant_max"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border border-1 p-1 mt-4">
+                    <legend class="_legende mdi mdi-chevron-right-box" _id="pan-10" style="margin-top:-15px;font-size:1em;font-weight:bolder"> <span style="background-color: white;">&emsp; Période de traitement</span></legend>
+                    <div class="mt-2 pan-actions" id="pan-10" style="padding-bottom:0px;margin-top:15px;padding:8px">
+                        <span>&bull; Date de début</span>
+                        <div class="row" style="margin-top: 15px; padding-left: 25px ">
+                            <div class="col-4">
+                                <label for="inp_jour_trait1"><i class="fa fa-calendar"></i> Jour</label>
+                                <input type="number" id="inp_jour_trait1" min="1" max="31" class="form-control" name="inp_jour_trait1" value="" />
+                            </div>
+                            <div class="col-4">
+                                <label for="inp_mois_trait1"><i class="fa fa-calendar"></i> Mois</label>
+                                <select class="form-control" id="inp_mois_trait1" name="inp_mois_trait1">
+                                    <option></option>
+                                    <option value="1">Janvier</option>
+                                    <option value="2">Févier</option>
+                                    <option value="3">Mars</option>
+                                    <option value="4">Avril</option>
+                                    <option value="5">Mai</option>
+                                    <option value="6">Juin</option>
+                                    <option value="7">Juillet</option>
+                                    <option value="8">Août</option>
+                                    <option value="9">Septembre</option>
+                                    <option value="10">Octobre</option>
+                                    <option value="11">Novembre</option>
+                                    <option value="12">décembre</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="inp_annee_trait1"><i class="fa fa-calendar"></i> Année</label>
+                                <select class="form-control" id="inp_annee_trait1" name="inp_annee_trait1">
+                                    <option value=""></option>
+                                    @{
+                                        foreach (var item in ViewBag.annees)
+                                        {
+                                            <option value="@(item)">@(item)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <span>&bull; Date de fin</span>
+                        <div class="row" style="padding-bottom:0px;margin-top:15px;padding-left:25px">
+                            <div class="col-4">
+                                <label for="inp_jour_trait2"><i class="fa fa-calendar"></i> Jour</label>
+                                <input type="number" id="inp_jour_trait2" min="1" max="31" class="form-control" name="inp_jour_trait2" value="" />
+                            </div>
+                            <div class="col-4">
+                                <label for="inp_mois_trait2"><i class="fa fa-calendar"></i> Mois</label>
+                                <select class="form-control" id="inp_mois_trait2" name="inp_mois_trait2">
+                                    <option></option>
+                                    <option value="1">Janvier</option>
+                                    <option value="2">Févier</option>
+                                    <option value="3">Mars</option>
+                                    <option value="4">Avril</option>
+                                    <option value="5">Mai</option>
+                                    <option value="6">Juin</option>
+                                    <option value="7">Juillet</option>
+                                    <option value="8">Août</option>
+                                    <option value="9">Septembre</option>
+                                    <option value="10">Octobre</option>
+                                    <option value="11">Novembre</option>
+                                    <option value="12">décembre</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <label for="inp_annee_trait2"><i class="fa fa-calendar"></i> Année</label>
+                                <select class="form-control" id="inp_annee_trait2" name="inp_annee_trait2">
+                                    <option value=""></option>
+                                    @{
+                                        foreach (var item in ViewBag.annees)
+                                        {
+                                            <option value="@(item)">@(item)</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset class="border border-1 p-1 mt-4 hidden">
+                    <legend class="_legende mdi mdi-chevron-right-box ouvre" _id="pan-2" style="margin-top:-15px;font-size:1em;font-weight:bolder"><span style="background-color: white;">Date d'archivage</span></legend>
+                    <div class="row mt-2 pan-actions" id="pan-2" style="padding-bottom:0px">
+                        <div class="col-4">
+                            <label for="inp_annee_arch" class="mdi mdi-calendar"> Année</label>
+                            <select class="form-control" id="inp_annee_arch" name="inp_annee_arch">
+                                <option value=""></option>
+                                @{
+                                    foreach (var item in ViewBag.annees)
+                                    {
+                                        <option value="@(item)">@(item)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="inp_mois_arch" class="mdi mdi-calendar"> Mois</label>
+                            <select class="form-control" id="inp_mois_arch" name="inp_mois_arch">
+                                <option></option>
+                                <option value="1">Janvier</option>
+                                <option value="2">Févier</option>
+                                <option value="3">Mars</option>
+                                <option value="4">Avril</option>
+                                <option value="5">Mai</option>
+                                <option value="6">Juin</option>
+                                <option value="7">Juillet</option>
+                                <option value="8">Août</option>
+                                <option value="9">Septembre</option>
+                                <option value="10">Octobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">décembre</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="inp_jour_arch" class="mdi mdi-calendar"> Jour</label>
+                            <input type="number" id="inp_jour_arch" min="1" max="31" class="form-control" name="inp_jour_arch" value="" />
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="border border-1 p-1 mt-4 hidden">
+                    <legend class="_legende mdi mdi-chevron-right-box ouvre" _id="pan-3" style="margin-top:-15px;font-size:1em;font-weight:bolder"><span style="background-color: white;">Date reçu à l'agence</span></legend>
+                    <div class="row mt-2 pan-actions" id="pan-3" style="padding-bottom:0px">
+                        <div class="col-4">
+                            <label for="inp_annee_depot" class="mdi mdi-calendar"> Année</label>
+                            <select class="form-control" id="inp_annee_depot" name="inp_annee_depot">
+                                <option value=""></option>
+                                @{
+                                    foreach (var item in ViewBag.annees)
+                                    {
+                                        <option value="@(item)">@(item)</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="inp_mois_depot" class="mdi mdi-calendar"> Mois</label>
+                            <select class="form-control" id="inp_mois_depot" name="inp_mois_depot">
+                                <option></option>
+                                <option value="1">Janvier</option>
+                                <option value="2">Févier</option>
+                                <option value="3">Mars</option>
+                                <option value="4">Avril</option>
+                                <option value="5">Mai</option>
+                                <option value="6">Juin</option>
+                                <option value="7">Juillet</option>
+                                <option value="8">Août</option>
+                                <option value="9">Septembre</option>
+                                <option value="10">Octobre</option>
+                                <option value="11">Novembre</option>
+                                <option value="12">décembre</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label for="inp_jour_depot" class="mdi mdi-calendar"> Jour</label>
+                            <input type="number" id="inp_jour_depot" min="1" max="31" class="form-control" name="inp_jour_depot" value="" />
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="border border-1 p-1 mt-4">
+                    <legend class="_legende mdi mdi-chevron-right-box ouvre" _id="pan-4" style="margin-top:-15px;font-size:1em;font-weight:bolder"><span style="background-color: white;">&emsp; Categorie</span></legend>
+                    <div class="row mt-2 pan-actions" id="pan-4" style="padding-bottom:0px">
+                        <div class="col-4">
+                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                <input type="checkbox" name="inp_dfx" class="form-check-input" style="margin-left:0px;margin-top:12px" id="inp_dfx">
+                                <label class="form-check-label" for="inp_dfx" style="margin-left:5px;margin-top:12px">DFX</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                <input type="checkbox" name="inp_fp" class="form-check-input" style="margin-left:0px;margin-top:12px" id="inp_fp">
+                                <label class="form-check-label" for="inp_fp" style="margin-left:5px;margin-top:12px">Fonds propres</label>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                <input type="checkbox" name="inp_ref" class="form-check-input" style="margin-left:0px;margin-top:12px" id="inp_ref">
+                                <label class="form-check-label" for="inp_ref" style="margin-left:5px;margin-top:12px">Refinancement</label>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="border border-1 p-1 mt-4">
+                    <legend class="_legende mdi mdi-chevron-right-box ouvre" _id="pan-5" style="margin-top:-15px;font-size:1em;font-weight:bolder"><span style="background-color: white;">&emsp; N° de référence</span></legend>
+                    <div class="row mt-2 pan-actions" id="pan-5" style="padding-bottom:0px">
+                        <div class="col-4">
+                            <input type="text" name="inp_num_ref" class="form-control" style="" id="inp_num_ref">
+                        </div>
+                    </div>
+                </fieldset>
+                <button type="button" id="btn-cherche" value="-2" _action_requied_loader="0" class="btn btn-primary float-end mt-2"><i class="mdi mdi-clipboard-search"></i> Aperçu</button>
+                <button type="button" id="btn-cherche" value="-2" _action_requied_loader="0" class="btn btn-info float-end mt-2"><i class="mdi mdi-clipboard-search"></i> Aperçu</button>
+                <button type="button" id="btn-cherche" value="-2" _action_requied_loader="0" class="btn btn-soft-light float-end mt-2"><i class="mdi mdi-clipboard-search"></i> Aperçu</button>
+            </div>
+        </div>
+    </div>
+</div>
+            <a href="#" id="link-cherche" class="hidden"></a>
+            @Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+            <script>
+    try {
+        // control des champs
+        document.getElementById('inp_montant_max').addEventListener('input', function () {
+            var min1 = "" + document.getElementById('inp_montant_min').value;
+            var max1 = "" + this.value;
+            max1 = max1.replace(',', '.');
+            min1 = min1.replace(',', '.');
+            var max = parseFloat(max1);
+            var min = parseFloat(min1);
+            if (min >= max) {
+                document.getElementById('lab_montant_max').textContent = "Valeur minimum " + document.getElementById('inp_montant_min').value;
+            } else {
+                document.getElementById('lab_montant_max').textContent = "";
+            }
+        });
+        document.getElementById('inp_montant_min').addEventListener('input', function () {
+            var max1 = "" + document.getElementById('inp_montant_max').value;
+            var min1 = "" + this.value;
+            max1 = max1.replace(',', '.');
+            min1 = min1.replace(',', '.');
+            var max = parseFloat(max1);
+            var min = parseFloat(min1);
+            if (max > 0 && min >= max) {
+                document.getElementById('lab_montant_min').textContent = "Valeur maxmimum " + document.getElementById('inp_montant_max').value;
+            } else {
+                document.getElementById('lab_montant_min').textContent = "";
+            }
+        });
+    } catch (e) {
+        alert(e)
+    }
+    try {
+        //submit
+        document.getElementById('btn-cherche').addEventListener('click', function () {
+        var url = '@Url.Content("~/archivage2/Index")'
+            + '?agence=' + document.getElementById('sel_agences').value
+            + '&gestionnaire=' + document.getElementById('sel_gestionnaires').value
+            + '&client=' + document.getElementById('sel_clients').value
+            + '&idFournisseur=' + document.getElementById('sel_fournisseurs').value
+            + '&idDevise=' + document.getElementById('sel_devises').value
+            + '&montant_min=' + document.getElementById('inp_montant_min').value
+            + '&montant_max=' + document.getElementById('inp_montant_max').value
+            + '&annee_arch=' + document.getElementById('inp_annee_arch').value
+            + '&mois_arch=' + document.getElementById('inp_mois_arch').value
+            + '&jour_arch=' + document.getElementById('inp_jour_arch').value
+            + '&annee_depot=' + document.getElementById('inp_annee_depot').value
+            + '&mois_depot=' + document.getElementById('inp_mois_depot').value
+            + '&jour_depot=' + document.getElementById('inp_jour_depot').value
+            + '&inp_dfx=' + document.getElementById('inp_dfx').checked
+            + '&inp_fp=' + document.getElementById('inp_fp').checked
+            + '&inp_ref=' + document.getElementById('inp_ref').checked
+            + '&annee_trait1=' + document.getElementById('inp_annee_trait1').value
+            + '&mois_trait1=' + document.getElementById('inp_mois_trait1').value
+            + '&jour_trait1=' + document.getElementById('inp_jour_trait1').value
+            + '&annee_trait2=' + document.getElementById('inp_annee_trait2').value
+            + '&mois_trait2=' + document.getElementById('inp_mois_trait2').value
+            + '&jour_trait2=' + document.getElementById('inp_jour_trait2').value
+            + '&num_ref=' + document.getElementById('inp_num_ref').value
+            + '&estRecherche=True';
+        document.getElementById('link-cherche').setAttribute('href', url);
+        document.getElementById('link-cherche').click();
+    });
+    } catch (e) {
+
+    }
+            </script>

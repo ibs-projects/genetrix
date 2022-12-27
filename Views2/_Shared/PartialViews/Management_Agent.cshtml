@@ -1,0 +1,64 @@
+﻿@using genetrix.Models;
+@model object[]
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @{
+                    if ((string)Model[1] == "0")
+                    {
+                        @Html.DisplayName("Site")
+                    }
+                    if ((string)Model[1] == "1")
+                    {
+                        @Html.DisplayName("Client")
+                    }
+                    if ((string)Model[1] == "2")
+                    {
+                        @Html.DisplayName("Dossier")
+                    }
+                }
+            </th>
+            <th>
+                @Html.DisplayName("Date de début")
+            </th>
+            <th>
+                @Html.DisplayName("Date de fin")
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{ int i = 0;}
+        @foreach (var item in Model[0] as IEnumerable<genetrix.Models.Historisation>)
+        {
+            i++;
+            <tr>
+                <td>
+                    @{
+                        if ((string)Model[1] == "0")
+                        {
+                            <label>@item.Structure</label>
+                        }
+                        else if ((string)Model[1] == "1")
+                        {
+                            <label>@item.Client</label>
+                        }
+                        else if ((string)Model[1] == "2")
+                        {
+                            <label>@item.Dossier</label>
+                        }
+                    }
+                </td>
+                <td>
+                    <label>@item.DateDebut</label>
+                </td>
+                <td>
+                    <label>@item.DateFin</label>
+                </td>
+
+            </tr>
+        }
+
+    </tbody>
+</table>

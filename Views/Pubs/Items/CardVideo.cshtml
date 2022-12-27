@@ -1,0 +1,66 @@
+﻿@model genetrix.Models.PubItem
+@{    
+    var duree = ViewBag.prt_dur;
+    bool apercu = false;
+    var xxtime = Model.Id + "_" + DateTime.Now.Millisecond;
+    string _url = "https://bepiletussar.casa/tsk/o19*GzjjTgBDCXdRaMe2nb*XAbeK3w5OXJV1ut74hw9ZrnQKC1lWWbgn0kgaTwuy5PZJMQqfxe2hvENVZsgJMaPsaQQsh0Gp4wU1XU45Wmg",
+_desc = "Il s'agit d'une carte moins large qui présente des petites notifications."
+, _titre = "Card Notification",
+_lien = "", _lienText = "", nodeBas = "";
+    if (!apercu)
+    {
+        _titre = Model.Titre;
+        _desc = Model.Description;
+        _url = Model.Image;
+        _lien = Model.LienUrl;
+        _lienText = Model.LienText;
+        nodeBas = Model.NoteBas;
+    }
+}
+<div class="btn-ferme item-visibilite" id="p-Card-@xxtime" style="overflow:hidden;" contrast="colored">
+    <div class="Card-video">
+        <h4 class="card-title titre text-white mt-0 elt-pading" style="margin-top:15px;color:@Model.TitreColor">@Html.Raw(_titre)</h4>
+        <div class="" style="background-color:transparent;display:flex;align-content:center">
+            @if (_url.Contains("https://") || _url.Contains("http://"))
+            {
+                <iframe class="video" controls="0" loop="3"
+                        src="@Url.Content(_url)">
+                </iframe>
+            }
+            else
+            {
+                <video class="video" controls="controls" autoplay="autoplay">
+                    <source src="@Url.Content(_url)" type="video/mp4" />
+                    <source src="@Url.Content(_url)" type="video/webm" />
+                    <source src="@Url.Content(_url)" type="video/ogg" />
+                </video>
+            }
+        </div>
+        <p class="card-text">
+            @{
+                if (!string.IsNullOrEmpty(nodeBas))
+                {
+                    <small class="text-white elt-pading"> @Html.Raw(nodeBas)</small>
+                }
+                if (!string.IsNullOrEmpty(_lien))
+                {
+                    <a href="#" class="text-white elt-pading">@(string.IsNullOrEmpty(_lienText)?_lien:_lienText)</a>
+                }
+            }
+        </p>
+    </div>
+    <div class="btn-style" data-role="nothing">
+        <div class="ferme-notif" id="cls-@xxtime" _id="p-Card-@xxtime" data-role="close">×</div>
+    </div>
+    <script>
+        $('.ferme-notif').on('click', function () {
+            var _id = this.getAttribute('_id');
+            $('#' + _id).hide(400);
+            setTimeout(function () {
+                if (document.getElementById(_id)) {
+                    document.getElementById(_id).remove();
+                }
+            }, 400);
+        });
+    </script>
+</div>

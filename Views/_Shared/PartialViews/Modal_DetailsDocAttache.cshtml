@@ -1,0 +1,80 @@
+﻿@using genetrix.Models;
+@*@model IEnumerable<genetrix.Models.Composant>*@
+@{ 
+    string url = ViewBag.estStructure == null ? "~/XtraRoles/AddComposant" : "~/Structures/AddComposant";
+    var compos = new List<Composant>();
+    try
+    {
+        foreach (Composant item in ViewBag.Composants)
+        {
+            compos.Add(item);
+        }
+    }
+    catch (Exception)
+    {}
+}
+
+<div class="modal fade ajout-comp" id="ajout-comp" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajout des composants</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Content(""+url)" method="post">
+                    @Html.AntiForgeryToken()
+                    @{
+                        if (ViewBag.estStructure == null)
+                        {
+                            <input type="number" class="hidden" name="RoleId" value="@ViewBag.RoleId" />
+                        }
+                        else
+                        {
+                            <input type="number" class="hidden" name="StructureId" value="@ViewBag.StructureId" />
+                        }
+                    }
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered dt-responsive nowrap">
+                        <tr>
+                            <th></th>
+                            <th>
+                                @Html.DisplayName("Numero")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Action")
+                            </th>
+                            <th>
+                                @Html.DisplayName("Description")
+                            </th>
+                            <th></th>
+                        </tr>
+
+                        @foreach (var item in compos)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="composant_@item.Id" value="@item.Id" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Numero)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Description)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Info)
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+                    <input type="submit" _action_requied_loader="0" class="btn btn-soft-primary" value="Ajouter" />
+                </form>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

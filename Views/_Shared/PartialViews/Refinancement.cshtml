@@ -1,0 +1,76 @@
+﻿@model List<int>
+
+@{
+    // trois composants
+}
+<a class="col-md-6 col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=refinancement&comp=10_11_14")">
+    <div class="card card-item" id="dfx-encours">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1" style="margin-top:-25px!important">
+                        <i class="mdi mdi-folder-refresh text-warning" style="font:bolder;font-size:5em;top:0;margin-top: -20px!important;position:relative"></i>
+                        @*<img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/encours2.png" data-holder-rendered="true">*@
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@Model[0]</span></h4>
+                    <p class="text-muted mb-0">Dossiers en cours de traitement</p>
+                </div>
+                <p class="text-white p-1 bg-gradient-info" style="position:absolute; bottom: 0; width: 40%;font-size:small;height:30px;margin-left:-20px;">
+                    Refinancement
+                </p>
+            </div>
+        </div>
+    </div>
+</a>
+
+<a class="col-md-6 col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=refinancement&comp=21_15_18")">
+    <div class="card card-item" id="dfx-encours">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1">
+                        <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/envoye.png" data-holder-rendered="true">
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@Model[2]</span></h4>
+                    <p class="text-muted mb-0">Dossiers envoyés à la BEAC</p>
+                </div>
+                @*<p class="text-muted" style="position: absolute; bottom: 0; width: 100%;">
+                        <span title="Voir les dossiers rejetés" class="racourci-comp" href="#">
+                            <span class="text-success me-1"><i style="font:bolder" class="uil uil-check-circle me-1"></i>@Model[3]</span> @("Accordés")
+                        </span>
+                        <span title="Voir les dossiers accordés" class="racourci-comp" href="#">
+                            <span class="text-danger me-1"><i class="uil uil-exclamation-octagon me-1"></i>@Model[4]</span> @("Rejetés")
+                        </span>
+                    </p>*@
+                <p class="text-white p-1 bg-gradient-info" style="position:absolute; bottom: 0; width: 40%;font-size:small;height:30px;margin-left:-20px;">
+                    Refinancement
+                </p>
+            </div>
+        </div>
+    </div>
+</a>
+
+<a class="col-md-6 col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=refinancement&comp=22_19_21")">
+    <div class="card card-item" id="dfx-encours">
+        <div class="card-body">
+            <div>
+                <div class="float-end mt-2 ">
+                    <div id="total-revenue-chart1">
+                        <img class="rounded avatar-xl img-tab" alt="100x100" src="~/assets/images/IU/accord.png" data-holder-rendered="true">
+                    </div>
+                </div>
+                <div>
+                    <h4 class="mb-1 mt-1"><span data-plugin="counterup">@Model[1]</span></h4>
+                    <p class="text-muted mb-0">Dossiers accordés</p>
+                </div>
+                <p class="text-white p-1 bg-gradient-info" style="position:absolute; bottom: 0; width: 40%;font-size:small;height:30px;margin-left:-20px;">
+                    Refinancement
+                </p>
+            </div>
+        </div>
+    </div>
+</a>

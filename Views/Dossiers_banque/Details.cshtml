@@ -1,0 +1,2083 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.Dossier
+
+@{
+    string userId = "", composant = "" + Session["composant"];
+    bool estBackoffice = false;
+    double montantDfx = 0;
+    try
+    {
+        montantDfx = Convert.ToDouble(Session["MontantDFX"]);
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        userId = (string)Session["userId"];
+    }
+    catch (Exception)
+    { }
+
+    try
+    {
+        estBackoffice = Convert.ToBoolean(Session["EstBackOffice"]);
+    }
+    catch (Exception)
+    { }
+
+    bool ecrire = false;
+    int min = 0, max = 0, niveauSite = 0;
+    try
+    {
+        min = Convert.ToInt32(ViewBag.userSIteMinNiveau);
+        max = Convert.ToInt32(ViewBag.userSIteMaxNiveau);
+        //max = 250;
+        niveauSite = min;// Convert.ToInt32(ViewBag.niveauSite);
+    }
+    catch (Exception)
+    { }
+
+    ViewBag.DossierId = Model.Dossier_Id;
+    bool EstAdmin = false;
+    ApplicationDbContext db = new ApplicationDbContext();
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Détails du Dossier";
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    string douaneinfo = "", traiteinfo = ""; bool info = false;
+    if (Model.Get_DomicilImport == "#" || Model.Get_DeclarImport == "#" || !Model.Traité)
+    {
+        info = true;
+        douaneinfo = Model.Get_DomicilImport == "#" ? "* Joindre domiciliation; " : "";
+        douaneinfo += Model.Get_DeclarImport == "#" ? "* Joindre declaration; " : "";
+        traiteinfo = !Model.Traité ? "Dossier non traité !" : "";
+    }
+
+    bool editApurement = Model.Apurement;
+
+
+    ViewBag.userId = userId;
+    ViewBag.min = min;
+    ViewBag.editApurement = editApurement;
+    ViewBag.montantDfx = montantDfx;
+    ViewBag.estRefinancement = (Model.DFX6FP6BEAC == 3);
+    ViewBag.DFX6FP6BEAC = Model.DFX6FP6BEAC;
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+@Html.Partial("~/Views/_Shared/PartialViews/LoaderPdf_Style.cshtml")
+
+<style>
+    .img-fluid:hover {
+        cursor: pointer;
+        height: 230px;
+        width: 300px;
+        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2), 0 12px 30px 0 rgba(0, 0, 0, 0.19);
+    }
+
+    .mdi-arrow-expand-all, .mdi-printer {
+        background-color: #50a5f1;
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+    }
+
+    td {
+        /*        border-right: 2px solid #ddcbcb;
+    */ padding: 0px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .icon-up-down {
+        margin-top: -15px
+    }
+
+        .icon-up-down:hover {
+            cursor: pointer;
+            color: white;
+            background-color: #50a5f1
+        }
+
+    .entete:hover {
+        cursor: pointer;
+    }
+
+    .rotated {
+        transform: rotate(45deg); /* Equal to rotateZ(45deg) */
+        background-color: pink;
+    }
+
+    .col-1 {
+        display: none
+    }
+</style>
+<div style="float:inherit;display:block!important;width:100%!important;" id="details-contener">
+    <div class="pb-1 mb-0" style="">
+        <div class="col-lg-12">
+            @{
+                if (ViewBag.msg != null)
+                {
+                    string msg = "" + ViewBag.msg;
+                    if (!string.IsNullOrEmpty(msg))
+                    {
+                        <div class="alert alert-border alert-border-danger alert-dismissible fade show" role="alert">
+                            <i class="uil uil-exclamation-triangle font-size-16 text-danger me-2"></i>
+                            @Html.Raw(ViewBag.msg)
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                            </button>
+                        </div>
+                        <hr />
+                    }
+                }
+            }
+            <button class="btn btn-default hidden" id="ajax-alert"></button>
+            @{
+                if (info)
+                {
+                    <div class="alert alert-border alert-border-warning alert-dismissible fade show1 hidden" role="alert">
+                        <i class="uil uil-exclamation-triangle font-size-16 text-warning me-2"></i>
+                        @douaneinfo
+                        &brvbar;
+                        @traiteinfo
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                }
+
+                if (EstAdmin)
+                {
+                    <p style="display:inline" class="">
+
+                        @* Composant 101: bouton *@
+                        <a _action_requied_loader="0" numero="101" class="btn btn-default" id="soumis" href=@Url.Content("~/Dossiers_banque/delete?id="+Model.Dossier_Id)>
+                            <i class="mdi mdi-delete"></i>
+                            Supprimer
+                        </a>
+                    </p>
+                }
+            }
+
+            @{
+                if (Model.EtapesDosier != 0)// && Session["Profile"].ToString() == "banque")
+                {
+                    Model.Actions_content_visible = false;
+
+                    <button class="btn btn-outline-secondary float-end hidden" action="0" id="actions" style="margin-right:15px">Actions <i id="actions-icon" class="mdi mdi-eye-off"></i></button>
+
+                    <div class="card1 table-responsive border-2 bg-light m-0 hidden" id="actions-content" style="padding-top:10px;">
+                        @using (Html.BeginForm("ModifEtatDossier", "Dossiers_banque", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="number" class="hidden" id="EtapesDosier" name="EtapesDosier" value="@Model.EtapesDosier" />
+                            <input type="number" class="hidden" id="IdDossier" name="IdDossier" value="@Model.Dossier_Id" />
+                            <table class="">
+                                <tr>
+                                    <th>
+                                        @{
+                                            if (Model.EtapesDosier == 24)
+                                            {
+                                                Model.Actions_content_visible = true;
+                                                <a href="@Url.Content("~/dossiers_banque/archiver?id="+Model.Dossier_Id)" id="btn-archive" _action_requied_loader="0" class="btn btn-warning" title="Archiver le dossier">
+                                                    <i class="mdi mdi-archive"></i>
+                                                    Archiver le dossier
+                                                </a>
+                                            }
+                                        }
+                                    </th>
+                                    @{
+                                        if (min == 1) //Actions agence
+                                        {
+                                            if (VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 1, min, max))
+                                            {
+                                                <th>
+                                                    <a href="@Url.Content("~/Dossiers/RecapTransfert?id="+Model.Dossier_Id+"&pdf=True")" type="button" class="btn btn-outline-info mr-2" id="btn-show-recap-transfert" _action_requied_loader="0">
+                                                        <i class="mdi mdi-chart-tree"></i>
+                                                        Rapport du dossier
+                                                    </a>
+                                                </th>
+                                                if (Model.EtapesDosier != 24)
+                                                {
+                                                    @Html.Partial("~/Views/Index/ActionsAgence.cshtml", Model)
+                                                }
+                                            }
+                                        }
+                                        else if (min == 4) //Actions back-office
+                                        {
+                                            if (VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 4, min, max))
+                                            {
+                                                <th>
+                                                    <a href="@Url.Content("~/Dossiers/RecapTransfert?id="+Model.Dossier_Id+"&pdf=True")" type="button" class="btn btn-outline-info mr-2" id="btn-show-recap-transfert" _action_requied_loader="0">
+                                                        <i class="mdi mdi-chart-tree"></i>
+                                                        Rapport du dossier
+                                                    </a>
+                                                </th>
+                                                @Html.Partial("~/Views/Index/ActionsBack-office.cshtml", Model)
+                                            }
+                                        }
+                                        else if (min == 6) //Actions conformité
+                                        {
+                                            if (VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 6, min, max))
+                                            {
+                                                <th>
+                                                    <a href="@Url.Content("~/Dossiers/RecapTransfert?id="+Model.Dossier_Id+"&pdf=True")" class="btn btn-outline-info mr-2" id="btn-show-recap-transfert" _action_requied_loader="0">
+                                                        <i class="mdi mdi-chart-tree"></i>
+                                                        Rapport du dossier
+                                                    </a>
+                                                </th>
+                                                @Html.Partial("~/Views/Index/ActionsConformite.cshtml", Model)
+                                            }
+                                        }
+                                        else if (min == 9) //Actions service transfert
+                                        {
+                                            if (VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 9, min, max))
+                                            {
+                                                <th>
+                                                    <a href="@Url.Content("~/Dossiers/RecapTransfert?id="+Model.Dossier_Id+"&pdf=True")" class="btn btn-outline-info mr-2" id="btn-show-recap-transfert" _action_requied_loader="0">
+                                                        <i class="mdi mdi-chart-tree"></i>
+                                                        Rapport du dossier
+                                                    </a>
+                                                </th>
+                                                @Html.Partial("~/Views/Index/ActionsTransfert.cshtml", Model)
+                                            }
+                                        }
+                                        if (Model.Apurement && Model.DFX6FP6BEAC != 2)
+                                        {
+                                            <th>
+                                                <a href="@Url.Content("~/referencebanques/details/"+Model.ReferenceExterneId)" style="float:right" class="btn btn-outline-secondary">Acceder à la reference <i id="actions-icon" class="mdi mdi-link"></i></a>
+                                            </th>
+                                        }
+                                    }
+                                </tr>
+                            </table>
+                        }
+                    </div>
+                    <script>
+                    @{
+                        if (Model.Actions_content_visible )
+                        {
+                            @: document.getElementById('actions-content').classList.remove('hidden');
+                        }
+                    }
+                        try {
+                            document.getElementById('btn-inv').addEventListener('click', TT);
+                            document.getElementById('btn-val').addEventListener('click', TT);
+
+                            function TT() {
+                                var v = Number(document.getElementById('EtapesDosier').value);
+                                if (this.id == "btn-val") {
+                                    document.getElementById('EtapesDosier').value = Number(v + 1);
+                                } else {
+                                    document.getElementById('EtapesDosier').value = Number(v - 1);
+                                }
+                            }
+                        } catch (e) {
+
+                        }
+                    </script>
+                }
+            }
+        </div>
+        @{
+            if (!string.IsNullOrEmpty(Model.InfoPercentage) && editApurement)
+            {
+                <div class="alert alert-border alert-border-warning alert-dismissible fade show" role="alert">
+                    <i class="uil uil-exclamation-triangle font-size-16 text-warning me-2"></i>
+                    @*@ViewBag.msg_sauvegardeTmp*@
+                    @Html.Raw(Model.InfoPercentage)
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+            }
+        }
+    </div>
+
+    <div class="row1 bg-light" style="margin-top:-5px;padding-top:8px">
+
+        <div class="card mt-0">
+            <div class="card-header card-header1">
+                Details du dossier  @Html.DisplayFor(model => model.Client.Nom)
+                <div class="float-end">
+                    <button id="reduit-details" title="Reduire les détails"><i id="icon-details-of" class="mdi mdi-eye-off"></i></button>
+                    <button id="details-epingle" title="Epinger en haut de la page"><i id="icon-details-pin" class="mdi mdi-pin-off-outline rotated"></i></button>
+                </div>
+            </div>
+            <div class="card-body" id="details-body" style="z-index:199!important">
+                <div class="row" style="" id="petit-detail">
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Montant)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.MontantString)
+                            </dd>
+                            <dt>
+                                @Html.DisplayName("Devise")
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.DeviseMonetaire.Nom)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayName("Bénéficiaire")
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Fournisseur.Nom)
+                            </dd>
+
+                        </dl>
+                    </div>
+                    <div class="col-lg-4">
+                        <dl class="dl-horizontal">
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateDepotBank)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.DateDepotBankToString)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateCreationApp)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.DateCreationAppToString)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.DateModif)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.DateModifToString)
+                            </dd>
+
+                        </dl>
+                    </div>
+                    <div class="col-lg-4" style="">
+                        @{
+                            var statut = Model.GetStatusString();
+                            //@Html.Raw(statut.ToString())
+                        }
+                        <dl class="dl-horizontal">
+                            <dt class="" style="cursor:pointer">
+                                @Html.DisplayNameFor(model => model.EtapesDosier)
+                                <label class="text-muted" style="margin-left:10px">@(statut.Date!=new DateTime()? statut.Date.ToString("dd/MM/yyyy"):"")</label>
+                            </dt>
+                            <dd class="" title="">
+                                @Html.Partial("~/Views/_Shared/PartialViews/StatusDossiers.cshtml", Model)
+                            </dd>
+                            <dt>Marchandise arrivée: @Html.Raw(Model.MarchandiseArrivee ? "<span style=\"color:green\">Oui</span>" : "<span style=\"color:burlywood\">Non</span>")
+                            <dd></dd>
+                            <dt>
+                                @{
+                                    if (Model.EstReglementPartiel)
+                                    {
+                                        <label class="text-warning"><i class="fa fa-clock"></i> Règlement partiel  de @Model.MontantStringDevise sur une facture totale de @Model.TotalMontantFactureString @Model.DeviseToString @(Model.ResteAPayerFacture>0?". Montant total payé de "+Model.ResteAPayerFacture+" "+Model.DeviseToString:"")</label>
+                                    }
+                                }
+                            </dt>
+                            @if (Model.ReferenceExterne != null)
+                            {
+                                <dt>
+                                    Référence banque
+                                </dt>
+                                <dd>
+                                    @Html.DisplayFor(model => model.ReferenceExterne.NumeroRef)
+                                    @*<label class="@(Model.ReferenceExterne==null?"hidden":"")" id="lab-ref">null</label>*@
+                                </dd>
+                            }
+                            @if (Model.Apurement)
+                            {
+                                <dt>Délai restant: <span class="text-muted">@(Model.GetDelai) jours</span></dt>
+                            }
+                        </dl>
+                    </div>
+
+                </div>
+            </div>
+            @{
+                try
+                {
+                    // if (!string.IsNullOrEmpty(Model.Message))
+                    {
+                        try
+                        {
+                            <div class="text-dark p-2 hidden1" style="margin-top:-20px" id="modif-00">
+                                @*<h5 class="hidden1"><label class="float-end" onclick="document.getElementById('affiche-mail-info').click()" style="cursor:pointer">X</label> </h5>*@
+                                <h6 class="text-white" style="">
+                                    @{
+                                        if (!string.IsNullOrEmpty(Model.Message))
+                                        {
+                                            <button type="button" class="btn btn-outline-warning p-2 fa fa-sticky-note" style="cursor: pointer;border-radius:5px;" id="affiche-mail-info">
+                                                Notes:
+                                            </button>
+                                        }
+                                    }
+                                    <button type="button" class="btn btn-outline-warning p-2 fa fa-users" ouvfer="0" style="cursor: pointer;border-radius:5px;" id="call-respon">
+                                        Responsables du dossier
+                                    </button>
+                                    @Html.Partial("~/Views/_Shared/PartialViews/AttributeD.cshtml", Model)
+                                </h6>
+                                <div id="mail-info" class="bg-gradient-light card border border-1 hidden0 p-3" style="display: none; overflow: scroll; max-height: 400px">
+                                    @Html.Raw(Model.Message)
+                                </div>
+                                <div id="call-users" class="bg-gradient-light card border border-1 p-3" style="display: none;">
+                                    <div class="card-body1" style="margin-left:0px;">
+                                        <a href="javascript:void(0);" id="agence-resp-parent" class="dropdown-item notify-item" title="responsable agence">
+                                            <i class="fa fa-user-alt fs-6 text-info"></i>&emsp; Agence: <span class="align-middle" style="font-weight:bold" id="agence-resp"> </span>&emsp;<span class="align-middle text-muted" id="agence-resp-info"> </span>
+                                            <hr />
+                                        </a>
+                                        <a href="javascript:void(0);" style="display:none" id="back-office-resp-parent" class="dropdown-item notify-item" title="responsable back-office">
+                                            <i class="fa fa-user-alt fs-6 text-info"></i>&emsp; Back-office: <span class="align-middle" style="font-weight:bold" id="back-office-resp"> </span>&emsp;<span class="align-middle text-muted" id="back-office-resp-info"> </span>
+                                            <hr />
+                                        </a>
+                                        <a href="javascript:void(0);" style="display:none" id="conform-resp-parent" class="dropdown-item notify-item" title="Responsable conformité">
+                                            <i class="fa fa-user-alt fs-6 text-warning"></i>&emsp; Conformité: <span class="align-middle" style="font-weight:bold" id="conform-resp"> </span>&emsp;<span class="align-middle text-muted" id="conform-resp-info"> </span>
+                                            <hr />
+                                        </a>
+                                        <a href="javascript:void(0);" style="display:none" id="trans-resp-parent" class="dropdown-item notify-item" title="Responsable service transfert">
+                                            <i class="fa fa-user-alt fs-6 text-purple"></i>&emsp; Transfert: <span class="align-middle" style="font-weight:bold" id="trans-resp"> </span> &emsp;<span class="align-middle text-muted" id="trans-resp-info"> </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        catch (Exception)
+                        { }
+                    }
+
+                }
+                catch (Exception)
+                { }
+
+                if (niveauSite == 9)
+                {
+                    <p class="text-white p-1 pr-2 bg-gradient-success" style="position:absolute; bottom: 0; width: auto;font-size:small;height:30px;right:0px">
+                        @(Model.DFX6FP6BEAC==1?"DFX":(Model.DFX6FP6BEAC==2?"Fonds Propres":"Refinancement"))
+                    </p>
+                }
+            }
+
+        </div>
+    </div>
+</div>
+<div class="row" id="contenu" style="">
+    <div class="card bg-light p-0">
+        <div class="card-header m-0">
+            <ul class="nav nav-tabs nav-tabs-custom nav-justified" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" style="font-size:1.3em" data-bs-toggle="tab" href="#dossiers-complet" role="tab">
+                        <span class="d-none d-sm-block"><i class="mdi mdi-file-tree-outline"></i>  Dossier complet</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" style="font-size:1.3em" data-bs-toggle="tab" href="#transfert" role="tab">
+                        <span class="d-none d-sm-block"><i class="mdi mdi-file-table-box-multiple-outline"></i>  Détails du transfert</span>
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+        <div class="card-body">
+
+            <!-- Tab panes -->
+            <div class="tab-content p-3 text-muted">
+                <div class="tab-pane active" id="dossiers-complet" role="tabpanel">
+                    @Html.Partial("~/Views/Dossiers_banque/MasterDetails.cshtml", Model)
+                </div>
+                <div class="tab-pane" id="transfert" role="tabpanel">
+
+                    <div class="col-lg-12">
+                        <div class="card bg-transparent bg-transparent" style="z-index:100!important">
+                            <div class="card-header border-info1 entete" id="entete-inst">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Instruction</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            </div>
+                            <div class="card-body corp">
+                                <div class=" detail0">
+                                    <div class="col-lg-12 p-0 file-manager">
+                                        @* Composant 105: action *@
+                                        <button numero="105" id="scanner-1" infoImage="img1-parent" href="#" class="btn btn-outline-info scan-bt">
+                                            <i class="mdi mdi-scanner"></i>
+                                            Scanner
+                                        </button>
+                                        @* Composant 106: action *@
+                                        <span numero="106" class="btn btn-outline-info upload-file" style="max-width:150px;max-height:40px;">
+                                            <label for="upload-img-1" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                            <input _action_requied_loader="0" class="img-input" infoImage="img1-parent" imgid="img-1" infoModal="Instruction (ordre de transfert)" id="upload-img-1" type="file" name="ImageInstruction" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                        </span>
+                                    </div>
+                                    @{
+                                        if (Model.GetImageInstruction() != "#")
+                                        {
+                                            if (editApurement)
+                                            {
+                                                <script>
+                                                    document.getElementById('entete-inst').classList.add("bg-success");
+                                                </script>
+                                            }
+
+                                            <div class="col-lg-12" id="img1-parent" style="max-height:10%;">
+                                                <div class="row  bg-gradient-dark11">
+                                                    <div class="col-1 p-0">
+
+                                                        <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:inline-block" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                        <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                        <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                    </div>
+                                                    <div class="col-12 p-0 text-left" style="">
+                                                        @{
+                                                            if (Model.EstPdf)
+                                                            {
+                                                                @*<iframe id="img-1" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                                <iframe id="iframe-instruct" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                                <label class="hidden 000" _src="@Url.Content("~/dossiers/GetPDF?idDossier="+Model.Dossier_Id)" target="iframe-instruct"></label>
+                                                            }
+                                                            else
+                                                            {
+                                                                @*<img class="card1 bg-transparent-img img-fluid" src="@(Model.GetImageInstruction())" id="img-1" style="height:140px" alt="" onerror="this.style.display='none'" />*@
+                                                                <img class="card-img img-fluid" src="#" id="img-1" style="max-height:220px;max-width:120px;height:140px" alt="" />
+                                                                <label class="hidden 000" _src="@(Model.GetImageInstruction())" target="img-1"></label>
+                                                            }
+                                                        }
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            if (editApurement)
+                                            {
+                                                <script>
+                                                    document.getElementById('entete-inst').classList.add("bg-danger");
+                                                </script>
+                                            }
+                                            <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company Document -->
+                        <hr />
+                        <div class="card bg-transparent bg-tr" style="">
+                            <div class="card-header border-info1 entete" id="entete-fact">
+                                <h5 class="my-0 text-entete"><i class="uil-invoice me-3 fs-1"></i>Factures (@(Model.Justificatifs.Count))</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="111" style="margin-top:-40px"></i>
+                            </div>
+                            <div class="card-body corp" style="">
+                                <b></b>
+                                <div class="row file-manager">
+                                    <div class="col-4 form-group">
+                                        <input _action_requied_loader="0" id="NbreJustif" class="form-control" type="number" min="@Model.NbreJustif" name="NbreJustif" placeholder="Nombre de factures" value="@Model.Justificatifs.Count()" />
+                                    </div>
+                                    <div class="col-3">
+                                        <button id="btn_ajout_fact" type="button" disabled class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target=".bs-example-modal-lg">
+                                            <i class="mdi mdi-plus"></i>
+                                            Ajouter
+                                        </button>
+                                    </div>
+                                </div>
+                                @*@Html.Partial("~/Views/_Shared/PartialViews/Justificatifs.cshtml", Model.Justificatifs)*@
+                                @{
+                                    var estPdf = false;
+                                    if (Model.Justificatifs != null && Model.Justificatifs.Count > 0)
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-fact').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <div class="bg-gradient-dark1">
+                                            @{
+                                                int j = 0, k = 0;
+                                                foreach (var item in Model.Justificatifs)
+                                                {
+                                                    j++;
+
+                                                    <p class="@(item.MontantRestant>0?"bg-warning":"bg-success") text-dark p-2">
+                                                        #@j - Facture n°@item.NumeroJustif (Nombre des pages: @item.NbrePieces)
+                                                        <span class=" float-end">
+                                                            <button class="btn m-0 p-0 fa fa-eye btn-details" style="margin:20px" _id="detail-@item.Id">Details</button>
+                                                            &emsp;
+                                                            @*  bx-fade-up-hover *@
+                                                            <button class="btn m-0 p-0 fa fas fa-angle-down btn-fichier" style="padding:20px" _id="fact-file-@item.Id">Fichier</button>
+                                                        </span>
+                                                    </p>
+                                                    <div class="" style="display:none" id="detail-@item.Id">
+                                                        @{
+                                                            try
+                                                            {
+                                                                @Html.Partial("~/Views/Justificatifs/PartialDetails.cshtml", item)
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                        }
+                                                    </div>
+                                                    estPdf = false;
+                                                    try
+                                                    {
+                                                        estPdf = item.EstPdf;
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                    if (item != null && item.GetImages.Count > 0)
+                                                    {
+                                                        k = 0;
+                                                        foreach (var i in item.GetImages)
+                                                        {
+                                                            k++;
+                                                            <div class="row mb-3 fact-file-@item.Id">
+                                                                <div class="col-1 p-0">
+
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:inline-block" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                                </div>
+                                                                <p class="text-dark p-2">## Page @k <i class="one-file-show fa fa-eye" style="margin-left:20px; cursor:pointer;" _id="contener-@j-@k"></i></p>
+
+                                                                <div class="col-12 p-0 text-left" id="contener-@j-@k">
+                                                                    @{
+                                                                        if (i.EstPdf)
+                                                                        {
+                                                                            int idDoc = 0;
+                                                                            try
+                                                                            {
+                                                                                idDoc = i.Id;
+                                                                            }
+                                                                            catch (Exception)
+                                                                            { }
+                                                                            @*<iframe id="img-j@(j)" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=true&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                                            <iframe id="iframe-fac-@j-@k" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                                            <label class="hidden 111" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=true&idDossier="+Model.Dossier_Id)" target="iframe-fac-@j-@k"></label>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @*<img class="card1 bg-transparent-img img-fluid" src="@(i.GetImage())" id="img-j@(j)" style="height:140px" alt="" onerror="this.style.display='none'" />*@
+                                                                            <img class="card-img img-fluid" src="#" id="img-@j-@(k)" style="max-height:220px;max-width:120px;height:140px" alt="" />
+                                                                            <label class="hidden 111" _src="@(i.GetImage())" target="img-@j-@(k)"></label>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-fact').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignées</h4>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="card bg-transparent">
+                            <div class="card-header border-info1 entete" id="entete-lettre">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Lettre d'engagement</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="222"></i>
+                            </div>
+                            <div class="card-body corp">
+                                <div class="p-0 file-manager" style="">
+                                    <button id="scanner-4" href="#" class="btn btn-outline-info scan-bt">
+                                        <i class="mdi mdi-scanner"></i>
+                                        Scanner
+                                    </button>
+                                    <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                        <label for="upload-img-4" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                        <input _action_requied_loader="0" class="img-input" infoImage="img-lettre-parent" imgid="img-lettre" infoModal="Lettre d'engament" id="upload-img-4" type="file" name="ImageLettreEngage" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                    </span>
+                                </div>
+                                @{
+                                    if (Model.Get_LettreEngage != "#")
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-lettre').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <hr />
+                                        <div class="col-lg-12 bg-gradient-dark1" id="img-lettre-parent" style="max-height:100%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0 bg-gradient-dark1">
+                                                    <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-12 p-0 text-left" style="">
+                                                    @{
+                                                        estPdf = false;
+                                                        try
+                                                        {
+                                                            estPdf = Model.LettreEngage.EstPdf;
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                        if (estPdf)
+                                                        {
+                                                            int idDoc = 0;
+                                                            try
+                                                            {
+                                                                idDoc = Model.LettreEngage.Id;
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                            @*<iframe id="img-lettre" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                            <iframe id="iframe-lettre" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                            <label class="hidden 222" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" target="iframe-lettre"></label>
+                                                        }
+                                                        else
+                                                        {
+                                                            @*<img class="card1 bg-transparent-img img-fluid imf-taille" src="@(Model.Get_LettreEngage)" id="img-lettre" alt="" onerror="this.style.display='none'" />*@
+                                                            <img class="card-img img-fluid imf-taille" src="#" id="img-lettre" alt="" />
+                                                            <label class="hidden 222" _src="@(Model.Get_LettreEngage)" target="img-lettre"></label>
+                                                        }
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-lettre').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="card bg-transparent" style="">
+                            <div class="card-header border-info1 entete" id="entete-quitt">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Quittance de paiement</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="333"></i>
+                            </div>
+                            <div class="card-body corp">
+                                <div class="p-0 file-manager" style="">
+                                    <button id="scanner-5" href="#" class="btn btn-outline-info scan-bt">
+                                        <i class="mdi mdi-scanner"></i>
+                                        Scanner
+                                    </button>
+                                    <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                        <label for="upload-img-5" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                        <input _action_requied_loader="0" class="img-input" infoImage="img-quit-parent" imgid="img-quit" infoModal="Quittance de paiement" id="upload-img-5" type="file" name="ImageQuittancePay" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                    </span>
+                                </div>
+                                @{
+                                    if (Model.Get_QuittancePay != "#")
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-quitt').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <hr />
+                                        <div class="col-lg-12 bg-gradient-dark1" id="img-quit-parent" style="max-height:100%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0 bg-gradient-dark1">
+                                                    <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-12 p-0 text-left" style="">
+                                                    @{
+                                                        estPdf = false;
+                                                        try
+                                                        {
+                                                            estPdf = Model.QuittancePay.EstPdf;
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                        if (estPdf)
+                                                        {
+                                                            int idDoc = 0;
+                                                            try
+                                                            {
+                                                                idDoc = Model.QuittancePay.Id;
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                            @*<iframe id="img-quit" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                            <iframe id="iframe-quittance" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                            <label class="hidden 333" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" target="iframe-quittance"></label>
+                                                        }
+                                                        else
+                                                        {
+                                                            @*<img class="card1 bg-transparent-img img-fluid imf-taille" src="@(Model.Get_QuittancePay)" id="img-quit" alt="" onerror="this.style.display='none'" />*@
+                                                            <img class="card-img img-fluid imf-taille" src="@(Model.Get_QuittancePay)" id="img-quit" alt="" />
+                                                            <label class="hidden 333" _src="@(Model.Get_QuittancePay)" target="img-quit"></label>
+                                                        }
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-quitt').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="card bg-transparent" style="">
+                            <div class="card-header border-info1 entete" id="entete-transp">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Document(s) de transport</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="444"></i>
+                            </div>
+                            <div class="card-body corp">
+
+                                @{
+                                    estPdf = false;
+                                    if (Model.DocumentsTransport != null && Model.DocumentsTransport.Count > 0)
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-transp').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <div class="bg-gradient-dark1">
+                                            @{
+                                                int j = 0;
+                                                foreach (var item in Model.DocumentsTransport)
+                                                {
+                                                    j++;
+                                                    estPdf = false;
+                                                    try
+                                                    {
+                                                        estPdf = item.EstPdf;
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                    if (item != null && item.GetImageDocumentAttaches.Count > 0)
+                                                    {
+                                                        foreach (var i in item.GetImageDocumentAttaches)
+                                                        {
+                                                            //j++;
+                                                            <div class="row">
+                                                                <div class="col-1 p-0">
+
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:inline-block" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                                </div>
+                                                                <div class="col-12 p-0 text-left" style="">
+                                                                    @{
+                                                                        <p class="bg-success text-dark p-2">#@(j) - @item.Nom </p>
+
+                                                                        if (Model.EstPdf)
+                                                                        {
+                                                                            int idDoc = 0;
+                                                                            try
+                                                                            {
+                                                                                idDoc = item.Id;
+                                                                            }
+                                                                            catch (Exception)
+                                                                            { }
+                                                                            @*<iframe id="img-j@(j)" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=false&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                                            <iframe id="iframe-trans-@(j)" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                                            <label class="hidden 444" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=false&idDossier="+Model.Dossier_Id)" target="iframe-trans-@(j)"></label>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @*<img class="card1 bg-transparent-img img-fluid" src="@(i.GetImage())" id="img-j@(j)" style="height:140px" alt="" onerror="this.style.display='none'" />*@
+                                                                            <img class="card1 bg-transparent-img img-fluid" src="@(i.GetImage())" id="img-trans-@(j)" style="height:140px" alt="" onerror="" />
+                                                                            <label class="hidden 444" _src="@(i.GetImage())" target="img-trans-@(j)"></label>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-transp').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignés</h4>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <!-- Bank Details -->
+                        <hr />
+                        <div class="card bg-transparent" style="">
+                            <div class="card-header border-info1 entete" id="entete-decla">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Déclaration d'importation</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="555"></i>
+                            </div>
+                            <div class="card-body corp">
+                                <div class="p-0 file-manager" style="">
+                                    <button id="scanner-2" href="#" class="btn btn-outline-info scan-bt">
+                                        <i class="mdi mdi-scanner"></i>
+                                        Scanner
+                                    </button>
+                                    <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                        <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                        <input class="img-input" infoImage="img-dp-parent" imgid="img-dp" infoModal="Déclaration d'importation" id="upload-img-2" type="file" name="ImageDeclarImport" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                    </span>
+                                </div>
+                                @{
+                                    if (Model.Get_DeclarImport != "#")
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-decla').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <hr />
+                                        <div class="col-lg-12 bg-gradient-dark1" id="img-dp-parent" style="max-height:100%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0 bg-gradient-dark1">
+
+                                                    <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-12 p-0 text-left" style="">
+                                                    @{
+                                                        estPdf = false;
+                                                        try
+                                                        {
+                                                            estPdf = Model.DeclarImport.EstPdf;
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                        if (estPdf)
+                                                        {
+                                                            int idDoc = 0;
+                                                            try
+                                                            {
+                                                                idDoc = Model.DeclarImport.Id;
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                            @*<iframe id="img-dp" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                            <iframe id="iframe-declar" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                            <label class="hidden 555" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" target="iframe-declar"></label>
+                                                        }
+                                                        else
+                                                        {
+                                                            @*<img class="card1 bg-transparent-img img-fluid imf-taille" src="@(Model.Get_DeclarImport)" id="img-dp" style="" alt="" onerror="this.style.display='none'" />*@
+                                                            <img class="card-img img-fluid imf-taille" src="#" id="img-dp" style="" alt="" />
+                                                            <label class="hidden 555" _src="@(Model.Get_DeclarImport)" target="img-dp"></label>
+                                                        }
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-decla').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="card bg-transparent" style="">
+                            <div class="card-header border-info1 entete" id="entete-domi">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Domiciliation d'importation</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="666"></i>
+                            </div>
+                            <div class="card-body corp">
+                                <div class="p-0 file-manager" style="">
+                                    <button id="scanner-3" href="#" class="btn btn-outline-info scan-bt">
+                                        <i class="mdi mdi-scanner"></i>
+                                        Scanner
+                                    </button>
+                                    <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                        <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                        <input class="img-input" infoImage="img-doImp-parent" imgid="img-doImp" infoModal="Domiciliation d'importation" id="upload-img-3" type="file" name="ImageDomicilImport" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                    </span>
+                                </div>
+                                @{
+                                    if (Model.Get_DomicilImport != "#")
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-domi').classList.add("bg-success");
+                                            </script>
+                                        }
+                                        <hr />
+                                        <div class="col-lg-12 bg-gradient-dark1" id="img-doImp-parent" style="max-height:100%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0 bg-gradient-dark1">
+                                                    <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-12 p-0 text-left" style="">
+                                                    @{
+                                                        estPdf = false;
+                                                        try
+                                                        {
+                                                            estPdf = Model.DomicilImport.EstPdf;
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                        if (estPdf)
+                                                        {
+                                                            int idDoc = 0;
+                                                            try
+                                                            {
+                                                                idDoc = Model.DomicilImport.Id;
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                            @*<iframe id="img-doImp" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                            <iframe id="iframe-doImp" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                            <label class="hidden 666" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.Dossier_Id)" target="iframe-doImp"></label>
+                                                        }
+                                                        else
+                                                        {
+                                                            @*<img class="card1 bg-transparent-img img-fluid imf-taille" src="@(Model.Get_DomicilImport)" id="img-doImp" alt="" onerror="this.style.display='none'" />*@
+                                                            <img class="card-img img-fluid imf-taille" src="@(Model.Get_DomicilImport)" id="img-doImp" alt="" />
+                                                            <label class="hidden 666" _src="@(Model.Get_DomicilImport)" target="img-doImp"></label>
+                                                        }
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        if (editApurement)
+                                        {
+                                            <script>
+                                                document.getElementById('entete-domi').classList.add("bg-danger");
+                                            </script>
+                                        }
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>
+                                    }
+                                }
+
+
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="card bg-transparent" style="">
+                            <div class="card-header border-info1 entete">
+                                <h5 class="my-0 text-entete"><i class="mdi mdi-file-document-outline me-3 fs-1"></i>Autre(s) document(s)</h5>
+                                <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" style="margin-top:-40px" _src="777"></i>
+                            </div>
+                            <div class="card-body corp">
+                                @{
+                                    estPdf = false;
+                                    if (Model.DocumentAttaches != null && Model.DocumentAttaches.Count > 0)
+                                    {
+                                        <div class="bg-gradient-dark1">
+                                            @{
+                                                int j = 0;
+                                                foreach (var item in Model.DocumentAttaches)
+                                                {
+                                                    j++;
+                                                    estPdf = false;
+                                                    try
+                                                    {
+                                                        estPdf = item.EstPdf;
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                    if (item != null && item.GetImageDocumentAttaches.Count > 0)
+                                                    {
+                                                        foreach (var i in item.GetImageDocumentAttaches)
+                                                        {
+                                                            j++;
+                                                            <div class="row">
+                                                                <div class="col-1 p-0">
+
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:inline-block" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                                    <a infoImage="img1-parent" imgid="img-j@(j)" infoInputImg="upload-img-j@(j)" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                                </div>
+                                                                <div class="col-12 p-0 text-left" style="">
+                                                                    <p class="bg-success text-dark p-2">#@(j-1) - @item.Nom </p>
+                                                                    @{
+                                                                        if (Model.EstPdf)
+                                                                        {
+                                                                            int idDoc = 0;
+                                                                            try
+                                                                            {
+                                                                                idDoc = item.Id;
+                                                                            }
+                                                                            catch (Exception)
+                                                                            { }
+                                                                            @*<iframe id="img-j@(j)" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=false&idDossier="+Model.Dossier_Id)" style="max-width:221mm;height:143mm"></iframe>*@
+                                                                            <iframe id="iframe-autredoc-@(j)" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                                                                            <label class="hidden 777" _src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estJustif=false&idDossier="+Model.Dossier_Id)" target="iframe-autredoc-@(j)"></label>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            @*<img class="card1 bg-transparent-img img-fluid" src="@(i.GetImage())" id="img-j@(j)" style="height:140px" alt="" onerror="this.style.display='none'" />*@
+                                                                            <img class="card1 bg-transparent-img img-fluid" src="#" id="img-autredoc-@(j)" style="height:140px" alt="" onerror="" />
+                                                                            <label class="hidden 777" _src="@(i.GetImage())" target="img-autredoc-@(j)"></label>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignés</h4>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+@{
+    if (min == 1)
+    {
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Note_Renvoi.cshtml")
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Renvoi_Back-office.cshtml")
+
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Endemeur.cshtml")
+
+    }
+    else if (min == 4)
+    {
+        @* Modal ajout documents douane*@
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Docs_Douanes.cshtml")
+        @* fin ajout documents douane*@
+
+        <form action="~/Dossiers_banque/AddDouane" style="" id="form-douane" method="post" enctype="multipart/form-data" class="hidden">
+            @Html.AntiForgeryToken()
+            <input type="number" name="Dossier_Id" value="@Model.Dossier_Id" style="" />
+            <div id="form-content"></div>
+        </form>
+    }
+    else if (min == 6)
+    {
+
+    }
+    else if (min == 9)
+    {
+
+        @* Modal attribution référence*@
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Attibuer_reference.cshtml")
+        @* fin attribution référence*@
+
+        @* Modal associer référence*@
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Associer_reference .cshtml")
+        @* fin associer référence*@
+        if (Model.EtapesDosier > 12 && Model.MontantCV > montantDfx)
+        {
+            <a href="#" id="show-modal-gener-courrier" class="hidden" data-bs-toggle="modal" data-bs-target="#EditCourrier"></a>
+            @Html.Partial("~/Views/_Shared/PartialViews/EditCourrierPanel.cshtml")
+        }
+
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Selection_Operateur_Swift.cshtml", Model.Dossier_Id)
+        <a href="#" id="link-modal-sel-op-swift" class="hidden" data-bs-toggle="modal" data-bs-target="#modal-sel-op-swift"></a>
+
+    }
+}
+@Html.Partial("~/Views/Dossiers/Modal_Carte.cshtml", Model)
+@Html.Partial("~/Views/Dossiers/Modal_Recap.cshtml")
+
+@Html.Partial("~/Views/_Shared/PartialViews/GestionImage_script.cshtml")
+
+@* Modal detail image *@
+@Html.Partial("~/Views/_Shared/PartialViews/Detail_image.cshtml")
+@* fin modal detail image *@
+
+@* Print modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Printer_contenair.cshtml")
+@* fin printmodal *@
+@* Raison du rejet dossier modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Raison_Rejet_Dossier.cshtml")
+
+@* finraisonmodal *@
+
+@* date motif modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Date_modif.cshtml")
+
+@* Affichage pdf *@
+@Html.Partial("~/Views/_Shared/File_Manager/AffichageFichier.cshtml")
+<a href="#" id="link-archive-open-file" class="hidden" data-bs-toggle="modal" data-bs-target="#archive-open-file"></a>
+
+<a href="#" id="show-modal-date-motif" class="hidden" data-bs-toggle="modal" data-bs-target="#modal-date-motif"></a>
+
+
+<a href="#" id="show-modal-transfert" class="hidden" data-bs-toggle="modal" data-bs-target="#transfert-mod">show-modal-transfert</a>
+<a class="hidden" id="agrandir-img" data-bs-toggle="modal" data-bs-target="#detailImage"></a>
+<a class="hidden" id="show-loader" _action_requied_loader="0"></a>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+<a id="change-page" class="hidden" href="@Url.Content("~/dossiers_banque/index?st=port")"></a>
+<a class="hidden" id="ouvre-modal-recap-transfert" data-bs-toggle="modal" data-bs-target="#modal-recap-transfert"></a>
+
+@{
+    ViewBag.estDossier = "dossier";
+}
+
+@Html.Partial("~/Views/_Shared/PartialViews/change_etat.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/LoaderPdf.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Extraire_Dossier.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Document.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Script_Numerise_Courrier_mt.cshtml")
+
+<script>
+
+
+         //select opérateur swift
+        try {
+            $('#reception-devise').click(function () {
+                try {
+                    //modification du curseur
+                    this.parentNode.style = 'cursor:wait';
+                    //Affiche loader
+                    var ii = document.createElement('i');
+                    ii.classList.add("mdi");
+                    ii.classList.add("mdi-spin");
+                    ii.classList.add("mdi-loading");
+                    var childs1 = this.childNodes;
+                    this.parentNode.insertBefore(ii, this);
+                    this.style.display = 'none';
+                } catch (e) {
+
+                }
+                $.ajax({
+                    url: '@Url.Content("~/banques/SelOp")',
+                    success: function (responce) {
+                        var daySelect = document.getElementById('sel-op-swift');
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+                        daySelect.options[daySelect.options.length] = new Option('', '');
+
+                        $.each(responce, function (index, item) {
+                            daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                        });
+                        document.getElementById('link-modal-sel-op-swift').click();
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+        } catch (e) {
+
+        }
+
+    $(document).ready(function ()
+    {
+        try {
+            //attribuer doss
+            //action apres bouton selction
+            $('.att-link').click(function () {
+                var _this = this;
+                var selid = 'att-sel-' + this.getAttribute("idd");
+                var lab = document.getElementById('att-lab-' + this.getAttribute("idd"));
+                $(lab).hide();
+                $(this).hide();
+                $('#att-close-' + this.getAttribute("idd")).show();
+                $('#att-icon-' + this.getAttribute("idd")).show();
+                $('#' + selid).show();
+                $.ajax({
+                    url: '@Url.Content("~/comptebanquecommerciales/getAgents")',
+                    success: function (responce) {
+                        var daySelect = document.getElementById('' + selid);
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+                        daySelect.options[daySelect.options.length] = new Option($(lab).text(), '');
+                        $.each(responce, function (index, item) {
+                            daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                        });
+                        $('#att-icon-' + _this.getAttribute("idd")).hide();
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+            //action apres bouton close
+            $('.att-close').click(function () {
+                $(this).hide();
+                $('#att-lab-' + this.getAttribute("idd")).show();
+                $('#att-link-' + this.getAttribute("idd")).show();
+                $('#att-sel-' + this.getAttribute("idd")).hide();
+            });
+
+            //action apres selection d'un agent
+            $('.att-sel').on("change", function () {
+                var sel = this;
+                var laid = 'att-lab-' + this.getAttribute("idd");
+                $('#att-icon-' + this.getAttribute("idd")).show();
+                $.ajax({
+                    url: '@Url.Content("~/comptebanquecommerciales/attribute?doss=")' + this.getAttribute("idd")+"&agent="+this.value,
+                    success: function (responce) {
+                        var daySelect = document.getElementById('att-sel-' +@Model.Dossier_Id);
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+                        document.getElementById('link-preload').click();
+                        document.location.reload();
+                    },
+                    error: function (responce) { alert("Echec d'attribution du dossier") }
+                });
+            });
+
+        } catch (e) {
+
+        }
+
+        //affichage par appel des documents
+        try {
+            $('.corp').hide();
+            $(".icon-up-down").click(function (ee) {
+                var next = this.parentElement.nextSibling;
+                while (next) {
+                    if (next.tagName == 'DIV') {
+                        if (this.classList.contains('mdi-chevron-up')) {
+                            try {
+                                $(next).show(500);
+                                if (!this.classList.contains('ouvert')) {
+                                    this.classList.add("ouvert");
+                                    var actions = $('.' + this.getAttribute('_src'));
+                                    for (var i = 0; i < actions.length; i++) {
+                                        try {
+                                            var action = actions[i];
+                                            var ifram = document.getElementById(action.getAttribute('target'));
+                                            ifram.style.display = 'none';
+                                            duplicateChildNodes(ifram.parentNode, ifram);
+                                            ifram.setAttribute('src', action.getAttribute('_src'));
+                                            ifram.onload = function () {
+                                                this.style = "width:100%;height:" + window.innerHeight + 'px';
+                                                this.style.display = 'initial';
+                                                document.getElementById('lf-' + this.id).style.display = "none";
+                                                document.getElementById('lf-' + this.id).remove();
+                                            };
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                            }
+                            this.classList.remove('mdi-chevron-up');
+                            this.classList.add('mdi-chevron-down');
+                        } else {
+                            this.classList.add('mdi-chevron-up');
+                            this.classList.remove('mdi-chevron-down');
+                            $(next).hide(300);
+                        }
+                    }
+                    next = next.nextSibling;
+                }
+
+                ee.stopPropagation();
+            });
+
+            function duplicateChildNodes(parent, oldChild) {
+                var parent0 = document.getElementById('timeline-wrapper-id');
+                NodeList.prototype.forEach = Array.prototype.forEach;
+                var children = parent0.childNodes;
+                children.forEach(function (item) {
+                    try {
+                        var cln = item.cloneNode(true);
+                        //parent.appendChild(cln);
+                        cln.setAttribute('id', 'lf-' + oldChild.getAttribute('id'));
+                        parent.insertBefore(cln, oldChild);
+                    } catch (e) {
+
+                    }
+                });
+            };
+
+            //parent icon click access
+            var pps = $('.entete');
+            for (var i = 0; i < pps.length; i++) {
+                $(pps[i]).click(function () {
+                    var ffs = this.childNodes;
+                    for (var j = 0; j < ffs.length; j++) {
+                        if (ffs[j].tagName == 'I') {
+                            ffs[j].click();
+                            break;
+                        }
+                    }
+                    ffs = null;
+                })
+            }
+            pps = null;
+
+        } catch (e) {
+
+        }
+
+        //valider conformité
+        $('#btn-val-conf').click(function () {
+            var text = document.getElementById('icon-val-conf').classList.contains("fa-circle") ? "valider" :"invalider";
+            if (confirm('Voullez-vous ' + text + " la conformité du dossier ?")) {
+                $("#icon-val-conf").hide();
+                $("#icon-val-conf-1").show();
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/Valider")',
+                    type: 'GET',
+                    data: {
+                        idDossier: '@(Model.Dossier_Id)', eta: '@Model.EtapesDosier'
+                    },
+                    success: function (result) {
+                        var dd = document.getElementById('icon-val-conf');
+                        var btn_conf = document.getElementById('btn-val-conf');
+                        if (dd.classList.contains("fa-circle")) {
+                            $(dd).removeClass("fa-circle");
+                            $(dd).addClass("fa-check-circle");
+                            $(btn_conf).removeClass("btn-outline-warning");
+                            $(btn_conf).addClass("btn-primary");
+                            btn_conf.lastChild.textContent = " Conformité validée";
+                        } else {
+                            $(dd).removeClass("fa-check-circle");
+                            $(dd).addClass("fa-circle");
+                            $(btn_conf).removeClass("btn-primary");
+                            $(btn_conf).addClass("btn-outline-warning");
+                            btn_conf.lastChild.textContent = " Valider conformité";
+                        }
+                        alert("Dossier validé");
+                        $("#icon-val-conf").show();
+                        $("#icon-val-conf-1").hide();
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        alert("error: " + error);
+                        $("#icon-val-conf").show();
+                        $("#icon-val-conf-1").hide();
+                    }
+                });
+            }
+        });
+        ///fin valider conformité
+
+        //fixer details
+        var fo = false;
+        try {
+            $('#reduit-details').click(function () {
+                if (fo) {
+                    $("#details-body").show(300);
+                    $('#icon-details-of').addClass("mdi-eye-off");
+                    $('#icon-details-of').removeClass("mdi-eye");
+                    $(this).attr('title', 'Ouvrir les détails');
+                } else {
+                    $("#details-body").hide(300);
+                    $('#icon-details-of').removeClass("mdi-eye-off");
+                    $('#icon-details-of').addClass("mdi-eye");
+                    $('#details-contener').css({ 'height': '20px' });
+                    $(this).attr('title', 'Cacher les détails');
+                }
+                $('#details-contener').css({ 'position': 'relative', 'top': '0px', 'z-index': '999' });
+                fo = !fo;
+            });
+            $('#details-epingle').click(function () {
+                var Estepingle = document.getElementById('icon-details-pin').classList.contains('mdi-pin-outline');
+                if (Estepingle) {
+                    document.getElementById('icon-details-pin').classList.remove('mdi-pin-outline');
+                    document.getElementById('icon-details-pin').classList.add('mdi-pin-off-outline');
+                    document.getElementById('icon-details-pin').classList.add('rotated');
+                    document.getElementById('icon-details-pin').style ='transform: translateZ(20px)';
+                } else {
+                    document.getElementById('icon-details-pin').classList.remove('mdi-pin-off-outline');
+                    document.getElementById('icon-details-pin').classList.remove('rotated');
+                    document.getElementById('icon-details-pin').classList.add('mdi-pin-outline');
+                }
+            });
+            $(window).scroll(function (e) {
+                var Estepingle = document.getElementById('icon-details-pin').classList.contains('mdi-pin-outline');
+                if (Estepingle) {
+                    var $el = $('#details-contener');
+                    var dd = document.getElementById('details-contener');
+                    var isPositionFixed = ($el.css('position') == 'fixed');
+                    if ($(this).scrollTop() > 200 && !isPositionFixed) {
+                        //$('#reduit-details').show();
+                        $el.css({ 'position': 'fixed', 'top': '65px', 'z-index': '999' });
+                        dd.style.width = Number(dd.parentElement.offsetWidth - 20) + "px";
+                        document.getElementById('contenu').style = 'margin-top:160px;';
+                    }
+                    if ($(this).scrollTop() < 200 && isPositionFixed) {
+                        $el.css({ 'position': 'relative', 'top': '0px', 'z-index': '999' });
+                        dd.style.width = "100%";
+                        document.getElementById('contenu').style = 'margin-top:160px;';
+                        //$('#reduit-details').hide();
+                        //$("#details-body").show();
+                    }
+                } else {
+                    document.getElementById('contenu').style = 'margin-top:60px;';
+                }
+            });
+
+        } catch (e) {
+
+        }
+        //Select ref correspondantes
+        $("#btn-asso-ref").click(function () {
+            $.ajax({
+                url: '@Url.Content("~/dossiers_banque/GetRefCorrespondantes")',
+                type: 'GET',
+                data: {
+                    DossierId: '@(Model.Dossier_Id)', fournisseurId:'@Model.FournisseurId', deviseId:'@Model.DeviseMonetaireId', clientId:'@Model.ClientId'
+                },
+                success: function (result) {
+                    var daySelect = document.getElementById('select-Reference');
+                    //supprime toutes les options
+                    var length = daySelect.options.length;
+                    for (i = length - 1; i >= 0; i--) {
+                        daySelect.options[i] = null;
+                    }
+                    daySelect.options[daySelect.options.length] = new Option('', '');
+
+                    $.each(result, function (index, item) {
+                        daySelect.options[daySelect.options.length] = new Option('' + item.Numero, item.Id);
+                    });
+                },
+                error: function (error) {
+                    //alert("error: " + error);
+                }
+            });
+        });
+
+        //Get dossiers associés à la reference
+        $("#select-Reference").on('input', function () {
+            $("#tab-dossiers-associes").empty();
+             $.ajax({
+                url: '@Url.Content("~/dossiers_banque/GetDossiersByRef")',
+                type: 'GET',
+                data: {
+                    RefId: $(this).children("option:selected").val()
+                },
+                success: function (result) {
+                    var table = document.getElementById("tab-dossiers-associes");
+                    $("#tab-dossiers-associes").empty();
+                    $.each(result, function (index, item) {
+                        var row = table.insertRow(index);
+                        var cell1 = row.insertCell(0);
+                        var cell2 = row.insertCell(1);
+                        var cell3 = row.insertCell(2);
+                        cell1.innerHTML = "" + result[index].Fournisseur;
+                        cell2.innerHTML = "" + result[index].MontantString;
+                        cell3.innerHTML = "" + result[index].Devise;
+                    });
+                },
+                error: function (error) {
+                    alert("error: " + error);
+                }
+            });
+        })
+
+        //Attribution ref
+        $(".bt-add-ref").click(function () {
+            if (confirm('Confirmez-vous cette référence ?')) {
+                var reference = "", idDossier = '@Model.Dossier_Id';
+                var groupe = false;
+                this.disabled = true;
+                $('.bt-annul').prop('disabled', true);
+                if (this.id == "bt-attribution-ref") {
+                    reference = document.getElementById('Reference').value;
+                    try {
+                        document.getElementById('ddd-loader').style.display = 'initial';
+                    } catch (e) {
+
+                    }
+                } else {
+                    document.getElementById('dd-loader').style.display = 'initial';
+                    reference = document.getElementById('select-Reference').textContent;
+                    groupe = true;
+                }
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    cache: false,
+                    url: '@Url.Content("~/referencebanques/AttributionRef")',
+                    data: { Reference: reference, DossierId: idDossier, groupe: groupe},
+                    success: function (response, textStatus, jqXHR) {
+                        $('#btn-attr-ref').hide();
+                        window.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        this.disabled = false;
+                        $('.bt-annul').prop('disabled', false);
+                        var responseTitle = $(jqXHR.responseText).filter('title').get(0);
+                        alert('Error - ' + responseTitle.textContent);
+                    }
+                });
+            }
+        });
+
+        //ajout de la douane
+        $("#add-docs-douane").click(function () {
+            $("#de-impot").html();
+            $("#do-impot").html();
+        });
+
+        //agrandir img
+        $(".img-fluid").click(function () {
+            document.getElementById('img-2').src = this.getAttribute("src");
+            document.getElementById('agrandir-img').click();
+        });
+
+        // change etat
+
+        //Traitement du dossier
+        $('#dossier-traite').click(function () {
+            var traite = this.checked, idDossier = '@Model.Dossier_Id';
+            if (confirm('Voulez vous traiter le dossier?')) {
+                document.getElementById('show-loader').click();
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    cache: false,
+                    url: '@Url.Content("~/Dossiers_banque/TraiteDossier")',
+                    data: { traite: traite, idDossier:idDossier},
+                    success: function (response, textStatus, jqXHR) {
+                        //location.reload();
+                        location.replace(document.referrer);
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('Error - ' + errorThrown);
+                    }
+                });
+            } else {
+                this.checked = false;
+            }
+        })
+
+         //Transfert du dossier
+        $('.transfert-dossier-action').click(function () {
+            var idSiteDest = this.id.split('_')[1];
+            $("#IdSiteDestination").val(idSiteDest);
+            $.ajax({
+                type: 'get',
+                dataType: 'json',
+                cache: false,
+                url: '@Url.Content("~/Dossiers_banque/TransfertDossier")',
+                data: { idSiteDest: idSiteDest},
+                success: function (response, textStatus, jqXHR) {
+                    var x = document.getElementById('gestionnaireId');
+                    if (x.length > 0) {
+                        x.remove(x.length - 1);
+                    }
+                    $.each(response, function (index, item) {
+                        var opt = document.createElement('option');
+                        opt.value = item.Id;
+                        opt.text = item.Nom;
+                        document.getElementById('gestionnaireId').add(opt, item.Id);
+                        document.getElementById('show-modal-transfert').click();
+                    });
+
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert('Error - ' + errorThrown);
+                }
+            });
+        })
+
+        try {
+            //Resume du dossier
+            @*document.getElementById('iframe-recap-transfert').onload = function () {
+            this.style = "height:100%;width:100%";
+            document.getElementById('ouvre-modal-recap-transfert').click();
+                document.getElementById('Preloader_partiel').style.display = 'none';
+                //document.getElementById('preloader').style.display = 'none';
+                //document.getElementById('Preloader_partiel2').style.display = 'none';
+             };
+            $("#btn-show-recap-transfert").click(function () {
+                $('#iframe-recap-transfert').attr('src', '');
+                $('#iframe-recap-transfert').attr('src', '@Url.Content("~/Dossiers/RecapTransfert?id="+Model.Dossier_Id+"&pdf=True")');
+            });*@
+        } catch (e) {
+
+        }
+    });
+</script>
+
+<script src="~/assets/cfunctions.js"></script>
+<script>
+    document.getElementById('iframe-archive-open-file').onload = function () {
+        this.style = "height:100%;width:100%";
+        document.getElementById('link-archive-open-file').click();
+        document.getElementById('Preloader_partiel').style.display = 'none';
+    };
+
+    $('.tree-icon').click(function () {
+        var _url = "",_id="";
+        $('#iframe-archive-open-file').attr('src', '');
+        if (this.getAttribute('type') == 'fac') {
+            _url = '&estJustif=True&idDoc=' + this.getAttribute('_id');
+        } else if (this.getAttribute('type')=='att') {
+            _url = '&estDocAttache=True&idDoc=' + this.getAttribute('_id');
+        }
+        document.getElementById('show-loader').click();
+        _url = '@Url.Content("~/dossiers/GetPDF?idDossier="+Model.Dossier_Id)' + _url;
+        $('#iframe-archive-open-file').attr('src', _url);
+    });
+</script>
+<script>
+    //show and hide facture page
+        try {
+            $('.one-file-show').click(function () {
+                if (this.classList.contains('fa-eye-slash')) {
+                    $('#' + this.getAttribute('_id')).show(50);
+                    this.classList.remove('fa-eye-slash');
+                    this.classList.add('fa-eye');
+                } else {
+                    $('#' + this.getAttribute('_id')).hide(20);
+                    this.classList.remove('fa-eye');
+                    this.classList.add('fa-eye-slash');
+                }
+            })
+        } catch (e) {
+
+        }
+        //changer wf
+        try {
+            $('#btn-change-wf').on('click', function () {
+                var estBeac = '@(Model.DFX6FP6BEAC==3)';
+                var estFP = '@(Model.DFX6FP6BEAC==2)';
+                var estDFX = '@(Model.DFX6FP6BEAC==1)';
+                var devise = '@(Model.DeviseToString=="EUR")';
+                var mtt = '@(Model.Montant)';
+                var ctent = "";
+                if (estFP != "True") {
+                    ctent="traiter le dossier sur fonds propres ?"
+                } else {
+                    if (estDFX) {
+                        ctent = "deplacer le dossier vers les DFX ?"
+                    } else {
+                        ctent = "deplacer le dossier vers les dossiers BEAC ?"
+                    }
+                }
+                if (confirm('Voullez-vous ' + ctent)) {
+                    document.getElementById('show-loader').click();
+                    $.ajax({
+                        url: '@Url.Content("~/dossiers_banque/changewf?doss="+Model.Dossier_Id)',
+                        success: function (responce) {
+                            if (responce=='ok') {
+                                document.location.reload();
+                            } else {
+                                if (responce) {
+                                    alert(responce);
+                                    document.getElementById('Preloader_partiel').style.display = 'none';
+                                }
+                            }
+                        },
+                        error: function (responce) { alert("Echec de deplacement du dossier") }
+                    });
+                }
+            });
+        } catch (e) {
+
+        }
+
+        //Extraction du dossier
+        $('#btn-modal-extraction-doss').click(function () {
+            var nbrTelecharg = Number('@Model.NbrTelechargement');
+            var msg = 'Confirmer l\'extraction du dossier';
+            if (nbrTelecharg > 0) {
+                msg = "Le document a été extrait " + nbrTelecharg + " fois et vous avez été envoyé par email. Voulez-vous extraire à nouveau ?";
+            }
+            if (confirm(msg)) {
+                $("#icon-extrait-star").hide();
+                $("#icon-extrait-end").show();
+                var emails = $("#agentemails").val();
+                var fourn = document.getElementById('include-fournisseur').checked;
+                var clt = document.getElementById('include-client').checked;
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/ExtraireDossier?dossierId=" + Model.Dossier_Id)&includ_f=' + fourn + '&includ_cl=' + clt + '&agtemail=' + emails,
+                    success: function (responce) {
+                        alert("Extraction du dossier terminée.");
+                        $("#icon-tel-end").hide();
+                        $("#icon-tel-star").show();
+                        location.reload();
+                        document.getElementById('btn-tel-doss').classList.remove("btn-outline-info");
+                        document.getElementById('btn-tel-doss').classList.add("btn-outline-warnig");
+                        if (responce) {
+                            $('#btn-tel-doss').attr('title', responce);
+                        }
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+            }
+        });
+
+        $(".my-0").addClass('fs-3');
+
+        $('#actions').click(function () {
+            if ($('#actions-content').attr('action') == '0') {
+                $('#actions-content').attr('action', '1');
+                $('#actions-content').show(300);
+                $('#actions-icon').addClass("mdi-eye");
+                $('#actions-icon').removeClass("mdi-eye-off");
+            } else {
+                $('#actions-content').attr('action', '0');
+                $('#actions-content').hide(300);
+                $('#actions-icon').addClass("mdi-eye-off");
+                $('#actions-icon').removeClass("mdi-eye");
+            }
+        });
+
+        $('.transfert-dossier').click(function () {
+
+        });
+
+        //modal ajout douane;
+        document.getElementById('upload-img-2').onchange = evt => {
+            const [file] = evt.target.files;
+            if (file) {
+                if (file.type == "application/pdf") {
+                    document.getElementById('img-dp1').style.display = 'none';
+                    var frame = document.getElementById('iframe-img-dp1');
+                    frame.setAttribute('src', URL.createObjectURL(file));
+                    frame.style.display = 'initial';
+                    frame.classList.remove("hidden");
+                    var pw = Number(frame.parentElement.offsetWidth);
+                    frame.style = 'height:179mm;width:' + pw + 'px';
+                } else {
+                    document.getElementById('iframe-img-dp1').style.display = 'none';
+                    document.getElementById('img-dp1').style.display = 'initial';
+                    $('#img-dp1').attr('src', URL.createObjectURL(file));
+                }
+                $('#deimp-size').text(" (Taille du fichier: "  + getFilesize(file.size)+")");
+            }
+        }
+        document.getElementById('upload-img-3').onchange = evt => {
+            const [file] = evt.target.files;
+            if (file) {
+                if (true) {
+                    document.getElementById('img-doImp1').style.display = 'none';
+                    var frame = document.getElementById('iframe-img-doImp1');
+                    frame.setAttribute('src', URL.createObjectURL(file));
+                    frame.style.display = 'initial';
+                    frame.classList.remove("hidden");
+                    var pw = Number(frame.parentElement.offsetWidth);
+                    frame.style = 'height:179mm;width:' + pw + 'px';
+                } else {
+                    document.getElementById('iframe-img-doImp1').style.display = 'none';
+                    document.getElementById('img-doImp1').style.display = 'initial';
+                    $('#img-doImp1').attr('src', URL.createObjectURL(file));
+                }
+                $('#doimp-size').text(" (Taille du fichier: " +getFilesize(file.size)+")");
+            }
+        }
+        $('#btn-valider-douane').click(function () {
+            if (confirm('Voulez-vous enregistrer les modifications?')) {
+                document.getElementById('show-loader').click();
+                var img2 = document.getElementById('upload-img-2').cloneNode();
+                var img3 = document.getElementById('upload-img-3').cloneNode();
+
+                document.getElementById('form-content').appendChild(img2);
+                document.getElementById('form-content').appendChild(img3);
+                document.getElementById('form-douane').submit();
+            }
+        });
+</script>
+<script>
+    $('#affiche-mail-info').click(function () {
+        var mailinfo = document.getElementById('mail-info');
+        if (mailinfo.classList.contains("hidden0")) {
+            $(mailinfo).show(300);
+            mailinfo.classList.remove('hidden0');
+        } else {
+            mailinfo.classList.add('hidden0');
+            $(mailinfo).hide(300);
+        }
+    });
+</script>
+@if (Model.DFX6FP6BEAC == 2)//si fond propre
+{
+
+    <script>
+        //select opérateur swift
+        try
+        {
+            $('#fp-accorde').click(function() {
+                try
+                {
+                    //modification du curseur
+                    this.parentNode.style = 'cursor:wait';
+                    //Affiche loader
+                    var ii = document.createElement('i');
+                    ii.classList.add("mdi");
+                    ii.classList.add("mdi-spin");
+                    ii.classList.add("mdi-loading");
+                    var childs1 = this.childNodes;
+                    this.parentNode.insertBefore(ii, this);
+                    this.style.display = 'none';
+                }
+                catch (e)
+                {
+
+                }
+                $.ajax({
+                    url: '@Url.Content("~/banques/SelOp")',
+                    success: function(responce) {
+                        var daySelect = document.getElementById('sel-op-swift');
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--)
+                        {
+                            daySelect.options[i] = null;
+                        }
+                        daySelect.options[daySelect.options.length] = new Option('', '');
+
+                        $.each(responce, function(index, item) {
+                            daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                        });
+                        document.getElementById('link-modal-sel-op-swift').click();
+                    },
+                    error: function(responce) { alert(responce.error) }
+                });
+            });
+        }
+        catch (e)
+        {
+
+        }
+    </script>
+
+}
+
+<script>
+    //get all users
+    try {
+            var ouvfer = false;
+            $('#call-respon').click(function () {
+            ouvfer = !ouvfer;
+            var calusers = document.getElementById('call-users');
+            if (ouvfer) {
+                var moi = this;
+                moi.disabled = true;
+                moi.style = 'cursor:pointer';
+                moi.classList.remove('fa-users');
+                moi.classList.remove('fa');
+                moi.classList.add('mdi');
+                moi.classList.add('mdi-spin');
+                moi.classList.add('mdi-loading');
+                $(calusers).hide();
+                document.getElementById('agence-resp').textContent = "";
+                document.getElementById('agence-resp-info').textContent = "";
+                document.getElementById('back-office-resp').textContent = "";
+                document.getElementById('back-office-resp-info').textContent = "";
+                document.getElementById('conform-resp').textContent = "";
+                document.getElementById('conform-resp-info').textContent = "";
+                document.getElementById('trans-resp').textContent = "";
+                document.getElementById('trans-resp-info').textContent = "";
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/getrespons?iddoss="+Model.Dossier_Id)',
+                    success: function (res) {
+                        try {
+                            var dd = res[0].split('_');
+                            document.getElementById('agence-resp').textContent = dd[0];
+                            document.getElementById('agence-resp-info').textContent ="(Tel: "+dd[1]+". Email: "+dd[2]+")";
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[1].split('_');
+                            document.getElementById('conform-resp-parent').style.display='initial';
+                            document.getElementById('conform-resp').textContent = dd[0];
+                            document.getElementById('conform-resp-info').textContent = "(Tel: " + dd[1] + ". Email: " + dd[2] + ")";
+
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[2].split('_');
+                            document.getElementById('trans-resp-parent').style.display = 'initial';
+                            document.getElementById('trans-resp').textContent = dd[0];
+                            document.getElementById('trans-resp-info').textContent = "(Tel: " + dd[1] + ". Email: " + dd[2] + ")";
+                        } catch (e) {
+
+                        }
+                        try {
+                            var dd = res[3].split('_');
+                            document.getElementById('back-office-resp-parent').style.display = 'initial';
+                            document.getElementById('back-office-resp').textContent = dd[0];
+                            document.getElementById('back-office-resp-info').textContent = "(Tel: " + dd[1] + ". Email: " + dd[2] + ")";
+                        } catch (e) {
+
+                        }
+                        moi.classList.remove('mdi');
+                        moi.classList.remove('mdi-spin');
+                        moi.classList.remove('mdi-loading');
+                        moi.classList.add('fa');
+                        moi.classList.add('fa-users');
+                        moi.disabled = false;
+                        moi.style = 'cursor:initial';
+                        $(calusers).show(300);
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+            } else {
+                $(calusers).hide(300);
+            }
+        });
+    } catch (e) {
+    }
+</script>
+

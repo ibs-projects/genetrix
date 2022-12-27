@@ -1,0 +1,73 @@
+﻿@model int
+@{
+
+}
+<div class="modal fade" id="modal-sel-op-swift" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="extract" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align: left !important; position: center; border-bottom: 13px solid #2689a6">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="extract" style="font:bold"><i class="fa fa-user"></i> Opérateur de saisie Swift pour la génération du MT 103</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group p-2">
+                    <h6 class="text-muted">Choisir un opérateur Swift</h6>
+                    <div class="col-md-12 col-lg-offset-1">
+                        <select class="form-control" id="sel-op-swift">
+                            <option value="value">text</option>
+                        </select>
+                    </div>
+                </div>
+                <hr />
+                <div class="row hidden" style="margin: 10px">
+                    <div class="col-5">
+                        <button id="btn-add-email0" class="btn"><i class="mdi mdi-plus"></i> Ajouter un opérateur</button>
+                    </div>
+                </div>
+                <button type="button" id="recept-couvert-beac" class="btn btn-primary change-etat" href1="" value="20"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+@{
+    if (ViewBag.estDfx == "True")
+    {
+        <script>
+            document.getElementById('sel-op-swift').addEventListener('input', function () {
+                var url = '@Url.Content("~/dfxes/ModifEtatDossierJS?etat=19&idDfx=" + Model)' +'&idOpSwft='+this.value;
+                document.getElementById('recept-couvert-beac').setAttribute('href1',url)
+            });
+        </script>
+    }else if (ViewBag.estFP == "True")
+    {
+        <script>
+            document.getElementById('sel-op-swift').addEventListener('input', function () {
+                var url = '@Url.Content("~/Dossiers_banque/ModifEtatDossierJS?etat=20&idDossier=" + Model)' +'&idOpSwft='+this.value;
+                document.getElementById('recept-couvert-beac').setAttribute('href1',url)
+            });
+        </script>
+    }
+    else if (ViewBag.estDossier == null)
+    {
+        <script>
+            document.getElementById('sel-op-swift').addEventListener('input', function () {
+                var url = '@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=19&idreference="+Model)' +'&idOpSwft='+this.value;
+                document.getElementById('recept-couvert-beac').setAttribute('href1',url)
+            });
+        </script>
+    }
+    else
+    {
+        <script>
+            document.getElementById('sel-op-swift').addEventListener('input', function () {
+                @*var url = '@Url.Content("~/dossiers_banque/ModifEtatDossierJS?etat=20&idDossier=" + Model)' +'&idOpSwft='+this.value;*@
+                document.getElementById('recept-couvert-beac').setAttribute('href1', 'donnee');
+                document.getElementById('recept-couvert-beac').setAttribute('etat', '20');
+                document.getElementById('recept-couvert-beac').setAttribute('idOpSwft', this.value);
+            });
+        </script>
+    }
+}

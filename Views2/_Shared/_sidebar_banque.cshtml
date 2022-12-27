@@ -1,0 +1,1035 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@using genetrix.Models;
+@using genetrix.Models;
+@{
+    int menu = 0;
+    try
+    {
+        menu = Convert.ToInt32(Session["menu"].ToString());
+    }
+    catch (Exception)
+    { }
+    //var estChef = Session["estChef"].ToString();
+
+    string curenteUserID = (string)Session["userId"];
+
+    int minSite = 0, maxSite = 0;
+    try
+    {
+        minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        maxSite = Convert.ToInt32(Session["userSIteMaxNiveau"]);
+    }
+    catch (Exception)
+    { }
+
+    ViewData["curenteUserID"] = curenteUserID;
+}
+
+<style>
+    .separateur {
+        font: bolder !important;
+        font-size: 14px !important;
+        color: lightseagreen !important;
+        background-color: rgb(91, 115, 232, 0.12) !important
+    }
+
+    .blue-ligth:hover {
+        background-color: #1f359d
+    }
+
+    .blue-faible:hover {
+        background-color: rgb(255, 255, 255, 0.36);
+    }
+</style>
+
+<div class="vertical-menu" style="height: 100% !important; background-color: #2689a6">
+
+    <!-- LOGO -->
+    <div class="navbar-brand-box card-header11" style="background-color: #2689a6 ">
+        <a href=@Url.Action("IndexBanque", "index") _action_requied_loader="0" class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-dark1.png" alt="" height="40">
+            </span>
+        </a>
+
+        <a href=@Url.Action("IndexBanque", "index") _action_requied_loader="0" class="logo logo-light">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="35">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="35">
+            </span>
+        </a>
+    </div>
+
+    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+        <i class="fa fa-fw fa-bars"></i>
+    </button>
+
+    <div data-simplebar class="sidebar-menu-scroll">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu" style="background-color: #2689a6">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu" style="">
+                @* Composant 40: menu principal *@
+                @{
+                    //if (
+                    //    Session["numero40"]!=null||
+                    //    Session["numero41"]!=null||
+                    //    Session["numero42"]!=null||
+                    //    Session["numero43"]!=null||
+                    //    Session["numero44"]!=null||
+                    //    Session["numero45"]!=null||
+                    //    Session["numero46"]!=null
+                    //    )
+                    {
+                        <li class="separateur" numero="40">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-select-group"></i>
+                                <span>Menu principal</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                @* Composant 41: Lient tableau de bord *@
+
+                                @{
+                                    //if (Session["numero41"]!=null)
+                                    {
+                                        @*<li numero="41">
+                                    <a _action_requied_loader="0" id="tab0" href="@Url.Content("~/index/panel")">
+                                        <i class="mdi mdi-home-account"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                                        <span>Accueil principal</span>
+                                    </a>
+                                </li>*@
+                                    }
+                                    //if (Session["numero41"]!=null)
+                                    {
+                                        <li numero="41">
+                                            <a _action_requied_loader="0" id="tab1" href=@Url.Action("indexBanque", "index",new { panel=Session["str3"]})>
+                                                <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end"></span>
+                                                <span>Tableau de bord</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 42: messagerie *@
+                                @{
+                                    //if (Session["numero42"]!=null)
+                                    {
+                                        <li class="sous-gp" numero="42">
+                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <i class="mdi mdi-email-open-multiple-outline"></i>
+                                                <span>Messagérie</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+                                                @* Composant 43: mails *@
+
+                                                @{
+                                                    //if (Session["numero43"] != null)
+                                                    {
+                                                        <li numero="43">
+                                                            <a _action_requied_loader="0" id="_mail" href=@Url.Action("index", "mails")>
+                                                                Mails
+                                                                <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                                                <span class="badge rounded-pill bg-secondary float-end">@Session["new_mail"]</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+                                                @* Composant 44 : Chat *@
+
+                                                @{
+                                                    //if (Session["numero44"] != null)
+                                                    {
+                                                        <li numero="44">
+                                                            <a _action_requied_loader="0" href="@Url.Content("~/chats/index")">
+                                                                Chats
+                                                                <i class="mdi mdi-circle-medium float-lg-start"></i>
+                                                                @*<span class="badge rounded-pill bg-primary float-end">01</span>*@
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
+
+
+                                }
+
+                                @* Composant 45: Courriers *@
+                                @{
+                                    // if (Session["numero45"] != null)
+                                    {
+                                        <!--<li numero="45">
+                            <a _action_requied_loader="0" href="#">
+                                Courriers
+                                <i class="mdi mdi-file-document-multiple-outline float-lg-start"></i>-->
+                                        @*<span class="badge rounded-pill bg-primary float-end">0</span>*@
+                                        <!--</a>
+                            </li>-->
+                                    }
+                                }
+                                @* Composant 46: nouveau transfert *@
+                                @{
+                                    //if (Session["numero46"] != null)
+                                    {
+                                        @*<li numero="46">
+                                    <a _action_requied_loader="0" href=@Url.Action("Create", "Dossiers") class="waves-effect">
+                                        <i class="uil-folder-plus"></i>
+                                        <span>Nouveau transfert</span>
+                                    </a>
+                                </li>*@
+                                    }
+                                }
+                            </ul>
+                        </li>
+
+                    }
+                }
+                @* Composant 47: Gestion dossiers *@
+                @{
+                    //if (Session["numero47"]!=null ||
+                    //    Session["numero48"]!=null ||
+                    //    Session["numero49"]!=null ||
+                    //    Session["numero50"]!=null ||
+                    //    Session["numero51"]!=null ||
+                    //    Session["numero52"]!=null ||
+                    //    Session["numero53"]!=null ||
+                    //    Session["numero54"]!=null ||
+                    //    Session["numero55"]!=null ||
+                    //    Session["numero56"]!=null ||
+                    //    Session["numero57"]!=null ||
+                    //    Session["numero58"]!=null ||
+                    //    Session["numero71"]!=null ||
+                    //    Session["numero72"] != null
+                    //    )
+                    {
+                        <li class="separateur" numero="47">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-file-document-multiple"></i>
+                                <span>Consultation dossiers</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a _action_requied_loader="0" class="" style="display:none" id="rien" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="rien_lab"></span>
+                                    </a>
+                                </li>
+                                @* Composant 42: dossiers agence *@
+                                @{
+                                    if (Session["estChef"].ToString() == "True" || Session["role"].ToString() == "Chef d'agence" || Session["estDirection"].ToString() == "True")
+                                    {
+                                        <li class="sous-gp" numero="42">
+                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <i class="mdi mdi-image-filter-tilt-shift"></i>
+                                                <span>@Session["structure"]</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+
+                                                @* Composant 48: Mon portefeuille  *@
+                                                @{
+                                                    {
+                                                        <li class="sous-gp" numero="72">
+                                                            <a title="@(Session["userName"])" id="port" href=@Url.Content("~/Dossiers_banque/Index?st=all") class="has-arrow1  waves-effect">
+                                                                <i class="mdi mdi-bag-personal"></i>
+                                                                @*<span>Mon portefeuille</span>*@
+                                                                <span>Mes dossiers</span>
+                                                            </a>
+                                                        </li>
+                                                        try
+                                                        {
+                                                            foreach (var item in Session["collaborateurs"] as List<UserVM>)
+                                                            {
+                                                                try
+                                                                {
+                                                                    if (item.Id != (string)Session["userId"])
+                                                                    {
+                                                                        <li numero="71">
+                                                                            <a _action_requied_loader="0" id="tr-@item.Id" href=@Url.Content("~/index/IndexBanque?port="+item.Id+"&panel="+Session["str3"]+"&page=consult_dos;&navigation=tr-"+item.Id)>
+                                                                                @item.NomComplet
+                                                                                <i class="mdi mdi-clipboard-account-outline float-lg-start"></i>
+                                                                            </a>
+                                                                        </li>
+                                                                    }
+                                                                }
+                                                                catch (Exception)
+                                                                { }
+                                                            }
+                                                        }
+                                                        catch (Exception)
+                                                        {
+                                                        }
+                                                    }
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="sous-gp" numero="72">
+                                            <a title="@(Session["userName"])" id="port" href=@Url.Content("~/Dossiers_banque/Index?st=all") class="waves-effect">
+                                                <i class="mdi mdi-bag-personal"></i>
+                                                <span>Mes dossiers</span>
+                                            </a>
+                                            <ul class="sub-menu hidden" aria-expanded="true">
+                                                <li numero="48">
+                                                    <a _action_requied_loader="0" id="recu" href=@Url.Content("~/Dossiers_banque/Index?st=recu&page=consult_dos;site") class=" waves-effect">
+                                                        <i class="mdi mdi-watch-import"></i>
+                                                        @{
+                                                            try
+                                                            {
+                                                                if ((int)(Session["recu_doc"]) > 0)
+                                                                {
+                                                                    <span class="badge rounded-pill bg-warning float-end">@ViewBag.recu_doc</span>
+                                                                }
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                        }
+                                                        <span>Dossiers reçus</span>
+                                                    </a>
+                                                </li>
+                                                <li numero="49">
+                                                    <a _action_requied_loader="0" id="encours" href=@Url.Content("~/Dossiers_banque/Index?st=encours&page=consult_dos;site") class=" waves-effect">
+                                                        <i class="mdi mdi-refresh"></i>
+                                                        @{
+                                                            try
+                                                            {
+                                                                if ((int)(Session["encours"]) > 0)
+                                                                {
+                                                                    <span class="badge rounded-pill bg-warning float-end">@ViewBag.encours</span>
+                                                                }
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                        }
+                                                        <span>Dossiers en cours</span>
+                                                    </a>
+                                                </li>
+
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 42: dossiers conformité *@
+                                @{
+                                    if (minSite == 1)
+                                    {
+                                        <li class="sous-gp" numero="42">
+                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <i class="mdi mdi-image-filter-tilt-shift"></i>
+                                                <span>Conformité</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+                                                @* Composant 48: Dossiers reçu  *@
+                                                @{
+                                                    //if (Session["numero48"] != null)
+                                                    {
+                                                        <li numero="48">
+                                                            <a _action_requied_loader="0" id="conform" href=@Url.Content("~/Dossiers_banque/Index?st=conform") class=" waves-effect">
+                                                                <i class="mdi mdi-refresh"></i>
+                                                                <span>Dossiers</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+                                            </ul>
+                                        </li>
+                                    }
+
+
+                                }
+
+                                @* Composant 42: dossiers services transfert *@
+                                @{
+                                    if (minSite == 1 || minSite == 5)
+                                    {
+                                        <li class="gp" numero="42">
+                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <i class="mdi mdi-image-filter-tilt-shift"></i>
+                                                <span>Service transfert</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+
+
+
+                                                @{
+                                                    if (minSite == 1)
+                                                    {
+                                                        <li numero="73">
+                                                            <a _action_requied_loader="0" id="group" href=@Url.Content("~/Dossiers_banque/index?st=transfert") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-key text-info"></i>
+                                                                <span>Dossiers</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li numero="73">
+                                                            <a _action_requied_loader="0" id="group" href=@Url.Content("~/Dossiers_banque/DossiersGroupes") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-key text-info"></i>
+                                                                <span>Dossiers groupés</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li numero="53">
+                                                            <a _action_requied_loader="0" id="encourstf" href=@Url.Content("~/Dossiers_banque/Index?st=encourstf") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-move-outline"></i>
+                                                                @{
+                                                                    if ((int)(Session["saisieencours"]) > 0)
+                                                                    {
+                                                                        <span class="badge rounded-pill bg-warning float-end">@Session["encoourstf"]</span>
+                                                                    }
+                                                                }
+                                                                <span>Dossiers en attente devise</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li numero="54">
+                                                            <a _action_requied_loader="0" id="aapurer" href=@Url.Content("~/Dossiers_banque/Index?st=aapurer") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-move-outline"></i>
+                                                                @{
+                                                                    if ((int)(Session["aapurer"]) > 0)
+                                                                    {
+                                                                        <span class="badge rounded-pill bg-warning float-end">@ViewBag.aapurer</span>
+                                                                    }
+                                                                }
+                                                                <span>Dossiers à apurer</span>
+                                                            </a>
+                                                        </li>
+                                                        <li numero="55">
+                                                            <a _action_requied_loader="0" id="apure" href=@Url.Content("~/Dossiers_banque/Index?st=apure") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-move-outline"></i>
+                                                                <span>Dossiers apurés</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li numero="56">
+                                                            <a _action_requied_loader="0" class="" id="echu" href=@Url.Content("~/Dossiers_banque/Index?st=echu")>
+                                                                <i class="mdi mdi-folder-alert text-danger float-lg-start"></i>
+                                                                @{
+                                                                    if ((int)(Session["echus"]) > 0)
+                                                                    {
+                                                                        <span class="badge rounded-pill bg-warning float-end">@ViewBag.echus</span>
+                                                                    }
+                                                                }
+                                                                <span>Dossiers échus</span>
+                                                            </a>
+                                                        </li>
+
+                                                        <li numero="57">
+                                                            <a _action_requied_loader="0" class="" id="supp" href=@Url.Content("~/Dossiers_banque/Index?st=supp")>
+                                                                Dossiers rappelés
+                                                                <i class="mdi mdi-delete-variant float-lg-start"></i>
+                                                            </a>
+                                                        </li>
+
+                                                        <li numero="58">
+                                                            <a _action_requied_loader="0" class="" id="archive" href=@Url.Content("~/archivage2/Index?_id=archives")>
+                                                                Dossiers archivés
+                                                                <i class="mdi mdi-archive-outline float-lg-start"></i>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 42: dossiers beac *@
+                                @{
+                                    //if (Session["numero42"]!=null)
+                                    {
+                                        <li class="sous-gp" numero="42">
+                                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                                <i class="mdi mdi-image-filter-tilt-shift"></i>
+                                                <span>BEAC</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+
+                                                @* Composant 50: Dossiers à envoyer *@
+                                                @{
+                                                    //if (Session["numero50"] != null)
+                                                    {
+                                                        <li numero="50">
+                                                            <a _action_requied_loader="0" id="aenv_bac" href=@Url.Content("~/Dossiers_banque/Index?st=aenv_bac") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-sync-outline"></i>
+                                                                <span class="badge rounded-pill bg-warning float-end">@Session["aenv_bac"]</span>
+                                                                <span>Dossiers à envoyer à la BEAC</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+                                                @* Composant 51: Dossiers envoyés *@
+                                                @{
+                                                    //if (Session["numero51"] != null)
+                                                    {
+                                                        <li numero="51">
+                                                            <a _action_requied_loader="0" id="env_bac" href=@Url.Content("~/Dossiers_banque/Index?st=env_bac") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-sync-outline"></i>
+                                                                <span>Dossiers envoyés</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+
+                                                @* Composant 52: Dossiers accordés *@
+                                                @{
+                                                    // if (Session["numero52"] != null)
+                                                    {
+                                                        <li numero="52">
+                                                            <a _action_requied_loader="0" id="accord" href=@Url.Content("~/Dossiers_banque/Index?st=accord") class=" waves-effect">
+                                                                <i class="mdi mdi-folder-sync-outline"></i>
+                                                                <span>Dossiers accordés</span>
+                                                            </a>
+                                                        </li>
+                                                    }
+                                                }
+
+                                            </ul>
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        </li>
+                    }
+
+                    //Dossiers groupés
+                    <li class="separateur" numero="47">
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-group"></i>
+                            <span>Dossiers groupés</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="true">
+                            <li>
+                                <a _action_requied_loader="0" class="" style="display:none" id="rien" href=@Url.Content("#")>
+                                    <i class="mdi mdi-hand-pointing-right"></i>
+                                    <span id="rien_lab"></span>
+                                </a>
+                            </li>
+                            <li numero="75">
+                                <a _action_requied_loader="0" href=@Url.Content("~/DFXes/index")>
+                                    <i class="mdi mdi-focus-field"></i>
+                                    DFX
+                                </a>
+                            </li>
+                            <li numero="75">
+                                <a _action_requied_loader="0" href=@Url.Content("~/referencebanques/index")>
+                                    <i class="mdi mdi-focus-field"></i>
+                                    Refinancement
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+                @* composant 59: Gestion des tiers  *@
+                @{
+                    //if (Session["numero59"]!=null ||
+                    //    Session["numero61"]!=null ||
+                    //    Session["numero68"]!=null ||
+                    //    Session["numero69"]!=null ||
+                    //    Session["numero70"] != null)
+                    {
+                        <li class="separateur" numero="59">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-gamepad-up"></i>
+                                <span>Gestion des tiers</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a _action_requied_loader="0" class="" style="display:none" id="tiers_lab" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="tiers"></span>
+                                    </a>
+                                </li>
+                                @* Composant 60: Agences *@
+                                @{
+                                    if (Session["Agences_nav"] != null)
+                                    {
+                                        <li numero="60">
+                                            <a _action_requied_loader="0" href="@Url.Content("~/agences/Index")">
+                                                <i class="mdi mdi-bank"></i>
+                                                Agences
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @* Composant 68: Conformité *@
+                                @{
+                                    if (Session["dm_nav"] != null)
+                                    {
+                                        <li numero="68">
+                                            <a _action_requied_loader="0" href="@Url.Content("~/directionmetiers/Index")">
+                                                <i class="mdi mdi-toy-brick-plus"></i>
+                                                Directions metiers
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                @* Composant 69: Service transfert *@
+                                @{
+                                    //if (Session["numero69"] != null)
+                                    {
+                                        @*<li numero="69">
+                                     <a _action_requied_loader="0" href="@Url.Content("~/structures/Index?tp=Service transfert")">
+                                        <i class="mdi mdi-perspective-less"></i>
+                                        Service transfert
+                                    </a>
+                                </li>*@
+                                    }
+
+                                    @* Composant 70: all structures *@
+                                    if (Session["all_sites_nav"] != null)
+                                    {
+                                        <li numero="70">
+                                            <a _action_requied_loader="0" href="@Url.Content("~/structures/Index")">
+                                                <i class="mdi mdi-view-list"></i>
+                                                Sites
+                                            </a>
+
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 61: Clients *@
+                                @{
+                                    if (Session["clients_nav"] != null)
+                                    {
+                                        <li numero="61">
+                                            <a _action_requied_loader="0" href=@Url.Content("~/Clients/Index")>
+                                                <i class="mdi mdi-account-tie"></i>
+                                                Clients
+                                            </a>
+                                        </li>
+                                    }
+
+                                    if (Session["collaborateurs_nav"] != null || Session["estChef"].ToString() == "True" || Session["role"].ToString() == "Chef d'agence" || true)
+                                    {
+                                        <li numero="61">
+                                            <a _action_requied_loader="0" href=@Url.Content("~/comptebanquecommerciales/Index?coll=1")>
+                                                <i class="mdi mdi-account-tie"></i>
+                                                Collaborateurs
+                                            </a>
+                                        </li>
+                                        if (minSite == 1)
+                                        {
+                                            @*<li>
+                                        <a _action_requied_loader="0" id="opsw" href=@Url.Content("~/Backoffices/Index")>
+                                            <i class="mdi mdi-account-arrow-left"></i>
+                                            Back-office
+                                        </a>
+                                    </li>*@
+
+                                            <li>
+                                                <a _action_requied_loader="0" id="opsw" href=@Url.Content("~/Clients/Index")>
+                                                    <i class="fa fa-users-cog"></i>
+                                                    Clients
+                                                </a>
+                                            </li>
+                                        }
+                                        else if (minSite == 9)
+                                        {
+                                            <li numero="61">
+                                                <a _action_requied_loader="0" id="opsw" href=@Url.Content("~/operateurswifts/Index")>
+                                                    <i class="mdi mdi-account-arrow-left"></i>
+                                                    Opérateurs Swift
+                                                </a>
+                                            </li>
+                                            <li numero="61">
+                                                <a _action_requied_loader="0" href=@Url.Content("~/signataires/Index")>
+                                                    <i class="mdi mdi-account-key"></i>
+                                                    Signataires courrier
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+
+                                }
+                            </ul>
+                        </li>
+                    }
+                }
+
+                <li class="separateur" numero="62">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-analytics"></i>
+                        <span>Analyses et reporting</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li>
+                            <a class="" style="display:none" id="stat" href=@Url.Content("#")>
+                                <i class="mdi mdi-hand-pointing-right"></i>
+                                <span id="stat_lab"></span>
+                            </a>
+                        </li>
+                        @* Composant 63:  Liste références*@
+                        @{
+                            //if (Session["numero63"] != null)
+                            {
+                                <li numero="63">
+                                    <a _action_requied_loader="0" id="anomalies" href=@Url.Content("~/Analyses/RecapTransfertBanque")>
+                                        <i class="mdi mdi-chart-line-variant"></i>
+                                        Reporting des transferts
+                                    </a>
+                                </li>
+                                <li numero="63">
+                                    <a _action_requied_loader="0" id="anomalies" href=@Url.Content("~/Analyses/anomalies")>
+                                        <i class="mdi mdi-alert-rhombus-outline"></i>
+                                        Reporting des anomalies
+                                    </a>
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                </li>
+
+
+                @* Composant 62: Edition des références navigation *@
+                @{
+                    if (Session["ges_ref_nav"] != null || minSite == 9)
+                    //     Session["numero64"]!=null ||
+                    //     Session["numero65"]!=null ||
+                    //     Session["numero74"] != null)
+                    {
+
+                        <li class="separateur hidden" numero="62">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-identifier"></i>
+                                <span>Gestion de références</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a class="" style="display:none" id="ref" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="ref_lab"></span>
+                                    </a>
+                                </li>
+                                @* Composant 63:  Liste références*@
+                                @{
+                                    //if (Session["numero63"] != null)
+                                    {
+                                        <li numero="63">
+                                            <a _action_requied_loader="0" id="list" href=@Url.Content("~/ReferenceBanques/index?st=list")>
+                                                <i class="mdi mdi-list-status"></i>
+                                                Liste de références
+                                            </a>
+                                        </li>
+                                        <li numero="63" class="hidden1">
+                                            <a _action_requied_loader="0" id="lbre" href=@Url.Content("~/ReferenceBanques/index?st=lbre")>
+                                                <i class="mdi mdi-list-status"></i>
+                                                Références libres
+                                            </a>
+                                        </li>
+                                        <li numero="63" class="hidden1">
+                                            <a _action_requied_loader="0" id="liee" href=@Url.Content("~/ReferenceBanques/index?st=liee")>
+                                                <i class="mdi mdi-list-status"></i>
+                                                Références liées
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 74:  Attacher référence*@
+                                @{
+                                    //if (Session["numero74"] != null)
+                                    {
+                                        <li numero="74">
+                                            <a _action_requied_loader="0" href=@Url.Content("~/ReferenceBanques/attache")>
+                                                <i class="mdi mdi-attachment"></i>
+                                                Rattacher la référence
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                                @* Composant 64: Anciennes références*@
+                                <li numero="64" class="hidden">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/ReferenceBanques/Index/st=arch")>
+                                        <i class="mdi mdi-archive"></i>
+                                        Archives références
+                                    </a>
+                                </li>
+
+                                @* Composant 65: Configurations référence*@
+                                <li numero="65" class="hidden">
+                                    <a _action_requied_loader="0" href="#" onclick="alert('En construction!')">
+                                        <i class="mdi mdi-settings-helper"></i>
+                                        Configurations
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        if (Session["estChef"].ToString() == "True")
+                        {
+                            <li class="separateur" numero="62">
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="mdi mdi-table-settings"></i>
+                                    <span>Parametrage</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="true">
+                                    <li>
+                                        <a class="" style="display:none" id="param_trans_lab" href=@Url.Content("#")>
+                                            <i class="mdi mdi-hand-pointing-right"></i>
+                                            <span id="param_trans"></span>
+                                        </a>
+                                    </li>
+                                    <li numero="63">
+                                        <a _action_requied_loader="0" id="corresp" href=@Url.Content("~/correspondants/index")>
+                                            <i class="mdi mdi-bank-minus"></i>
+                                            Correspondants bancaires
+                                        </a>
+                                    </li>
+                                    <li numero="63" class="hidden1">
+                                        <a _action_requied_loader="0" id="lbre" href=@Url.Content("~/comptexafs/index")>
+                                            <i class="mdi mdi-mirror"></i>
+                                            Comptes XAF
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </li>
+                        }
+
+                    }
+                }
+
+                @* Composant 66: Parametrage *@
+                @{
+                    if (Session["parametre_nav"] != null ||
+                        Convert.ToBoolean(Session["EstAdmin"]))
+                    {
+                        <li class="separateur" numero="65">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="uil-capture"></i>
+                                <span>ePub</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a class="" style="display:none" id="epub" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="epub_lab"></span>
+                                    </a>
+                                </li>
+                                @* Composant 76: Les états d'un dossiers *@
+                                <li numero="76">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/epubs/edit?id=0")>
+                                        <i class="mdi mdi-publish"></i>
+                                        ePub
+                                    </a>
+                                </li>
+                                <li numero="76">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/pubitems/index")>
+                                        <i class="mdi mdi-sign-text"></i>
+                                        Publications
+                                    </a>
+                                </li>
+                                <li numero="76">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/pubs/IndexThemes")>
+                                        <i class="mdi mdi-ballot-outline"></i>
+                                        Thèmes
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="separateur" numero="66">
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="uil-cog"></i>
+                                <span>Parametrage</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                <li>
+                                    <a class="" style="display:none" id="param" href=@Url.Content("#")>
+                                        <i class="mdi mdi-hand-pointing-right"></i>
+                                        <span id="param_lab"></span>
+                                    </a>
+                                </li>
+                                @* Composant 75: Liste de devises *@
+                                <li numero="75">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/devisemonetaires/index")>
+                                        <i class="mdi mdi-currency-bdt"></i>
+                                        Devises
+                                    </a>
+                                </li>
+                                <li numero="75">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/motifsTransferts/index")>
+                                        <i class="mdi mdi-book-information-variant"></i>
+                                        Motifs du transferts
+                                    </a>
+                                </li>
+                                @* Composant 67: parametre de la plateforme *@
+                                <li numero="67">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/banques/configurations/1")>
+                                        <i class="mdi mdi-adjust"></i>
+                                        Plateforme
+                                    </a>
+                                </li>
+
+                                <li numero="65">
+                                    <a _action_requied_loader="0" href=@Url.Content("~/banques/DataAssync")>
+                                        <i class="mdi mdi-sync"></i>
+                                        Synchronisation
+                                    </a>
+                                </li>
+                                @if (false)
+                                {
+                                    @* Composant 76: Les états d'un dossiers *@
+                                    <li numero="76">
+                                        <a _action_requied_loader="0" href=@Url.Content("~/dossiers_banque/etats")>
+                                            <i class="mdi mdi-adjust"></i>
+                                            Etats d'un dossier
+                                        </a>
+                                    </li>
+                                    @* Composant 76: Les états d'un dossiers *@
+                                    <li numero="76">
+                                        <a _action_requied_loader="0" href=@Url.Content("~/typeStructures/index")>
+                                            <i class="mdi mdi-adjust"></i>
+                                            Types des structures
+                                        </a>
+                                    </li>
+                                    @* Composant 76: Les états d'un dossiers *@
+                                    <li numero="76">
+                                        <a _action_requied_loader="0" href=@Url.Content("~/composants/index")>
+                                            <i class="mdi mdi-access-point"></i>
+                                            Composants
+                                        </a>
+                                    </li>
+                                    @* Composant 76: Les états d'un dossiers *@
+                                    <li numero="76">
+                                        <a _action_requied_loader="0" href=@Url.Content("~/actionihms/index")>
+                                            <i class="mdi mdi-adjust"></i>
+                                            Actions utilisateurs
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                }
+
+                <li class="menu-title">
+                    <hr class="text-white fs-3" />
+                </li>
+                <li class="separateur card-header1 hidden" numero="66" style="position: absolute; bottom: 0; width: 100%;">
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-consolidate"></i>
+                        <span>Raccourcis</span>
+                    </a>
+                    <ul class="sub-menu bg-soft-primary" aria-expanded="true">
+                        <li class="menu-title">Menus </li>
+                        @{
+                            int min = Convert.ToInt32(Session["userSIteMinNiveau"]);
+
+                            <li>
+
+                            </li>
+                            for (int i = min; i <= 5; i++)
+                            {
+                                if (i != menu)
+                                {
+                                    if (i == 1)
+                                    {
+                                        <li numero="75">
+                                            <a _action_requied_loader="0" class="" href=@Url.Content("~/index/indexbanque?panel=1,2,17,19&acc=Accueil%20agence&struc=agence")>
+                                                <i class="mdi mdi-table-multiple"></i>
+                                                Agence
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (i == 3)
+                                    {
+                                        <li numero="75">
+                                            <a _action_requied_loader="0" class="" href=@Url.Content("~/index/indexbanque?panel=3,4,16,20&acc=Accueil%20conformité&struc=Conformité")>
+                                                <i class="mdi mdi-table-multiple"></i>
+                                                Conformité
+                                            </a>
+                                        </li>
+                                    }
+                                    else if (i == 5)
+                                    {
+                                        <li numero="75">
+                                            <a _action_requied_loader="0" class="" href=@Url.Content("~/index/indexbanque?panel=5,6,7,8,9,10&acc=Accueil%20service%20transfert&struc=Service%20transfert")>
+                                                <i class="mdi mdi-table-multiple"></i>
+                                                Service transfert
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            }
+                        }
+                        <li class="menu-title" style="text-decoration:solid">Modules </li>
+                        <li numero="75">
+                            <a _action_requied_loader="0" href=@Url.Content("~/index/indexbanque?panel=")>
+                                <i class="mdi mdi-rhombus-split"></i>
+                                Modules
+                            </a>
+                        </li>
+                        <li class="menu-title"> </li>
+                    </ul>
+                </li>
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->
+<script>
+    var nv = "@(ViewBag.navigation)";
+    if (nv == "rien") {
+        document.getElementById("rien_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    } else if (nv == "param") {
+        document.getElementById("param_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    } else if (nv == "ref") {
+        document.getElementById("ref_lab").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    } else if(nv=="tiers_lab") {
+        document.getElementById("tiers").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    } else if (nv =="param_trans_lab") {
+        document.getElementById("param_trans").textContent = "@(ViewBag.navigation_msg)";
+        document.getElementById("" + nv).style.display = "initial";
+    }
+    document.getElementById("" + nv).classList.add("active");
+    document.getElementById("" + nv).parentElement.classList.add("mm-active");
+</script>
+<script>
+    var uls = document.getElementsByTagName("li");
+    var st = "";
+    for (var i = 0; i < uls.length; i++) {
+        try {
+            st = uls[i].classList + "";
+            if (st.trim() == "") {
+                uls[i].classList.add("blue-ligth");
+            } else {
+                //uls[i].classList.add("blue-faible1");
+            }
+        } catch (e) {
+            alert("erreur");
+        }
+    }
+</script>
+
+
+@section suiviChat {
+   
+}

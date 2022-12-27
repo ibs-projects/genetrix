@@ -1,0 +1,135 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.CompteBanqueCommerciale
+
+
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    ViewBag.Title = "Utilisateur";
+    ViewBag.pTitle = "Suppression Utilisateur";
+    ViewBag.pageTitle = "Utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h3 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.EstAdmin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstAdmin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NomUtilisateur)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NomUtilisateur)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Prenom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Prenom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sexe)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sexe)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tel2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tel2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tel1)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tel1)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Categorie)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Categorie)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Structure)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Structure)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstGestionnaire)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstGestionnaire)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Site")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Structure.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.XRole.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.XRole.Nom)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Liste", "Index")
+        </div>
+    }
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

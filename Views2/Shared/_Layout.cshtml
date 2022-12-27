@@ -1,0 +1,78 @@
+@{ 
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+	@Styles.Render("~/Content/DevExtremeBundle")
+	
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/Scripts/DevExtremeBundle")
+    <style>
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        .elt {
+            width: 510px !important;
+        }
+        .form-control1{
+            height:35px;
+            width:250px;
+            border-radius:3px 4px;
+        }
+        .section::-webkit-scrollbar-thumb {
+            background-image: linear-gradient(180deg, #D0368A 0%, #708AD4 99%);
+            box-shadow: inset 2px 2px 5px 0 rgba(#fff, 0.5);
+            border-radius: 100px;
+        }
+    </style>
+</head>
+<body id="_dbody" class="bg-white" style="max-width: 500px !important; height: 500px !important; position: fixed; padding-bottom: 0px;">
+    <div class="card-header p-1 mb-0" style="position: fixed; top: 0; width: 100%; margin-bottom: 0px; z-index: 800; background-color: #2689a6">
+        <span class="mdi mdi-account-circle-outline text-white fs-2 p-2 icon-10 float-left" id="info-user-chat" style="cursor:pointer" height="32px"></span>
+        <span class="mdi mdi-close text-white fs-2 p-2 icon-10 float-end close-pan-chat" id="close-pan-chat" style="cursor:pointer" height="32px"></span>
+        <span class="mdi mdi-minus text-white fs-2 p-2 icon-10 float-end" id="reduire-pan-chat" style="cursor:pointer" height="32px"></span>
+    </div>
+    <div class="container scroller body-content mt-0 elt" id="body-content" style="margin-top:-10px;height:75%!important;overflow-y:scroll;padding-bottom:100px">
+        @RenderBody()
+        <a id="footer-pan"></a>
+    </div>
+    
+    <div class="card-footer bg-gradient-success elt" style="position:fixed1;bottom:-15px;height:25%;">
+        <div class="col1" id="chat-action-pan">
+            <table style="width: 100%;">
+                <tr>
+                    <td style="padding-bottom:3px">
+                        <div class="form-group" style="padding:0px">
+                            <input id="message" type="text" class="form-control chat-input rounded chat-act" placeholder="Entrer le message...">
+                        </div>
+                    </td>
+                    <td style="width:40%;">
+                        <div style="margin:0px;padding:0px;">
+                            <button id="sendmessage" type="submit" class="btn btn-primary m-0 chat-act"> <i class="mdi mdi-send float-right"></i></button>
+                            <button type="submit" class="btn btn-primary m-0" id="fichier-btn"> <i class="mdi mdi-link-variant float-right chat-act"></i></button>
+                            <button type="submit" class="btn btn-outline-light m-0"> <i class="mdi mdi-file-eye-outline float-right chat-act"></i></button>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <input type="file" id="ficher-inp" value="" accept="image/png, image/gif, image/jpeg" class="hidden" />
+    @RenderSection("scripts", required: false)
+    @*@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")*@
+
+    <script>
+        $(document).ready(function () {
+            $('#fichier-btn').click(function () {
+                document.getElementById('ficher-inp').click();
+            });
+        });
+    </script>
+</body>
+</html>

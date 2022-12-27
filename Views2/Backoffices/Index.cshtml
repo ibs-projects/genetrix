@@ -1,0 +1,97 @@
+﻿@model IEnumerable<genetrix.Models.Backoffice>
+
+@{
+    ViewBag.Title = "Back-office";
+    ViewBag.pTitle = "Liste back-offices";
+    ViewBag.pageTitle = "Back-office";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+    //Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<p>
+    <a class="" href="@Url.Action("Create","backoffices")">
+        <i class="dripicons-plus me-2"></i>
+        Nouveau
+    </a>
+</p>
+
+<div class="row">
+    <div class="col-12">
+        <p class="text-danger">@ViewBag.msg</p>
+        <div class="card">
+            <div class="card-header card-header1 text-white">
+                Liste
+            </div>
+            <div class="card-body">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>
+                                Nom
+                            </th>
+
+                            <th>
+                                Agence
+                            </th>
+                            <th>
+                                Responsable
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NiveauDossier)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NiveauMaxManager)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NiveauMaxDossier)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NiveauH)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                        <tr>
+
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Agence.Nom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Responsable.Nom)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NiveauDossier)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NiveauMaxManager)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NiveauMaxDossier)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.NiveauH)
+                            </td>
+
+                            <td>
+                                <a href=@Url.Content("~/structures/edit?id="+item.Id)>Editer</a> |
+                                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

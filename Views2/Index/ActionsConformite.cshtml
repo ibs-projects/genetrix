@@ -1,0 +1,26 @@
+﻿@model genetrix.Models.Dossier
+@{
+    //rejet
+    if (Model.EtapesDosier >= 6 && Model.EtapesDosier <= 8)
+    {
+        Model.Actions_content_visible = true;
+        <th>
+            <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                <i class="mdi mdi-cancel"></i>
+                Rejeter
+            </button>
+        </th>
+    }
+    if (Model.EtapesDosier==8)
+    {
+        Model.Actions_content_visible = true;
+        <th>
+            <button numero="105" id="btn-env-stf" type="button" value="9" class="btn btn-outline-primary change-etat" title="Envoyer au service transfert">
+                <i class="mdi mdi-send" id="btn-env-stf-0"></i>
+                <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-stf-1"></i>
+                Valider le dossier
+            </button>
+        </th>
+    }
+
+}

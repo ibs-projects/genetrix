@@ -1,0 +1,470 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@{
+    IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>> datesModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> devisesModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> clientsModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> agencesModels = null;
+    Dictionary<string, string> fname = new Dictionary<string, string>();
+
+    try
+    {
+        agencesModels = ViewData["agences"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        clientsModels = ViewData["clients0"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        datesModels = ViewData["date"] as IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        devisesModels = ViewData["devise"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        fname = ViewData["fname"] as Dictionary<string, string>;
+    }
+    catch (Exception)
+    { }
+    if (fname == null)
+    {
+        fname = new Dictionary<string, string>();
+    }
+}
+<link href="~/assets/arch.css" rel="stylesheet" />
+<style>
+    .atome:hover {
+        /* background-color:rgb(15 ,61 ,94 , 0.43);
+        border-radius:6px 8px;
+        color:white*/
+    }
+</style>
+<div class="vertical-menu bg-white mb-0" id="vertical-menu-archive" style="background-color: #2689a6;">
+    @{ 
+        string pt = "", icon = "hidden", minh = "min-height:60px";
+        if (ViewBag.vue == "large")
+        {
+            pt = "pt-3";
+            icon = "";
+            minh = "";
+        }
+    }
+    <!-- LOGO -->
+    <div class="navbar-brand-box" id="navbar-icon" style="background-color: #2689a6; margin-top:  0px;@minh">
+        <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-dark @icon">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="40">
+            </span>
+        </a>
+
+        <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-light @icon">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="33">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="33">
+            </span>
+        </a>
+    </div>
+
+
+    <div class="">
+        <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn" style="float:right!important">
+            <i class="fa fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <div data-simplebar class="sidebar-menu-scroll " style="margin-top: 35px">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu" style="margin-top:10px!important;">
+            @*<button class="mdi mdi-note-search btn btn-outline-secondary"></button>*@
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu" style="">
+                <li class="menu-title hidden1"></li>
+                <li intitule="Documents">
+                    <a href="#" intitule="Documents" class="has-arrow sidbar waves-effect" id="archives">
+                        <i class="mdi mdi-folder-open text-dark"></i>
+                        <span>Archives</span>
+                    </a>
+                    <ul class="sub-menu1" aria-expanded="false">
+                        <li intitule="Agences">
+                            <a href="javascript: void(0);" intitule="Agences" id="agences" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Agences</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    string ff = ""; bool idF = false;
+                                    try
+                                    {
+                                        foreach (var item in agencesModels)
+                                        {
+                                            try
+                                            {
+                                                <li intitule="@item.Key" title="Agence: @item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="agence-@(item.Key)" agence="" class="has-arrow sidbar mdi mdi-bank-minus">
+                                                        @* agence *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu" aria-expanded="true">
+                                                        @{
+                                                            foreach (var user in item.GroupBy(d => d.GestionnaireName))
+                                                            {
+                                                                try
+                                                                {
+                                                                    <li intitule="@user.Key" title="Gestionnaire: @user.Key">
+                                                                        <a href="javascript: void(0);" intitule="@item.Key" id="gest-@(user.Key)" gestionnaire="" class="has-arrow sidbar mdi mdi-account-tie">
+                                                                            @* gestionnaire *@
+                                                                            <span>@user.Key</span>
+                                                                        </a>
+                                                                        <ul class="sub-menu" aria-expanded="true">
+                                                                            @{
+                                                                                idF = false;
+                                                                                foreach (var cl in user.GroupBy(d => d.ClientName))
+                                                                                {
+                                                                                    try
+                                                                                    {
+                                                                                        <li intitule="@cl.Key" title="Client: @cl.Key">
+                                                                                            <a href="javascript: void(0);" intitule="@item.Key" id="cl-@(cl.Key)" client="" class="has-arrow sidbar mdi mdi-handshake">
+                                                                                                @* client *@
+                                                                                                <span>@cl.Key</span>
+                                                                                            </a>
+                                                                                            <ul class="sub-menu" aria-expanded="true">
+                                                                                                @{
+                                                                                                    foreach (var dos in cl)
+                                                                                                    {
+                                                                                                        <li intitule="@dos.Name">
+                                                                                                            <a href="javascript: void(0);" intitule="@dos.Name" title="" id="agence-gest-@dos.Id" iddossier="@dos.Id" class="has-arrow sidbar _folder mdi mdi-folder-open">
+                                                                                                                <span>@dos.Name</span>
+                                                                                                            </a>
+                                                                                                            @{
+                                                                                                                if (!idF)
+                                                                                                                {
+                                                                                                                    idF = true;
+                                                                                                                    <script>
+                                                                                                                        document.getElementById('cl-@(cl.Key)').setAttribute('client', '@dos.GestionnaireId')
+                                                                                                                    </script>
+                                                                                                                }
+                                                                                                            }
+                                                                                                        </li>
+                                                                                                    }
+                                                                                                }
+                                                                                            </ul>
+                                                                                        </li>
+                                                                                    }
+                                                                                    catch (Exception)
+                                                                                    { }
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </li>
+
+                                                                }
+                                                                catch (Exception)
+                                                                { }
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li intitule="Clients">
+                            <a href="javascript: void(0);" intitule="Clients" id="clients" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Clients</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    ff = ""; idF = false;
+                                    try
+                                    {
+                                        foreach (var item in clientsModels)
+                                        {
+                                            try
+                                            {
+                                                <li intitule="@item.Key" title="Client:@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="client-@(item.Key)" client="" class="has-arrow sidbar mdi mdi-handshake" aria-hidden="true">
+                                                        @* client *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu" aria-expanded="true">
+                                                        @{
+                                                            foreach (var user in item.GroupBy(d => d.FournisseurName))
+                                                            {
+                                                                try
+                                                                {
+                                                                    <li intitule="@user.Key" title="Fournisseur: @user.Key">
+                                                                        <a href="javascript: void(0);" intitule="@item.Key" id="fou-@(user.Key)" IdFournisseur="" class="has-arrow sidbar mdi mdi-podcast">
+                                                                            @* fournisseurs *@
+                                                                            <span>@user.Key</span>
+                                                                        </a>
+                                                                        <ul class="sub-menu" aria-expanded="true">
+                                                                            @{
+                                                                                idF = false;
+                                                                                foreach (var dos in user)
+                                                                                {
+                                                                                    <li intitule="@dos.Name">
+                                                                                        <a href="javascript: void(0);" intitule="@dos.Name" title="" id="agence-gest-@dos.Id" iddossier="@dos.Id" class="has-arrow sidbar _folder mdi mdi-folder-open">
+                                                                                            <span>@dos.Name</span>
+                                                                                        </a>
+                                                                                        @{
+                                                                                            if (!idF)
+                                                                                            {
+                                                                                                idF = true;
+                                                                                                <script>
+                                                                                                        document.getElementById('fou-@(user.Key)').setAttribute('IdFournisseur', '@dos.FournisseurId')
+                                                                                                </script>
+                                                                                            }
+                                                                                        }
+                                                                                    </li>
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </li>
+
+                                                                }
+                                                                catch (Exception)
+                                                                { }
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+
+                        <li intitule="Archive par date">
+                            <a href="javascript: void(0);" intitule="Archive par date" title="Période de traitement" id="date" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Période</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    try
+                                    {
+                                        foreach (var item in datesModels)
+                                        {
+                                            try
+                                            {
+                                                <li intitule="@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="annee-@(item.Key)" annee="@item.Key" class="has-arrow sidbar mdi mdi-calendar-blank">
+                                                        @* Année *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu" aria-expanded="true">
+                                                        @{
+                                                            foreach (var dos in item.GroupBy(d => d.MoisArchivage))
+                                                            {
+                                                                <li intitule="@dos.Key">
+                                                                    <a href="javascript: void(0);" intitule="@dos.Key" id="annee_mois-@(item.Key +"-"+dos.Key)" anne-mois="@(item.Key+"-"+dos.Key)" class="has-arrow sidbar mdi mdi-sort-reverse-variant">
+                                                                        @* Mois *@
+                                                                        <span>@ViewBag.mois[dos.Key - 1]</span>
+                                                                    </a>
+                                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                                        @{
+                                                                            foreach (var f in dos.GroupBy(d => d.ClientName))
+                                                                            {
+                                                                                <li intitule="@f.Key">
+                                                                                    <a href="javascript: void(0);" intitule="@f.Key" title="@ff" id="annee-mois-fou-@f.Key" idFournisseur="@f.Key" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                                        <span>@f.Key</span>
+                                                                                    </a>
+                                                                                </li>
+                                                                            }
+                                                                        }
+                                                                    </ul>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li intitule="Devises">
+                            <a href="javascript: void(0);" intitule="Devises" id="devises" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Devise</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{string devise = "";
+                                    try
+                                    {
+                                        foreach (var item in devisesModels)
+                                        {
+                                            devise = item.Key == "EUR" ? "mdi-currency-eur" : item.Key == "USD" ? "mdi-currency-usd" : "mdi-currency-eth";
+                                            try
+                                            {
+                                                <li intitule="@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="dev-@(item.Key)" _id="dev-@item.Key" iddevise="" class="has-arrow sidbar mdi @devise">
+                                                        @* Devise *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                        @{
+                                                            foreach (var f in item.GroupBy(d => d.FournisseurName))
+                                                            {
+                                                                idF = false;
+                                                                <li intitule="@f.Key">
+                                                                    <a href="javascript: void(0);" intitule="@f.Key" id="dev-fou-@f.Key" _id="four-@f.Key" idFournisseur="" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                        @* Fournisseur *@
+                                                                        <span>@f.Key</span>
+                                                                    </a>
+                                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                                        @{
+                                                                            foreach (var dos in f)
+                                                                            {
+                                                                                <li intitule="@dos.Name">
+                                                                                    <a href="javascript: void(0);" intitule="@dos.Name" title="@ff" id="dev-fou-dos-@dos.Id" _id="dos-@dos.Id" iddossier="@dos.Id" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                                        <span>@dos.Name</span>
+                                                                                    </a>
+                                                                                    @{
+                                                                                        if (!idF)
+                                                                                        {
+                                                                                            idF = true;
+                                                                                            <script>
+                                                                                                document.getElementById('dev-@(item.Key)').setAttribute('iddevise', '@dos.IdDevise')
+                                                                                                document.getElementById('dev-fou-@f.Key').setAttribute('iddevise', '@dos.FournisseurId')
+                                                                                            </script>
+                                                                                        }
+                                                                                    }
+                                                                                </li>
+                                                                            }
+                                                                        }
+                                                                    </ul>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li class="menu-title"><hr /></li>
+                        <li class="" intitule="DFX">
+                            <a href="@Url.Content("~/archivages/index?cat=dfx&_id=dfx")" intitule="DFX" id="dfx" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>DFX</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=dfx-g&_id=dfx-g")" intitule="Groupés" id="dfx-g" class="has-arrow sidbar mdi mdi-group">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>Groupés</span>
+                                    </a>
+                                </li>
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=dfx-s&_id=dfx-s")" intitule="Uniques" id="dfx-s" class="has-arrow sidbar mdi mdi-atom">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>Uniques</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="" intitule="REF">
+                            <a href="@Url.Content("~/archivages/index?cat=ref&_id=ref")" intitule="REF" id="ref" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Refinancement</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=ref-eur&_id=ref-eur")" intitule="EUR" id="ref-eur" class="has-arrow sidbar mdi mdi-currency-eur">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>EUR</span>
+                                    </a>
+                                </li>
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=ref-usd&_id=ref-usd")" intitule="USD" id="ref-usd" class="has-arrow sidbar mdi mdi-currency-usd">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>USD</span>
+                                    </a>
+                                </li>
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=ref-aut&_id=ref-aut")" intitule="Autres" id="ref-aut" class="has-arrow sidbar mdi mdi-currency-eth">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>Autres</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="" intitule="Fonds propres">
+                            <a href="@Url.Content("~/archivages/index?cat=fp&_id=fp")" intitule="Fonds propres" id="fp" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Fonds propres</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=fp-eur&_id=fp-eur")" intitule="EUR" id="fp-eur" class="has-arrow sidbar mdi mdi-currency-eur">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>EUR</span>
+                                    </a>
+                                </li>
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=fp-usd&_id=fp-usd")" intitule="USD" id="fp-usd" class="has-arrow sidbar mdi mdi-currency-usd">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>USD</span>
+                                    </a>
+                                </li>
+                                <li intitule="dfx-groupe">
+                                    <a href="@Url.Content("~/archivages/index?cat=fp-aut&_id=fp-aut")" intitule="Autres" id="fp-aut" class="has-arrow sidbar mdi mdi-currency-eth">
+                                        <i class="mdi mdi- text-dark"></i>
+                                        <span>Autres</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li intitule="Dossiers">
+                            <a href="javascript: void(0);" intitule="Dossiers" id="dossiers" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Dossiers</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

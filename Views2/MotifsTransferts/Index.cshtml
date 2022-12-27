@@ -1,0 +1,56 @@
+﻿@model IEnumerable<genetrix.Models.MotifsTransfert>
+
+@{
+    ViewBag.Title = "Liste des motifs du transfert";
+    ViewBag.pTitle = "Liste des motifs du transfert";
+    ViewBag.pageTitle = "Liste des motifs du transfert";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<p>
+    @Html.ActionLink("Ajouter", "Create")
+</p>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1">
+                Liste des motifs du transfert
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Intitule)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Intitule)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Editer", "Edit", new { id = item.Id }) |
+                                        @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                                    </td>
+                                </tr>
+                            }
+
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

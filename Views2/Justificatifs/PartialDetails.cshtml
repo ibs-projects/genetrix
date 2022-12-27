@@ -1,0 +1,77 @@
+﻿@model genetrix.Models.Justificatif
+
+<div class="card border border-1">
+    <div class="card-body row">
+        <div class="col-6">
+            <dl class="dl-horizontal">
+                <dt>
+                    Devise
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DeviseJustif)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.MontantJustif)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MontantJustif)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.MontantPartiel)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.MontantPartielString)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.MontantRestant)
+                </dt>
+
+                <dd style="@(Model.MontantRestant>0?"text-decoration: underline dotted #a08909;color:red":"")">
+                    @Html.DisplayFor(model => model.MontantRestantString)
+                </dd>
+
+            </dl>
+        </div>
+        <div class="col-6">
+            <dl class="dl-horizontal">
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateEmissioJustif)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DateEmissioJustif)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateCreaAppJustif)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DateCreaAppJustif)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateModifJustif)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DateModifJustif)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NbrePieces)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NbrePieces)
+                </dd>
+
+            </dl>
+        </div>    </div>
+</div>
+

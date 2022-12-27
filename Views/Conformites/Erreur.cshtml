@@ -1,0 +1,62 @@
+﻿
+@{
+    ViewBag.Title = "Erreur";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h2>Erreur</h2>
+
+<div class="my-5 pt-sm-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="home-wrapper">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4 col-sm-5">
+                            <div class="maintenance-img">
+                                <img src="~/assets/images/logo/logo-dark1.png" alt="" class="img-fluid mx-auto d-block">
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="mt-5 text-danger">La conformité n'existe pas dans le système dans la structure<a class="btn btn-default" onclick="goBack()" href="#"><i class="mdi mdi-subdirectory-arrow-right"></i> Retour</a></h4>
+                    <p>Clicker ici pour en créer <a href="@Url.Content("~/conformites/create")">content</a></p>
+                    <script>
+                        function goBack() {
+                            window.history.back();
+                        }
+                    </script>
+                    <div>
+
+                    </div>
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end container -->
+</div>
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+@*form wizard init*@
+<script src="~/assets/js/pages/form-wizard.init.js"></script>
+
+<!-- form repeater js -->
+<script src="~/assets/libs/jquery.repeater/jquery.repeater.min.js"></script>
+
+<script src="~/assets/js/pages/form-repeater.int.js"></script>
+<!-- Magnific Popup-->
+<script src="~/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- lightbox init js-->
+<script src="~/assets/js/pages/lightbox.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>

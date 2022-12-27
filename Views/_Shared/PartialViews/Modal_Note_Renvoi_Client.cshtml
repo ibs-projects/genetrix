@@ -1,0 +1,72 @@
+﻿<style>
+    .form-check1 {
+        padding-left: 35px;
+    }
+
+    .form-check2 {
+        padding-left: 10px;
+    }
+</style>
+<div class="modal fade" id="modal-note-renvoi" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="#note-renvoi-lab" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align: left !important; position: center; border-bottom: 13px solid #2689a6">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="note-renvoi-lab" style="font:bold">Note</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6 style="font:bold" class="text-primary">Prière de bien vouloir préciser les amendements effectués</h6>
+                <textarea rows="4" class="form-control" id="note-renvoi" placeholder="Entrez le texte ici.."></textarea>
+                <p></p>
+                <h6 style="font: bold;" class="text-primary">Indiquer les éléments concernés</h6>
+                <div class="row border border-1 pb-1" style="padding-left:0px!important">
+                    <div class="text-dark col-6 m-0 p-0">
+                        <div class="form-check form-check1 form-switch form-switch-lg fs-6" style="margin-top: 20px; margin-left: 0px !important;" dir="ltr">
+                            <input name="itemInstruction" type="checkbox" _id="Instrruction" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemInstruction">
+                            <label class="form-check-label" for="itemInstruction">Instrruction</label>
+                        </div>
+                        <div class="form-check form-check1 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemFacture" type="checkbox" _id="Facture(s)" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemFacture">
+                            <label class="form-check-label" for="itemFacture">Facture(s)</label>
+                        </div>
+                        <div class="form-check form-check1 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemLettre" type="checkbox" _id="Lettre d'engagement" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemLettre">
+                            <label class="form-check-label" for="itemLettre">Lettre d'engagement</label>
+                        </div>
+                        <div class="form-check form-check1 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemQuittance" type="checkbox" _id="Quittance de paiement" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemQuittance">
+                            <label class="form-check-label" for="itemQuittance">Quittance</label>
+                        </div>
+                    </div>
+                    <div class="text-dark col-6 m-0">
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemDeclaration" type="checkbox" _id="Declaration d'importation" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemDeclaration">
+                            <label class="form-check-label" for="itemDeclaration">Declaration d'importation</label>
+                        </div>
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemDomiciliation" type="checkbox" _id="Domiciliation d'importation" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemDomiciliation">
+                            <label class="form-check-label" for="itemDomiciliation">Domiciliation d'importation</label>
+                        </div>
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemTransport" type="checkbox" _id="Document(s) de transport" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemTransport">
+                            <label class="form-check-label" for="itemTransport">Document(s) de transport</label>
+                        </div>
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="itemAutre" type="checkbox" _id="Autres documents" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="itemAutre">
+                            <label class="form-check-label" for="itemAutre">Autres documents</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <button type="button" value="-2" id="btn-envoi-note" class="btn btn-primary change-etat" onclick="modifTransmisVlModal()"><i class="mdi mdi-check"></i> Valider</button>
+                @*&emsp;
+        <div style="margin-top:10px;display:inline-block">
+            <p style="display: none;color:black" id="ajout-raison-loader">
+                <i class="mdi mdi-spin mdi-loading text-dark fs-1"></i> Veuillez patientez, validation en cours
+            </p>
+        </div>*@
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

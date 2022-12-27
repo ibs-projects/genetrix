@@ -1,0 +1,515 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1' />
+    <style>
+        #entete{display:flex;flex-direction:row-reverse;}
+        #entete>table {
+            border: none;
+        }
+        td{width:50%}
+        #titre{
+            text-align:right
+        }
+        #corp{
+            display:flex;
+            flex-direction:column;
+            border:2px solid #449cb0;
+            padding:0px;
+        }
+        h2 {
+            background-color: #b8edea;
+            height: 30px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            line-height: 30px;
+            text-align: center;
+            text-transform:uppercase;
+        }
+        .donnee {
+            border-bottom: 2px dotted #b8edea;
+            padding-bottom: 3px;
+            text-align: left;
+            padding-left:20px;
+            font-weight:bold;
+            -ms-flex: 1; /* IE 10 */
+            flex: 1;
+            margin-left: 10px;
+            font-size:15px;
+        }
+        /*.p-elt>.elt{
+            display: inline-block;
+        }*/
+        .p-elt{
+            display:flex;
+            flex-direction:row;
+        }
+        input[type='checkbox'] {
+            width: 20px;
+            height: 20px;
+            box-sizing: border-box;
+            border: 2px solid #b8edea;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            outline: none;
+        }
+        input[type='text'] {
+            height: 40px;
+            text-align: center;
+            -ms-flex: 1; /* IE 10 */
+            flex: 1;
+            margin-left:15px;
+            margin-top:-5px;
+            /*            box-shadow: 0 0 3px #719ECE;
+*/
+        }
+        #num-data {
+            display: flex;
+            flex-direction: row;
+        }
+            #num-data div {
+                border: 1px solid #449cb0;
+                width: 25px;
+                height: 15px;
+                margin-right: 1px;
+                line-height: 15px;
+                border-top:none
+            }
+        table.a {
+            table-layout: auto;
+        }
+        th, td {
+            padding-right:10px;
+        }
+        hr{
+            border-color:transparent;
+        }
+        .sign {
+            height: 100px;
+            -ms-flex: 1; /* IE 10 */
+            flex: 1;
+        }
+        .sign2 {
+            border-left: 2px solid #449cb0;
+        }
+        #logo-banque {
+            text-align: center;
+            height: 120px;
+            width: 70%;
+            background-color: #b6d2f5;
+            line-height: 120px;
+            font-size:1.5em;
+            color:white;
+            font-weight:bold;
+        }
+        input {
+            box-sizing: border-box;
+            border: 2px solid #b8edea;
+            -webkit-transition: 0.5s;
+            transition: 0.5s;
+            outline: none;
+        }
+        label,.elt {
+            font-size: 1.2em;
+            font-weight:bold;
+        }
+        #date {
+            text-align: center;
+            line-height: 80px;
+            font-size:1.3em;
+            font-weight:bold;
+        }
+        .cont01 {
+            padding: 15px;
+        }
+    </style>
+</head>
+<body style="width: 793.7px; height: 1054.48px ">
+
+    <div id='content-inner-left'>
+        <article class='actus-details'>
+            <div id='lettre' style='border:1px solid #dcdcdc;padding:15px;padding-top:5px;margin-top:10px;margin-left:20px;margin-right:20px;font-family:Arial;font-size:11px'>
+                <div id='entete'>
+                    <table style='width:100%' border='0'>
+                        <tr>
+                            <td>
+                                <div id='logo-banque'>
+                                    <img src='{logo}' />
+                                    Logo de la banque
+                                </div>
+                            </td>
+                            <td id='titre'>
+                                <h1 style='font-weight: bolder; font-size: 2.1em; color: #5aa39f'>ORDRE DE VIREMENT</h1>
+                                <p style='color: #5aa39f; font-size: 1.2em; '>Merci de signer puis réintroduit ce formulaire sur GENETRIX</p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id='corp'>
+                    <h2>DONNEUR D'ORDRE</h2>
+                    <div>
+                        <div class='p-elt'>
+                            <p class='elt' style=''>Nom et Prénom ou Raison sociale : </p>
+                            <p class='donnee'>{client}</p>
+                        </div>
+                        <div>
+
+                        </div>
+                        <div class='p-elt'>
+                            <table class='a' style='width: 100%; margin-left: -3px'>
+                                <tr>
+                                    <th style='text-align:left'>
+                                        <p class='elt' style=''>Compte à débiter : </p>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='text-align:left'>
+                                        <input type='checkbox' id='deviseeuro' name='deviseeuro' value='en euro' />
+                                        <label for='deviseeuro'> en euro</label><br>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='text-align:left'>
+                                        <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                        <label for='autredevise'> en autre devise</label><br>
+                                        <p></p>
+                                        <hr />
+                                    </th>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{_etbc1}</div>
+                                            <div>{_etbc2}</div>
+                                            <div>{_etbc3}</div>
+                                            <div>{_etbc4}</div>
+                                            <div>{_etbc5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code Etablissement </p>
+                                    </th>
+                                    <th style='width:60px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{_agc1}</div>
+                                            <div>{_agc2}</div>
+                                            <div>{_agc3}</div>
+                                            <div>{_agc4}</div>
+                                            <div>{_agc5}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Code agence </p>
+                                    </th>
+                                    <th style='width:121px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{_ncc1}</div>
+                                            <div>{_ncc2}</div>
+                                            <div>{_ncc3}</div>
+                                            <div>{_ncc4}</div>
+                                            <div>{_ncc5}</div>
+                                            <div>{_ncc7}</div>
+                                            <div>{_ncc8}</div>
+                                            <div>{_ncc9}</div>
+                                            <div>{_ncc10}</div>
+                                            <div>{_ncc11}</div>
+                                            <div>{_ncc12}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Numéro de compte</p>
+                                    </th>
+                                    <th style='width:30px'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{_clc1}</div>
+                                            <div>{_clc2}</div>
+                                        </div>
+                                        <p style='margin-top:3px;'>Clé</p>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <h2>Ordre de virement</h2>
+                    <div class=''>
+                        <table class='a' style='width: 100%;margin-left:-6px'>
+                            <tr>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='deviseeuro' name='deviseeuro' value='en euro' />
+                                    <label for='deviseeuro'>
+                                        Virement tiers (par défaut)
+                                    </label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement de trésorie</label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement urgent<sup>1</sup></label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Virement chèque<sup>2</sup></label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                            </tr>
+                        </table>
+                        <table ble class='a' style='width: 100%; margin-left: -3px'>
+                            <tr>
+                                <th style='text-align:left;width:20%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'>Devise : </p>
+                                        <p class='donnee' type='text' id='devise' name='devise'>{devise}</p>
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                                <th style='text-align:left;width:40%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'> Montant en devise (en chiffres) : </p>
+                                        <input type='text' id='montantdevise' name='montantdevise' value='{montantdevise}' />
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                                <th style='text-align: left; width: 40%'>
+                                    <div class='p-elt'>
+                                        <p class='elt'> Equivalent en CFA : </p>
+                                        <input type='text' id='montantdevise' name='montantdevise' value='{montantxaf}' />
+                                        <p></p>
+                                        <hr />
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                        <div class='pan'>
+                            <div class='p-elt'>
+                                <p class='elt'>Montant en lettres : </p>
+                                <p class='donnee' type='text' id='montantlettre'>{montantlettre}</p>
+                                <p></p>
+                                <hr />
+                            </div>
+                            <div class='p-elt'>
+                                <p class='elt'>Motif de l'opération' : </p>
+                                <p class='donnee' type='text' id='motif'>{motif}</p>
+                                <p></p>
+                                <hr />
+                            </div>
+                            <div class='p-elt' style='margin-top:-10px'>
+                                <p style='color:transparent'>Motif de l'opération' : </p>
+                                <p class='donnee' type='text' id='devise' name='devise' value='devise'></p>
+                                <p></p>
+                                <hr />
+                            </div>
+                        </div>
+                        <table class='a' style='width: 100%; margin-left: -3px'>
+                            <tr>
+                                <th style='text-align: left; width: 160px '>
+                                    <label for='deviseeuro'>
+                                        Répartition des frais :
+                                    </label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left;'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais partagés (par défaut)</label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais à la charge du donneur d'ordre</label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                                <th style='text-align:left'>
+                                    <input type='checkbox' id='autredevise' name='autredevise' value='en euro' />
+                                    <label for='autredevise'>Frais à la charge du Bénéficiaire</label><br>
+                                    <p></p>
+                                    <hr />
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <h2>bénéficiaire de D'ORDRE</h2>
+                    <div>
+                        <div class='p-elt'>
+                            <table class='a' style='width: 100%; margin-left: -2px'>
+                                <tr>
+                                    <th style='text-align:left;width:25px;'>
+                                        <hr />
+                                        IBAN :
+                                        <p></p>
+                                    </th>
+                                    <th style='width:95%'>
+                                        <hr />
+                                        <div id='num-data' style='margin-bottom:0px;'>
+                                            <div>{_ibanf1}</div>
+                                            <div>{_ibanf2}</div>
+                                            <div>{_ibanf3}</div>
+                                            <div>{_ibanf4}</div>
+                                            <div>{_ibanf5}</div>
+                                            <div>{_ibanf6}</div>
+                                            <div>{_ibanf7}</div>
+                                            <div>{_ibanf8}</div>
+                                            <div>{_ibanf9}</div>
+                                            <div>{_ibanf10}</div>
+                                            <div>{_ibanf11}</div>
+                                            <div>{_ibanf12}</div>
+                                            <div>{_ibanf13}</div>
+                                            <div>{_ibanf14}</div>
+                                            <div>{_ibanf15}</div>
+                                            <div>{_ibanf16}</div>
+                                            <div>{_ibanf17}</div>
+                                            <div>{_ibanf18}</div>
+                                            <div>{_ibanf19}</div>
+                                            <div>{_ibanf20}</div>
+                                            <div>{_ibanf21}</div>
+                                            <div>{_ibanf22}</div>
+                                            <div>{_ibanf23}</div>
+                                            <div>{_ibanf24}</div>
+                                            <div>{_ibanf25}</div>
+                                            <div>{_ibanf26}</div>
+                                            <div>{_ibanf27}</div>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>ou à defaut le numéro de compte complet : </p>
+                            <p style='' class='donnee' type='text' id='devise' name='devise' value='devise'>{_numcomf}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Nom et prénom ou Raison sociale : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_fourn}</p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Adresse : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_addresf}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <table style='width: 100%; margin-left: -2px'>
+                                <tr>
+                                    <th>
+                                        <div class='p-elt' style='text-align:left'>
+                                            <p class='elt'>Ville : </p>
+                                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_villef}</p>
+                                            <p></p>
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class='p-elt' style='text-align:left'>
+                                            <p class='elt'>Pays : </p>
+                                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_paysf}</p>
+                                            <p></p>
+                                        </div>
+                                    </th>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <h2>Banque du bénéficiaire</h2>
+                    <div class='p-elt'>
+                        <p class='elt' style='padding-top:5px;'>Code RIB : </p>
+                        <table class='a' style='margin-left:15px'>
+                            <tr>
+                                <th style='width:60px'>
+                                    <hr />
+                                    <div id='num-data' style='margin-bottom:0px;'>
+                                        <div>{_etbf1}</div>
+                                        <div>{_etbf2}</div>
+                                        <div>{_etbf3}</div>
+                                        <div>{_etbf4}</div>
+                                        <div>{_etbf5}</div>
+                                    </div>
+                                    <p style='margin-top:3px;'>Code Etablissement </p>
+                                </th>
+                                <th style='width:60px'>
+                                    <hr />
+                                    <div id='num-data' style='margin-bottom:0px;'>
+                                        <div>{_agf1}</div>
+                                        <div>{_agf2}</div>
+                                        <div>{_agf3}</div>
+                                        <div>{_agf4}</div>
+                                        <div>{_agf5}</div>
+                                    </div>
+                                    <p style='margin-top:3px;'>Code agence </p>
+                                </th>
+                                <th style='width:121px'>
+                                    <hr />
+                                    <div id='num-data' style='margin-bottom:0px;'>
+                                        <div>{_ncf1}</div>
+                                        <div>{_ncf2}</div>
+                                        <div>{_ncf3}</div>
+                                        <div>{_ncf4}</div>
+                                        <div>{_ncf5}</div>
+                                        <div>{_ncf7}</div>
+                                        <div>{_ncf8}</div>
+                                        <div>{_ncf9}</div>
+                                        <div>{_ncf10}</div>
+                                        <div>{_ncf11}</div>
+                                        <div>{_ncf12}</div>
+                                    </div>
+                                    <p style='margin-top:3px;'>Numéro de compte</p>
+                                </th>
+                                <th style='width:30px'>
+                                    <hr />
+                                    <div id='num-data' style='margin-bottom:0px;'>
+                                        <div>{_clf1}</div>
+                                        <div>{_clf2}</div>
+                                    </div>
+                                    <p style='margin-top:3px;'>Clé</p>
+                                </th>
+                            </tr>
+                        </table>
+                    </div>
+                    <div>
+                        <div class='p-elt'>
+                            <p class='elt'>Nom de la banque : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_banquef}</p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Adresse de la banque : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_addrbanquef}</p>
+                            <p></p>
+                        </div>
+                        <div class='p-elt'>
+                            <p class='elt'>Ville ou Agence : </p>
+                            <p class='donnee' type='text' id='devise' name='devise' value='devise'>{_viellebanquef}</p>
+                            <p></p>
+                        </div>
+                    </div>
+
+                    <div class='h2'>
+                        <div class='p-elt'>
+                            <h2 style='flex:1'>DATE</h2>
+                            <h2 style='flex:1'>SIGNATURE DU CLIENT</h2>
+                        </div>
+                    </div>
+                    <div class='p-elt'>
+                        <div class='sign'><p id='date'>{_date}</p></div>
+                        <div class='sign sign2'></div>
+                    </div>
+                </div>
+                <div class='footer'>
+                    <ol>
+                        <li>Une commission est additionnelle est prélévée au donneur d'ordre dès l'emmission, si la  case est cochée</li>
+                        <li>Sans frais pour le donneur d'ordre, à l'exception des frais de charge, de service d'urgent ou en cas des commission additionnelle</li>
+                    </ol>
+                </div>
+            </div>
+        </article>
+    </div>
+</body>
+</html>
+

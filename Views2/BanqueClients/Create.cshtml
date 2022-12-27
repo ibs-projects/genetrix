@@ -1,0 +1,181 @@
+﻿@model genetrix.Models.BanqueClient
+
+
+@{
+    ViewBag.Title = "Banque";
+    ViewBag.pTitle = "Ajout d'une banque";
+    ViewBag.pageTitle = "Bansu";
+    ViewBag.pageImage = "~/assets/images/IU/bank.png";
+}
+<link href="~/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="card">
+               
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group mb-3" style="">
+                            @Html.Label("Banque", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <select id="IdBanque" disabled name="IdBanque" required class="form-control">
+                                    @*<option value=""></option>*@
+                                    @{
+                                        foreach (var item in ViewBag.BanqueId)
+                                        {
+                                            <option value="@item.Value">@item.Text</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.Label("Agence", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <select id="IdSite" required name="IdSite" class="form-control">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group hidden">
+                            <div class="col-md-10">
+                                @Html.DropDownList("ClientId", null, htmlAttributes: new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.Label("Gestionnaire", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <select id="IdGestionnaire" required name="IdGestionnaire" class="form-control">
+                                    <option value=""></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" value="Enregistrer" class="btn btn-outline-info" style="float:right!important;padding-right:10px!important">
+                        <i class="far fa-save me-2"></i>
+                        Enrégistrer
+                    </button>
+                    <p>
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+</div>
+
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+@*jquery step*@
+<script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+@*form wizard init*@
+<script src="~/assets/js/pages/form-wizard.init.js"></script>
+
+<!-- form repeater js -->
+<script src="~/assets/libs/jquery.repeater/jquery.repeater.min.js"></script>
+
+<script src="~/assets/js/pages/form-repeater.int.js"></script>
+<!-- Magnific Popup-->
+<script src="~/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+<!-- lightbox init js-->
+<script src="~/assets/js/pages/lightbox.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $(document).ready(function () {
+        ///Gest agences de la banque
+
+        try {
+            $("#IdBanque").on('input', function () {
+            $.ajax({
+                url: '@Url.Content("~/Banqueclients/GetAgence")',
+                type: 'GET',
+                data: {
+                    //Passing Input parameter
+                    idBanque: $('#IdBanque').val()
+                },
+                success: function (result) {
+                    var daySelect = document.getElementById('IdSite');
+                    $.each(result, function (index, item) {
+                        daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                    });
+                },
+                error: function (error) {
+                    alert("error: " + error);
+                }
+            });
+        });
+        } catch (e) {
+
+        }
+
+        try {
+            (function Tt() {
+            $.ajax({
+                url: '@Url.Content("~/Banqueclients/GetAgence")',
+                type: 'GET',
+                data: {
+                    //Passing Input parameter
+                    idBanque: $('#IdBanque').val()
+                },
+                success: function (result) {
+                    var daySelect = document.getElementById('IdSite');
+                    $.each(result, function (index, item) {
+                        daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                    });
+                },
+                error: function (error) {
+                    alert("error: " + error);
+                }
+            });
+        })();
+        } catch (e) {
+
+        }
+
+        //Get gestionnaires de l'agences
+        try {
+            $('#IdSite').on('input', function () {
+            $.ajax({
+                    url: '@Url.Content("~/Banqueclients/GetGestionnaire")',
+                    type: 'GET',
+                    data: {
+                        //Passing Input parameter
+                        idAgence: $('#IdSite').val()
+                    },
+                    success: function (result) {
+                        daySelect = document.getElementById('IdGestionnaire');
+                        $.each(result, function (index, item) {
+                            daySelect.options[daySelect.options.length] = new Option(''+item.Nom, item.Id);
+                        });
+                    },
+                    error: function () {
+                        alert("error");
+                    }
+                });
+        });
+        } catch (e) {
+
+        }
+    });
+</script>

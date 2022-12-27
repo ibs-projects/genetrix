@@ -1,0 +1,62 @@
+﻿@model genetrix.Models.DocumentAttache
+
+<div class="card border-info" style="height:100%!important">
+    <div class="card-body">
+        <h4>DocumentAttache</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateCreation)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateCreation)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.TypeDocumentAttaché)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.TypeDocumentAttaché)
+            </dd>
+
+        </dl>
+    </div>
+</div>
+<div class="card border-info" style="height:100%!important">
+    <div class="card-body">
+        @{
+            var estPdf = false;
+            try
+            {
+                estPdf = Model.EstPdf;
+            }
+            catch (Exception)
+            { }
+            if (estPdf)
+            {
+                int idDoc = 0;
+                try
+                {
+                    idDoc = Model.Id;
+                }
+                catch (Exception)
+                { }
+                <iframe id="iframe-2" class="pdf-view" src="@Url.Content("~/dossiers/GetPDF?idDoc="+idDoc+"&estDocAttache=true&idDossier="+Model.DossierId)" style="max-width:221mm;height:143mm">
+                </iframe>
+            }
+            else
+            {
+                <img class="card-img img-fluid imf-taille" src="@Model.GetImageDocumentAttache()" id="img-quit" alt="" />
+            }
+        }
+    </div>
+</div>

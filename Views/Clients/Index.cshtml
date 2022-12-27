@@ -1,0 +1,151 @@
+﻿@using genetrix.Models
+@model IEnumerable<genetrix.Models.Client>
+
+@{
+    ViewBag.Title = "Clients";
+    ViewBag.pTitle = "Liste des clients";
+    ViewBag.pageTitle = "Clients";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+    // Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+@{
+    try
+    {
+        if (User is CompteAdmin || Session["estChef"].ToString() == "True")
+        {
+            <p>
+                <a class="" href="@Url.Action("compte","Clients")" style="" >
+                    <i class="dripicons-plus me-2"></i>
+                    Nouveau client
+                </a>
+            </p>
+        }
+    }
+    catch (Exception)
+    { }
+}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1">Clients</div>
+            <div class="card-body">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <tbody>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Logo)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Nom)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Telephone)
+                            </th>
+
+                            <th></th>
+                        </tr>
+                    </tbody>
+
+                    <tfoot>
+                        @foreach (var item in Model)
+                        {
+                            if (string.IsNullOrEmpty(item.Logo))
+                            {
+                                item.Logo = "null";
+                            }
+                        <tr>
+                            <td>
+                                <img src="@Url.Content(item.Logo)" style="width:30px" alt="" />
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Nom)
+                            </td>
+                            <td class="@(string.IsNullOrEmpty(item.Email)?"bg-danger":"")" title="@(string.IsNullOrEmpty(item.Email)?"L'adresse mail du client ne doit pas être nulle. Car les messages automatiques doivent y être envoyés.":"")">
+                                @Html.DisplayFor(modelItem => item.Email)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Telephone)
+                            </td>
+
+                            <td>
+                                @Html.ActionLink("Détails", "Details", new { id = item.Id }) |
+                                @*@Html.ActionLink("Editer", "Edit", new { id = item.Id })*@
+                                @{
+                                    if (Session["Profile"].ToString() != "client")
+                                    {
+                                        @Html.ActionLink("| Supprimer", "Delete", new { id = item.Id })
+                                    }
+                                }
+                            </td>
+                        </tr>
+                        }
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modal-compte-client" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="compte_client" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="text-align:center!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header  bg-info m-0">
+                <h5 class="modal-title mt-0 text-white" id="compte_client">Création d'un client</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <iframe id="fram-compte-client" src="~/clients/compte-client" style="width:100%;height:100%;overflow-x:hidden;"></iframe>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    document.getElementById('fram-compte-client').onload = function () {
+        this.style = "height:100px;width:100%";
+    };
+                    }
+</script>
+
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- Required datatable js -->
+<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable init js -->
+<script src="~/assets/js/pages/datatables.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>

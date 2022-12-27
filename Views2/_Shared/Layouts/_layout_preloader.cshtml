@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@{ 
+    string pages = "";
+    try
+    {
+        pages = ViewBag.pages + "";
+    }
+    catch (Exception)
+    {}
+
+}
+<head>
+
+    @Html.Partial("~/Views/_Shared/_title_meta.cshtml")
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+    <style>
+        #body {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            height: 100vh;
+        }
+
+        @@keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        #chat-panel {
+            box-shadow: 5px 10px 18px #888888;
+        }
+        #bg {
+            background: transparent url('@Url.Content("~/assets/images/IU/login-img/bg-obj.jpg")') repeat top left;
+            opacity: 0.03;
+        }
+        .icon0 {
+            font-size: 5em;
+            margin-top: -30px;
+            position: relative;
+            color: rgb(56 170 167);
+            top: 0;
+        }
+        .table tr th {
+            background-color: #2689a6!important;
+        }
+        .table tr:hover {
+            background-color: rgb(38, 137, 166, 0.40)!important;
+            color:white;
+        }
+        .modal-title {
+            color: white !important;
+            font-weight: bold !important;
+        }
+        .card-header1, .modal-header, .btn-primary, .bg-info {
+            background-color: #2689a6 !important;
+            /* background: rgb(0,111,131);
+            background: -moz-linear-gradient(51deg, rgba(0,111,131,1) 0%, rgba(32,194,224,1) 22%, rgba(118,224,244,1) 36%, rgba(70,138,171,1) 98%, rgba(38,107,166,0.14889705882352944) 100%);
+            background: -webkit-linear-gradient(51deg, rgba(0,111,131,1) 0%, rgba(32,194,224,1) 22%, rgba(118,224,244,1) 36%, rgba(70,138,171,1) 98%, rgba(38,107,166,0.14889705882352944) 100%);
+            background: linear-gradient(51deg, rgba(0,111,131,1) 0%, rgba(32,194,224,1) 22%, rgba(118,224,244,1) 36%, rgba(70,138,171,1) 98%, rgba(38,107,166,0.14889705882352944) 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#006f83",endColorstr="#266ba6",GradientType=1);*/
+            color: white !important;
+            font-weight: bold !important;
+        }
+        .border-info,.border-info1 {
+            border: 1px solid #2689a6!important;
+            font-weight:bolder;
+        }
+        .text-entete {
+            color: #2689a6;
+            font-weight:bolder;
+            font-size:1em;
+        }
+        .center {
+            margin: 0;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            -ms-transform: translate(-50%, -50%);
+            transform: translate(-50%, -50%);
+        }
+        .input-sel {
+            font-size: 1.2em;
+            color: #2689a6;
+        }
+    </style>
+</head>
+
+@*<body data-sidebar="@Session["Style"]">*@
+<body data-sidebar="colored">
+    @*<div id="bg" style="position:fixed;width:100%;height:100%;min-height:900px;min-width:1690px;"></div>*@
+    <!-- Loader -->
+    @*@Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")*@
+    <div id="Preloader_partiel" class="center1" style="display:none">
+        @Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")
+        @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel.cshtml")
+    </div>
+    <div id="Preloader_partiel2" class="center1">
+        @*@Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")*@
+        @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel2.cshtml")
+    </div>
+    @*<iframe id="ifram-livechat" class="loader-non1" style="width:100%;height:100%" src=""></iframe>*@
+
+    <div id="chat-panel" class="card" style="border: 2px solid #2689a6; overflow-y: hidden; height: 30px; min-width: 500px; display: none;">
+        <div class="card-header hidden bg-success p-1" style="text-align:right">
+            <span class="mdi mdi-close text-danger fs-2 p-2 icon-10 close-pan-chat" id="close-pan-chat" style="cursor:pointer;z-index:1200;" height="32px;"></span>
+        </div>
+        @*<div class="card-body pan-chat" style="overflow-y: scroll;height:30px;min-width:350px;padding:0px">
+                @Html.Partial("~/Views/Chats/LiveChat.cshtml")
+            </div>*@
+        <iframe id="ifram-livechat" class="loader-non1" style="width:100%;height:100%;padding:0px;display:none" src=""></iframe>
+        <div style="height: 100%; text-align: center;position: relative; z-index: 2000;" id="preloader01">
+            <i class="mdi mdi-spin mdi-loading text-dark" style="font-size:3em;position:relative;top:150px; left: 0px;"></i>
+        </div>
+    </div>
+    <script>
+        document.getElementById('ifram-livechat').onload = function () {
+            this.style.display = 'initial';
+            var img = document.getElementById('preloader01');
+            img.style.display = 'none';
+        };
+    </script>
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        @Html.Partial("~/Views/_Shared/_topbar.cshtml")
+        @{
+            switch (Session["Profile"])
+            {
+                case "client":
+                    @Html.Partial("~/Views/_Shared/_sidebar.cshtml")
+                    break;
+                case "banque":
+                    @Html.Partial("~/Views/_Shared/_sidebar_banque.cshtml")
+                    break;
+                case "admin":
+                    @Html.Partial("~/Views/_Shared/_sidebar_admin.cshtml")
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+        <i class="mdi mdi-spin mdi-loading fs-1" id="img-loarder" style="display:none;color:#2689a6"></i>
+
+        <a _action_requied_loader="0" class="hidden" id="link-preload" href="#"></a>
+
+        <div class="main-content">
+            <div class="page-content">
+                <div id="container0" class="container-fluid bg-light" style="z-index:1500!important">
+                    <div class="row bg-light" id="page-title-contener">
+                        <div class="col-lg-4">
+                            @{
+                                if (Session["Profile"].ToString() == "banque")
+                                {
+                                    <div> <h4 style="margin:5px;font:bolder;display:inline-block"><i class="mdi mdi-table-multiple "></i>  <label>@Session["acc"]</label></h4>/<a href="#" style="">@Session["userName"]</a><label>@ViewBag.autreUtilisateur</label></div>
+                                }
+                                else if (Session["Profile"].ToString() == "client")
+                                {
+                                    <div style="margin-top: 15px;"> <h5 style="font:bolder;display:inline-block"><i class="fa fa-user"></i>  <label> @Session["userName"]</label></h5></div>
+                                }
+                                else
+                                {
+                                    <div style="margin-top: 15px;"> <h5 style="font:bolder;display:inline-block"><i class="fa fa-user"></i>  <label> @Session["userName"]</label></h5></div>
+                                }
+                            }
+
+                            @*<h4 style="margin:5px;font:bolder">@Session["ges"]</h4>*@
+
+                        </div>
+                        <div class="col-lg-8 pb-2" style="padding-top:8px">
+                            <ol class="breadcrumb m-0" style="float:right;margin-bottom:-10px!important">
+                                <li>
+                                    <div style="margin:5px;margin-top:-10px;font:bolder">
+
+                                        @{
+                                            if (!string.IsNullOrEmpty(ViewBag.pageImage))
+                                            {
+                                                <i class="mdi mdi-link-variant" style="margin-top:-8px;font-size:2em"></i>
+                                                @*<img class="rounded avatar-xl" alt="100x100" style="height:25px;width:25px;margin-top:-8px;margin-right:10px" src="@Url.Content(ViewBag.pageImage)" data-holder-rendered="true">*@
+                                            }
+                                        }
+                                        @Html.Partial("~/Views/_Shared/PartialViews/title_links.cshtml", pages)
+                                        @Html.Raw(ViewBag.pTitle)
+                                    </div>
+                                </li>
+                                <li class="breadcrumb-item active" style="">
+                                    <h5 style="margin:5px;font:bolder">
+                                        / <a href="#" id="btn-precedent" onclick="goBack()" style="margin-bottom:-5px!important"> <i class="mdi mdi-undo-variant"></i>  Retour</a>
+                                    </h5>
+                                </li>
+                            </ol>
+                        </div>
+                        <script>
+                            function goBack() {
+                                window.history.back();
+                                try {
+                                    document.getElementById("img-loarder").style.display = 'none';
+                                } catch (e) {
+
+                                }
+                            }
+                        </script>
+                    </div>
+                    <hr class="border-3" style="background-color:#808080;margin-top:10px!important;margin-bottom:15px!important;display:block" />
+                    @*@Html.Partial("~/Views/_Shared/_page_title.cshtml")*@
+                    <button id="btn-loader" style="display:none" type="button" class="btn btn-light waves-effect" data-bs-toggle="modal" data-bs-target="#exampleModalFullscreen">Fullscreen modal</button>
+
+                    @RenderBody()
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+            @*@Html.Partial("~/Views/_Shared/_footer.cshtml")*@
+        </div>
+        <!-- end main content-->
+        <style>
+            #exampleModalFullscreen1 {
+                opacity: 0.01 !important;
+            }
+        </style>
+
+        <style>
+            .spinner-cont1 {
+                height: 40px;
+                width: 40px;
+                border-radius: 100%;
+                border: solid 5px #0094ff
+            }
+
+            .spinner-icon1 {
+                margin-top: -19px;
+                margin-left: -7px;
+            }
+        </style>
+
+    </div>
+
+    @*@RenderSection("scripts", required: false)*@
+
+    <script src="~/assets/GlobalScript.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            try {
+                $("form").attr('autocomplete', 'off');
+                $("input").attr('autocomplete', 'off');
+            } catch (e) {
+
+            }
+            try {
+                $('#close-pan-chat').click(function () {
+                    $('#chat-panel').hide();
+                })
+            } catch (e) {
+
+            }
+            try {
+                $('#affichie-lievechat').click(function () {
+                    $('#ifram-livechat').attr('src','');
+                    $('#chat-panel').css({ "position": "fixed", "z-index": "1900", "display": "initial", "bottom": "0", "right": "0", "width": "auto", "height": "450px" });
+                    $('#ifram-livechat').css({ "bottom": "0", "left": "0", "width": "500px", "height": "100%" });
+                    $('#ifram-livechat').attr('src','@Url.Content("~/chats/chat")');
+                });
+            } catch (e) {
+
+            }
+            //form submit
+            try {
+                $('form').submit(function () {
+                    var mts=$('.valided')
+                    for (var i = 0; i < mts.length; i++) {
+                        var _montant = mts[i].value + "";
+                        mts[i].value = _montant.replace(/\s/g, "");
+                    }
+                })
+            } catch (e) {
+
+            }
+            try {
+                $('.btn-details').click(function () {
+                    if (!this.classList.contains('show-1')) {
+                        $('#' + this.getAttribute('_id')).show(300);
+                        this.classList.add('show-1')
+                    } else {
+                        $('#' + this.getAttribute('_id')).hide(300);
+                        this.classList.remove('show-1')
+                    }
+                });
+                $('.btn-fichier').click(function () {
+                    if (!this.classList.contains('fa-angle-down')) {
+                        $('.' + this.getAttribute('_id')).show(50);
+                        this.classList.add('fa-angle-down')
+                        this.classList.remove('fa-angle-up')
+                    } else {
+                        $('.' + this.getAttribute('_id')).hide(10);
+                        this.classList.remove('fa-angle-down')
+                        this.classList.add('fa-angle-up')
+                    }
+                });
+            } catch (e) {   
+
+            }
+
+            try {
+                 //loading iframe
+                var iframes = $("iframe");
+                var wph = Number(window.innerHeight + 300);
+                var wpw = Number(window.inn + 300);
+                for (var i = 0; i < iframes.length; i++) {
+                    if (iframes[i].getAttribute('src') != "" && iframes[i].getAttribute('src') != "#" && !iframes[i].classList.contains("loader-none")) {
+                        var img = new Image();
+                        img.style = 'width:80px;height:80px;';
+                    img.setAttribute('id', "img-pre-iframe-" + i);
+                        iframes[i].setAttribute("img-previ-id", img.getAttribute('id'));
+                    @*img.setAttribute('src', '@Url.Content("~/assets/images/IU/document-loading.gif")');*@
+                        img.setAttribute('src', '@Url.Content("~/assets/images/IU/loading2.gif")');
+                        img.classList.add('center');
+                        iframes[i].parentNode.insertBefore(img, iframes[i]);
+                        iframes[i].onload = function () {
+                            this.style = "height:" + wph+"px;width:100%";
+                            try {
+                                var img = document.getElementById(this.getAttribute('img-previ-id'));
+                                img.style.display = 'none';
+                                img.remove();
+                            } catch (e) {
+
+                            }
+                        };
+                    }
+                }
+                iframes = null;
+            } catch (e) {
+
+            }
+
+            //color entete tableau
+            try {
+                $('thead').addClass("bg-gradient-primary text-white");
+                $('#preloader').hide();
+                $('#Preloader_partiel').hide();
+                (function offmultilrequest(e) {
+                    e.preventDefault();
+                })();
+            } catch (e) {
+
+            }
+            document.getElementById('Preloader_partiel2').style.display = 'none';
+        });
+        function htf(elt, text, taille) {
+            // data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            if (taille < 3) {
+                alert(elt)
+                document.getElementById(elt).classList.remove("dropdown-toggle");
+                document.getElementById(elt).classList.add("ffffffffff");
+                document.getElementById(elt).style.color = 'red';
+                // $("#"+elt).removeAttribute("data-bs-toggle");
+                // $("#"+elt).removeAttribute("aria-haspopup");
+                //$("#" + elt).removeAttribute("aria-expanded");
+            }
+            return text + "<i class=\"mdi mdi-chevron-down\"></i>";
+        }
+
+    </script>
+    <script>
+        //cache le loader apres retour
+        try {
+            $(window).bind("pageshow", function (event) {
+                try {
+                    $("#Preloader_partiel").hide();
+                } catch (e) {
+
+                }
+                try {
+                    $("#img-loarder").hide();
+                } catch (e) {
+
+                }
+            });
+        } catch (e) {
+
+        }
+        $('.card-item').click(function () {
+
+            var offsetH = this.offsetHeight, offsetW = this.offsetWidth;
+            if (this.offsetWidth == 0 && this.offsetHeight == 0) {
+                offsetH = document.offsetHeight;// / 2;
+                offsetW = document.offsetWidth;
+                document.getElementById('link-preload').click();
+            }
+            //var img = document.createElement("img");
+            @*var img = document.getElementById("img-loarder");
+            img.style.display = "initial";
+            img.setAttribute("width", "50");
+            img.setAttribute("height", "50");
+            img.style.position = 'absolute';
+            img.style.left = (offsetW / 2-25) + 'px'
+            img.style.top = (offsetH / 2-25) + 'px'
+            img.setAttribute('src', '@(Url.Content("~/assets/images/IU/loading.gif"))');*@
+
+            var img = document.getElementById("img-loarder");
+            img.style.display = "initial";
+            img.setAttribute("width", "50");
+            img.setAttribute("height", "50");
+            img.style.position = 'absolute';
+            img.style.left = (offsetW / 2-25) + 'px'
+            img.style.top = (offsetH / 2-25) + 'px'
+            //img.setAttribute('src', '@(Url.Content("~/assets/images/IU/loading.gif"))');
+            this.appendChild(img);
+
+        });
+    </script>
+    <script>
+        $(window).scroll(function (e) {
+            var $el = $('#page-title-contener');
+            var dd = document.getElementById('page-title-contener');
+            var isPositionFixed = ($el.css('position') == 'fixed');
+            if ($(this).scrollTop() > 200 && !isPositionFixed) {
+                //$('#reduit-details').show();
+                $el.css({ 'position': 'fixed', 'top': '65px', 'z-index': '999' });
+                dd.style.width = Number(dd.parentElement.offsetWidth) + "px";
+            }
+            if ($(this).scrollTop() < 200 && isPositionFixed) {
+                $el.css({ 'position': 'relative', 'top': '0px', 'z-index': '999' });
+                dd.style.width = "100%";
+            }
+        });
+
+    </script>
+    <script>
+        document.addEventListener(`click`, e => {
+            const origin = e.target;//.closest("a", "buttom", "input");
+            if (origin) {
+                if (origin.getAttribute("_action_requied_loader")) {
+                    document.getElementById('Preloader_partiel').style.display = "initial";
+                    $("#Preloader_partiel").show();
+                }
+            }
+        });
+
+    </script>
+    <script>
+        $("iframe").css('width', '150mm');
+    </script>
+
+    <script>
+        $('thead').css({ 'background-color': '#8aa7b3' });
+    </script>
+    <script>
+        var taille = $("#container0").width();
+        if ($("#container0").width() > 595) {
+            taille = $("#container0").width() / 2;
+        } else {
+            taille = $("#container0").width() * 9 / 10;
+            $('.col-1').removeClass('col-1');
+            $('.col-11').removeClass('col-11');
+        }
+        $('.file-manager').hide();
+        //$('.img-sup').hide();
+        $('.img-fluid').css({ "max-height": "842px", "max-width": "595px", "height": "auto", "width": +taille + "px" });
+        $('.img-fluid').parent({ "height": "auto", "width": "auto" });
+        $('.img-fluid').hover(function () {
+            $(this).css({ "height": "auto", "width": Number(taille + 10) + "px" });
+        });
+    </script>
+    @{
+        if (Session["Profile"].ToString() == "banque" && false)
+        {
+            <script src="~/assets/_liensFunctions.js"></script>
+            <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+            <script src="~/signalr/hubs"></script>
+            <script>
+                    var userName = '@(Session["userName"])';
+                    var userId = '@(Session["userId"])';
+                    var suiviChat = '@(Session["SuitChat"])';
+                    $(function () {
+                        var chat = $.connection.chatHub;
+                        chat.client.addNewMessageToPage = function (name, message, statut, rk4, Contenu, loading) {
+                            // Notifications automatiques
+                            if (message && suiviChat == 'True') {
+                                var nbr = Number(document.getElementById('alert-entete').textContent);
+                                document.getElementById('alert-entete').textContent = Number(nbr + 1)
+                                var _a = document.createElement('a');
+                                _a.setAttribute('class', 'text-reset notification-item');
+                                var content = topBarChatNotif('Chat', message, "21/02/2022");
+                                _a.innerHTML = content;
+                                document.getElementById('notif-contener').appendChild(_a);
+                            }
+                        };
+                        $.connection.hub.start().done(function () {
+
+                        });
+
+
+                    });
+                    // This optional function html-encodes messages for display in the page.
+                    function htmlEncode(value) {
+                        var encodedValue = $('<div />').text(value).html();
+                        return encodedValue;
+                    }
+
+                    function getHour() {
+                        function addZero(i) {
+                            if (i < 10) { i = "0" + i }
+                            return i;
+                        }
+
+                        const d = new Date();
+                        let h = addZero(d.getHours());
+                        let m = addZero(d.getMinutes());
+                        let s = addZero(d.getSeconds());
+                        return h + ":" + m + ":" + s;
+                    }
+            </script>
+        }
+    }
+</body>
+
+</html>
+
+

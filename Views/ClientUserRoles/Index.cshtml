@@ -1,0 +1,101 @@
+﻿@model IEnumerable<genetrix.Models.ClientUserRole>
+@{
+    ViewBag.Title = "Rôle utilisateur";
+    ViewBag.pTitle = "Rôle utilisateur";
+    ViewBag.pageTitle = "Rôle utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+
+<p>
+    <a class="" href="@Url.Content("~/clientuserroles/create")">
+        <i class="dripicons-plus me-2"></i>
+        Nouveau rôle
+    </a>
+</p>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header hidden">
+                <h4 class="card-title">Liste d'utilisateurs</h4>
+            </div>
+            <div class="card-body">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Nom)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreerDossier)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SoumettreDossier)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreerUser)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SuppUser)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ModifUser)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreerBenef)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.SuppBenef)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.ModifBenef)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Nom)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreerDossier)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SoumettreDossier)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreerUser)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SuppUser)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ModifUser)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreerBenef)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.SuppBenef)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.ModifBenef)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

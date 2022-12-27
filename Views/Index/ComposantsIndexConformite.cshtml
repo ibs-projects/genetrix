@@ -1,0 +1,79 @@
+﻿@model genetrix.Models.VariablGlobales
+@using genetrix.Models
+@{
+    try
+    {
+        var info = Model.GetAllDataBankByEtapes(new int?[] { 6 }, 0);
+        //dossiers reçus
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=6_6_6&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-basket-fill icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@info.Nbr</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers reçus</p>
+                        </div>
+                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;overflow-x:hidden">
+                            <span class="text-warning me-1"><i class="mdi mdi-alert me-1"></i>@info.NbrAnciens</span> @info.GetDureeString()
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </a>
+
+        //dossiers encours
+        info = Model.GetAllDataBankByEtapes(new int?[] { 7, 8 }, 0);
+
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=7_7_8&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-folder-sync-outline icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@info.Nbr</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers en cours</p>
+                        </div>
+                        <p class="text-muted" style="position: absolute; bottom: 0; width: 100%;overflow-x:hidden">
+                            <span class="text-warning me-1"><i class="mdi mdi-alert me-1"></i>@info.NbrAnciens</span> @info.GetDureeString()
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        //dossiers validé
+        //info = Model.GetAllDataBankByEtapes(new int?[] { 9 }, 0);
+        var infos = Model.GetAllDataBankByEtapesDeviseBeac(new int?[] { 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 }, 0, estBeac: 0, false, estPasseConformite: 1);
+        //var dd=Model.Dossiers.Where(d => d.EstPasséConformite && d.EtapesDosier < 22 && (DateTime.Now - (DateTime)d.Date_Etape9).Days <= 31);
+        <a class="col-xl-4" href="@Url.Content("~/dossiers_banque/index?st=recu&comp=20_9_10&interf=")">
+            <div class="card card-item" id="doss-recu">
+                <div class="card-body">
+                    <div>
+                        <div class="float-end mt-2 ">
+                            <div id="total-revenue-chart1">
+                                <p class="mdi mdi-basket-unfill icon0"></p>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="mb-1 mt-1"><span data-plugin="counterup">@infos.Count()</span></h4>
+                            <p class="text-muted mb-0 fs-5">Dossiers validés</p>
+                        </div>
+                        <p class="text-white p-1 bg-gradient-success" style="position:absolute; bottom: 0; width: 40%;font-size:small;height:30px;margin-left:-20px;">
+                            Validés
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </a>
+    }
+    catch (Exception)
+    { }
+}

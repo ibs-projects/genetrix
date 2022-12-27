@@ -1,0 +1,43 @@
+﻿@model genetrix.Models.BanqueClient
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>BanqueClient</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Client.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Client.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Gestionnaire.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Gestionnaire.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Site.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Site.Nom)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

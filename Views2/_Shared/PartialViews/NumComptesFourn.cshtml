@@ -1,0 +1,76 @@
+﻿@model IEnumerable<genetrix.Models.NumCompteBeneficiaire>
+
+<p>
+    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ajout-numCompte"><i class="mdi mdi-plus"></i> Ajouter</a>
+</p>
+<div class="table-responsive">
+    <table class="table table-centered table-nowrap mb-0">
+        <thead class="table-bordered">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomBanque)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pays)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Ville)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Numero)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cle)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomBanque)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pays)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Ville)
+                    </td> 
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Numero)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Cle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        <a href="@Url.Content("~/NumCompteBeneficiaires/Edit?id="+item.Id)">Editer</a>|
+                        <a href="@Url.Content("~/NumCompteBeneficiaires/delete?id="+item.Id)">Supprimer</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+    <div class="modal fade" id="ajout-numCompte" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+            <div class="modal-content p-0" style="text-align: left !important; position: center; border: 3px solid #2689a6;">
+                <div class="modal-header m-0">
+                    <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajout d'un compte bancaire</h5>
+                    <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @Html.Partial("~/Views/NumCompteBeneficiaires/Create.cshtml", new genetrix.Models.NumCompteBeneficiaire() {IdFournisseur = ViewBag.FourId })
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>

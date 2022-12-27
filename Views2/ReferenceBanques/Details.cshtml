@@ -1,0 +1,667 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.ReferenceBanque
+
+@{
+    string userId = "";
+    bool actions_content_visible = false;
+    double montantDfx = 0;
+    try
+    {
+        montantDfx = Convert.ToDouble(Session["MontantDFX"]);
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        userId = (string)Session["userId"];
+    }
+    catch (Exception)
+    { }
+
+    bool ecrire = false;
+    int min = 0, max = 0, niveauSite = 0;
+    try
+    {
+        min = Convert.ToInt32(Session["userSIteMinNiveau"].ToString());
+        max = Convert.ToInt32(Session["userSIteMaxNiveau"].ToString());
+        niveauSite = min;
+    }
+    catch (Exception)
+    { }
+
+    ViewBag.Title = "Dossiers groupés";
+    ViewBag.pTitle = "Détails groupés";
+    ViewBag.pageTitle = "Détails groupés";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+    string details = " non associée";
+    try
+    {
+        var txt = Model.Dossiers != null ? (Model.Dossiers.FirstOrDefault() != null ? Model.Dossiers.FirstOrDefault().GetEtapDossier()[0] : "") : "";
+        if (!string.IsNullOrEmpty(txt))
+        {
+            details = txt;
+        }
+    }
+    catch (Exception)
+    { }
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<style>
+    th {
+/*        border-right: 2px solid #ddcbcb;
+*/        padding: 0px;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+    .change-etat{
+        cursor:pointer;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-12" style="">
+        <div style="display:block">
+            <div class="border-2 border border-1" id="actions-content" style="padding-bottom:10px;padding-top:10px;width:100%">
+                <table>
+                    <tr>
+                        <th>
+                            @{
+                                if (Model.EtapesDosier < 15 && min == 9)
+                                {
+                                    <button class="btn btn-outline-warning mb-1" action="0" id="edition"><i class="fas fa-pencil-alt"></i> Edit</button>
+                                }
+                            }
+                            <button class="btn btn-outline-danger mb-1" action="0" id="cancelling"><i class="mdi mdi-cancel"></i> Annuler</button>
+                            <button _action_requied_loader="0" class="btn btn-outline-success mb-1" action="0" id="saving"><i class="mdi mdi-content-save-edit"></i> Enrégistrer</button>
+                            <button class="btn btn-outline-primary hidden mb-1 float-end" action="0" id="actions"><i class="mdi mdi-view-list"></i> Actions</button>
+                        </th>
+                        @{
+                            if (min == 9 && Model.EtapesDosier <= 19)
+                            {
+                                if (Model.EtapesDosier == 13 || Model.EtapesDosier == 14 || true)
+                                {
+                                    bool courrierExiste = false, mtExiste = false;
+                                    try
+                                    {
+                                        if (Model.Courrier != null)
+                                        {
+                                            courrierExiste = true;
+                                        }
+                                        if (Model.MT != null)
+                                        {
+                                            mtExiste = true;
+                                        }
+                                    }
+                                    catch (Exception)
+                                    { }
+                                    actions_content_visible = true;
+                                    //Formalités BEAC en cours
+
+                                    <th>
+                                        <button numero="1" id="btn-gen-courr" onclick="document.getElementById('show-modal-gener-courrier').click()" type="button" class="btn @(courrierExiste?"btn-success":"btn-outline-info ") btn-action" title="Générer le courrier">
+                                            <i class="mdi @(courrierExiste?"mdi-eye":"mdi-file-document-edit")" id="btn-gen-courr-0"></i>
+                                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                            Générer courrier
+                                        </button>
+
+                                    </th>
+                                    <th>
+                                        <button numero="2" id="btn-gen-courr" type="button" class="btn @(courrierExiste?"btn-success":"btn-outline-info ") btn-action" title="Numériser le courrier" data-bs-toggle="modal" data-bs-target="#modal-ajout_courrier">
+                                            <i class="mdi @(courrierExiste?"mdi-eye":"mdi-file-document-edit")" id="btn-gen-courr-0"></i>
+                                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                                            Numériser le courier
+                                        </button>
+                                    </th>
+                                    <th>
+                                        @*<button numero="3" id="btn-mt" @(Model.Get_Courrier !="#"?"disabled":"") type="button" class="btn @(mtExiste?"btn-success":"btn-outline-info ") btn-action" title="Numériser le MT" data-bs-toggle="modal" data-bs-target="#modal-ajout_mt">*@
+                                        <button numero="3" id="btn-mt" type="button" class="btn @(mtExiste?"btn-success":"btn-outline-info ") btn-action" title="Numériser le MT" data-bs-toggle="modal" data-bs-target="#modal-ajout_mt">
+                                            <i class="mdi @(mtExiste?"mdi-eye":"mdi-file-document-edit")" id="btn-mt-0"></i>
+                                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-mt-1"></i>
+                                            Numérisation MT 298
+                                        </button>
+                                        <script>
+                                            function info1() {
+                                                alert("Indisponible pour le moment !");
+                                            }
+                                        </script>
+                                    </th>
+
+                                    <th>
+                                        @{
+                                            if (Model.NbrTelechargement == 0)
+                                            {
+                                                <button type="button" numero="4" @(Model.Get_MT != "#" ? "" : "disabled") id="btn-extraire-doss" class="btn btn-outline-info btn-action" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier" title="Extraction du dossier: aucune extraction précédente">
+                                                    <i class="mdi mdi-folder-move" id="icon-extrait-star"></i>
+                                                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-extrait-end"></i>
+                                                    Extraire le dossier
+                                                </button>
+                                                <a type1="button" @(Model.Get_MT != "#" ? "disabled" : "") id="btn-tel-doss1" href="@Url.Content("~/referencebanques/DownloadZipFile?referenceId="+Model.Id)" class="btn btn-outline-info hidden btn-action" title="Télécharger le dossier: aucun téléchargement précédent">
+                                                    <i class="mdi mdi-download" id="icon-tel-star"></i>
+                                                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-tel-end"></i>
+                                                    Telecharger
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <button type="button" @(Model.Get_MT != "#" ? "" : "disabled") numero="5" id="btn-extraire-doss" class="btn btn-success btn-action" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier" title="Extraction du dossier: le dossier a déjà été extrait @Model.NbrTelechargement fois">
+                                                    <i class="mdi mdi-folder-move" id="icon-extrait-star"></i>
+                                                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-extrait-end"></i>
+                                                    Extraire le dossier
+                                                </button>
+
+                                                <a type1="button" @(Model.Get_MT != "#" ? "disabled" : "") id="btn-tel-doss1" href="@Url.Content("~/referencebanques/DownloadZipFile?referenceId="+Model.Id)" class="btn btn-success hidden btn-action" title="Télécharger le dossier: le dossier a déjà été téléchargé @Model.NbrTelechargement fois">
+                                                    <i class="mdi mdi-download" id="icon-tel-star"></i>
+                                                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="icon-tel-end"></i>
+                                                    Telecharger
+                                                </a>
+                                            }
+                                        }
+                                    </th>
+                                }
+                                if ((Model.FiniFormalitéBEAC || Model.NbrTelechargement > 0) && Model.EtapesDosier < 15)
+                                {
+                                    actions_content_visible = true;
+                                    <th>
+                                        @*<div numero="102" id="btn-inv" class=" form-check form-switch form-switch-lg mb-1" style="display:inline-block!important" dir="ltr">*@
+                                        <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                            <input @(Model.Get_Courrier != "#" ? "" : "disabled") type="checkbox" numero="6" name="envoie_beac" class="form-check-input change-etat btn-action" href1="@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=15&idreference="+Model.Id)" style="margin-left:0px;margin-top:15px" id="envoyer-beac" value="15">
+                                            <label class="form-check-label" for="envoyer-beac" style="margin-left:5px;margin-top:12px">Envoyé à la BEAC</label>
+                                        </div>
+                                    </th>
+                                }
+                                if (Model.EtapesDosier == 15)
+                                {
+                                    //dossier beac accordé
+                                    actions_content_visible = true;
+                                    <th>
+                                        <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                            <input type="checkbox" @(Model.Get_Courrier != "#" ? "" : "disabled") numero="7" name="accord_beac" class="form-check-input change-etat btn-action" style="margin-left:0px;margin-top:15px" id="accord-beac" href1="@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=16&idreference="+Model.Id)" value="16">
+                                            <label class="form-check-label" for="accord-beac" style="margin-left:5px;margin-top:12px">Accord BEAC</label>
+                                        </div>
+                                    </th>
+                                }
+                                if (Model.EtapesDosier == 16)
+                                {
+                                    //dossier avis couverture beac
+                                    actions_content_visible = true;
+                                    <th>
+                                        <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                            <input numero="8" type="checkbox" name="couverture_beac" class="form-check-input change-etat btn-action" style="margin-left:0px;margin-top:15px" id="couverture-beac" href1="@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=17&idreference="+Model.Id)" value="18">
+                                            <label class="form-check-label" for="couverture-beac" style="margin-left:5px;margin-top:12px">Avis de couverture</label>
+                                        </div>
+                                    </th>
+                                }
+                                if (Model.EtapesDosier == 17 || Model.EtapesDosier == 18)
+                                {
+                                    //reception couverture beac
+                                    actions_content_visible = true;
+                                    <th>
+                                        <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                            <input numero="9" type="checkbox" name="recept_couverture_beac" class="form-check-input btn-action" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac-open-modal" value="19">
+                                            <label class="form-check-label" for="recept-couvert-beac-open-modal" style="margin-left:5px;margin-top:12px">Devise reçue</label>
+                                        </div>
+                                    </th>
+                                }
+                                if (Model.EtapesDosier < 19 && Model.EtapesDosier >= 13)
+                                {
+                                    <th>
+                                        <button numero="10" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                                            <i class="mdi mdi-cancel"></i>
+                                            Rejeter
+                                        </button>
+                                    </th>
+                                }
+
+                            }
+                            if (min == 1 && VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, Model.EtapesDosier, min, max))
+                            {
+                                if (Model.EtapesDosier == 19 || Model.EtapesDosier == 20)
+                                {
+                                    //reception couverture beac
+                                    actions_content_visible = true;
+                                    <th>
+                                        <div class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                                            <input numero="11" type="checkbox" name="devise_recu" class="form-check-input change-etat btn-action" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac" href1="@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=22&idreference="+Model.Id)" value="22">
+                                            <label class="form-check-label" for="devise_recu" style="margin-left:5px;margin-top:12px">Dossier traité</label>
+                                        </div>
+                                    </th>
+                                }
+
+                            }
+                        }
+                    </tr>
+                </table>
+                <!--<form style="display:inline;float:right">
+                @Html.AntiForgeryToken()
+                <input _action_requied_loader="0" type="number" class="hidden" id="EtapesDosier" name="EtapesDosier" value="@Model.EtapesDosier" />
+                <input _action_requied_loader="0" type="number" class="hidden" id="IdDossier" name="IdDossier" value="@Model.Id" />-->
+                @* Composant 108: bouton envoyer à la BEAC*@
+                <!--@{
+                    try
+                    {
+                        //if (Session["numero108"] != null && !Model.EnvoieBEAC && details != " non associée")
+                        if (!Model.EnvoieBEAC && VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 7, min, max))
+                        {
+                            <button numero="108" type="button" _action_requied_loader="0" id="btn-envoye-beac" value="6" class="btn btn-outline-primary change-etat">
+                                <i class="mdi mdi-send-check"></i>
+                                Envoyer à la BEAC
+                            </button>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }-->
+                @* Composant 104: bouton rejeter référence *@
+                <!--@{
+                    //if (Session["numero110"] != null)
+                    if (!Model.Accordé && !Model.Apuré && VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, Model.EtapesDosier, min, max))// && details != " non associée")
+                    {
+                        <button numero="104" id="btn-rejet" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet">
+                            <i class="mdi mdi-cancel"></i>
+                            Rejeter le dossier
+                        </button>
+                    }
+                }-->
+                @* Composant 111: bouton dossier accordé*@
+                <!--@{
+                    //if (Session["numero111"] != null)
+                    if (!Model.Accordé && details != " non associée" && VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 6, min, max, 10))
+                    {
+                        <div numero="109" id="btn-inv" class="form-check form-switch form-switch-lg" style="display:inline-block;margin-left:0px;padding-left:5px;" dir="ltr">
+                            <label class="form-check-label float-start1" for="customSwitchsizelg">Dossier accordé ?</label>
+                            <input type="checkbox" name="Accorde" readonly="readonly" class="form-check-input" style="margin-left:10px" id="dossier-accordé" @(Model.Accordé ? "checked" : "") value="@Model.Accordé">
+                        </div>
+                    }
+                }-->
+                @* Composant 109: bouton apuré le dossier*@
+                <!--@{
+                        //if (Session["numero109"] != null)
+                        if (!Model.Apuré && VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, 11, min, max))
+                        {
+                            <div numero="109" id="btn-inv" class="form-check form-switch form-switch-lg" style="display:inline-block;margin-left:0px;padding-left:5px;" dir="ltr">
+                                <label class="form-check-label float-start1" for="customSwitchsizelg">Apuré le dossier </label>
+                                <input _action_requied_loader="0" type="checkbox" id="btn-apure" name="Apure" class="form-check-input" style="margin-left:10px" @(Model.Apuré ? "checked" : "") value="@Model.Apuré">
+                            </div>
+                        }
+
+
+                    }
+
+                </form>-->
+            </div>
+        </div>
+        <hr />
+        <div id="details-contener1" class="row1 ">
+            <div class="card ">
+                <div class="card-header card-header1 text-white bold">
+                    Etat de la référence: <mark>@(details)</mark>
+                    <button class="float-end hidden" id="reduit-details"><i id="icon-details-of" class="mdi mdi-eye-off"></i></button>
+                </div>
+                @using (Html.BeginForm("edit", "referencebanques", FormMethod.Post, new { id = "edit-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <div class="card-body" id="details-body">
+                        <input type="checkbox" name="EnvoieBEAC" id="EnvoieBEAC" class="hidden" value="@Model.EnvoieBEAC" />
+                        <input type="checkbox" name="Apuré" id="Apuré" class="hidden" value="@Model.Apuré" />
+                        <fieldset>
+                            <div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <dl class="dl-horizontal">
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.ClientEntre)
+                                            </dt>
+
+                                            <dd>
+                                                <span class="details-data1">@Model.ClientEntre</span>
+                                            </dd>
+                                            <dt>
+                                            <dt>
+                                                Fournisseur
+                                            </dt>
+
+                                            <dd>
+                                                <span class="details-data1">@Model.GetFournisseur</span>
+                                            </dd>
+
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.Montant)
+                                            </dt>
+
+                                            <dd>
+                                                <span class="details-data1">@Model.MontantString</span>
+                                            </dd>
+
+                                        </dl>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <dl class="dl-horizontal">
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.Devise)
+                                            </dt>
+
+                                            <dd>
+                                                <span class="details-data1">@(Model.Devise!=null? Model.Devise.Nom:"")</span>
+                                            </dd>
+                                            <dt>
+                                                @Html.DisplayNameFor(model => model.NumeroRef)
+                                            </dt>
+
+                                            <dd>
+                                                @{
+                                                    if (Model.EtapesDosier < 15)
+                                                    {
+                                                        <span class="details-data">@Model.NumeroRef</span>
+                                                        @Html.EditorFor(model => model.NumeroRef, new { htmlAttributes = new { @class = "edit-data" } })
+                                                        @Html.ValidationMessageFor(model => model.NumeroRef, "", new { @class = "text-danger" })
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="details-data1">@Model.NumeroRef</span>
+                                                    }
+                                                }
+                                            </dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    try
+                    {
+                        <div class="text-dark p-2 hidden1" id="modif-00">
+                            @*<h5 class="hidden1"><label class="float-end" onclick="document.getElementById('affiche-mail-info').click()" style="cursor:pointer">X</label> </h5>*@
+                            <h6 class="text-white" style="">
+                                <button type="button" class="btn btn-outline-warning p-2 fa fa-sticky-note" style="cursor: pointer;border-radius:5px;" id="affiche-mail-info">
+                                    Notes:
+                                </button>
+                                <button type="button" class="btn btn-outline-warning p-2 fa fa-users hidden" ouvfer="0" style="cursor: pointer;border-radius:5px;" id="call-respon">
+                                    Responsables du dossier
+                                </button>
+                            </h6>
+                            <div id="mail-info" class="bg-gradient-light card border border-1 hidden0 p-3" style="display: none; overflow: scroll; max-height: 400px">
+                                @Html.Raw(Model.Message)
+                            </div>
+                            <div id="call-users" class="bg-gradient-light card border border-1 p-3" style="display: none;">
+                                <div class="card-body1" style="margin-left:0px;">
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item" title="responsable agence">
+                                        <i class="fa fa-user-alt fs-6 text-info"></i>&emsp; Agence: <span class="align-middle" style="font-weight:bold" id="agence-resp"> </span>&emsp;<span class="align-middle text-muted" id="agence-resp-info"> </span>
+                                    </a>
+                                    <hr />
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item" title="Responsable conformité">
+                                        <i class="fa fa-user-alt fs-6 text-warning"></i>&emsp; Conformité: <span class="align-middle" style="font-weight:bold" id="conform-resp"> </span>&emsp;<span class="align-middle text-muted" id="conform-resp-info"> </span>
+                                    </a>
+                                    <hr />
+                                    <a href="javascript:void(0);" class="dropdown-item notify-item" title="Responsable service transfert">
+                                        <i class="fa fa-user-alt fs-6 text-purple"></i>&emsp; Transfert: <span class="align-middle" style="font-weight:bold" id="trans-resp"> </span> &emsp;<span class="align-middle text-muted" id="trans-resp-info"> </span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    catch (Exception)
+                    { }
+                }
+            </div>
+        </div>
+        <hr />
+        <div class="card">
+            <fieldset>
+                <div class="card-header fs-3 bold">Dossiers </div>
+                <div class="card-body">
+                    @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiers_Banque.cshtml", Model.Dossiers)
+                </div>
+            </fieldset>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Voir la liste", "Index")
+</p>
+@* Raison du rejet dossier modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Raison_Rejet_Dossier.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Extraire_Dossier.cshtml")
+
+<a class="hidden" id="show-loader" _action_requied_loader="0"></a>
+
+@{
+    //if (Model.EtapesDosier > 12 && Model.MontantCV > montantDfx)
+    if (Model.DFX6FP6BEAC == 3)
+    {
+        <form action="~/referencebanques/AddCourier" style="" id="form-courrier" method="post" enctype="multipart/form-data" class="hidden">
+            @Html.AntiForgeryToken()
+            <input type="number" name="IdRef" value="@Model.Id" style="" />
+            <input type="number" name="MT" id="val-MT" value="0" />
+            <div id="form-content-courrier">
+
+            </div>
+        </form>
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Courrier.cshtml")
+        @Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_MT.cshtml")
+        @Html.Partial("~/Views/_Shared/PartialViews/Script_Numerise_Courrier_mt.cshtml")
+
+        <a href="#" id="show-modal-gener-courrier" class="hidden bg-danger" data-bs-toggle="modal" data-bs-target="#EditCourrier"></a>
+        @Html.Partial("~/Views/_Shared/PartialViews/EditCourrierPanel2.cshtml")
+    }
+}
+
+@* finraisonmodal *@
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Selection_Operateur_Swift.cshtml",Model.Id)
+
+<a href="#" id="link-change-etat"></a>
+<a href="#" id="link-modal-sel-op-swift" data-bs-toggle="modal" data-bs-target="#modal-sel-op-swift"></a>
+<script>
+    $('.change-etat').click(function () {
+        try {
+            //modification du curseur
+            this.parentNode.style = 'cursor:wait';
+            //Affiche loader
+            var ii = document.createElement('i');
+            ii.classList.add("mdi");
+            ii.classList.add("mdi-spin");
+            ii.classList.add("mdi-loading");
+            var childs1 = this.childNodes;
+            this.parentNode.insertBefore(ii, this);
+            this.style.display = 'none';
+        } catch (e) {
+
+        }
+        var _url = this.getAttribute("href1");
+        if (this.id =='btn-valid-raison-rejet') {
+            _url = '@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=-3&idreference=" + Model.Id)';
+        }
+        document.getElementById("link-change-etat").setAttribute("href", _url.replace('amp;', ''));
+        document.getElementById("link-change-etat").click();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        //Griser les boutons suivants avant l'execution de la precedent
+        try {
+            var actions = $('.btn-action');
+            var num = 0;
+            var num2 = 0;
+            var sortie = false;
+            for (var i = 0; i < actions.length; i++) {
+                if (actions[i].classList.contains('btn-success')) {
+                    num = Number(actions[i].getAttribute("numero"))
+                    num = Number(actions[i].getAttribute("numero"));
+                    for (var j = 0; j < actions.length; j++) {
+                        num2 = Number(actions[j].getAttribute("numero"));
+                        if (num2 == Number(num + 1)) {
+                            actions[i].disabled = false;
+                            sortie = true;
+                            break;
+                        }
+                    }
+                }
+                if (sortie) {
+                    break;
+                }
+            }
+        } catch (e) {
+
+        }
+        //select opérateur swift
+        try {
+            $('#recept-couvert-beac-open-modal').click(function () {
+                try {
+                    //modification du curseur
+                    this.parentNode.style = 'cursor:wait';
+                    //Affiche loader
+                    var ii = document.createElement('i');
+                    ii.classList.add("mdi");
+                    ii.classList.add("mdi-spin");
+                    ii.classList.add("mdi-loading");
+                    var childs1 = this.childNodes;
+                    this.parentNode.insertBefore(ii, this);
+                    this.style.display = 'none';
+                } catch (e) {
+
+                }
+                $.ajax({
+                    url: '@Url.Content("~/banques/SelOp")',
+                    success: function (responce) {
+                        var daySelect = document.getElementById('sel-op-swift');
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+                        daySelect.options[daySelect.options.length] = new Option('', '');
+
+                        $.each(responce, function (index, item) {
+                            daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                        });
+                        document.getElementById('link-modal-sel-op-swift').click();
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });
+        } catch (e) {
+
+        }
+
+        try {
+
+        $('#btn-modal-extraction-doss').click(function () {
+            var nbrTelecharg = Number('@Model.NbrTelechargement');
+            var msg = 'Confirmer l\'extraction du dossier';
+            if (nbrTelecharg > 0) {
+                msg = "Le document a été extrait " + nbrTelecharg + " fois et vous avez été envoyé par email. Voulez-vous extraire à nouveau ?";
+            }
+            if (confirm(msg)) {
+                document.getElementById('link-preload').click();
+                $("#icon-extrait-star").hide();
+                $("#icon-extrait-end").show();
+                var emails = $("#agentemails").val();
+                var fourn = document.getElementById('include-fournisseur').checked;
+                var clt = document.getElementById('include-client').checked;
+                $.ajax({
+                    url: '@Url.Content("~/referencebanques/ExtraireDossier?referenceId=" + Model.Id)&includ_f=' + fourn + '&includ_cl=' + clt + '&agtemail=' + emails,
+                    success: function (responce) {
+                        alert("Extraction du dossier terminé...");
+                        $("#icon-tel-end").hide();
+                        $("#icon-tel-star").show();
+                        location.reload();
+                        document.getElementById('btn-tel-doss').classList.remove("btn-outline-info");
+                        document.getElementById('btn-tel-doss').classList.add("btn-outline-warnig");
+                        if (responce) {
+                            $('#btn-tel-doss').attr('title', responce);
+                        }
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+            }
+        });
+
+        } catch (e) {
+
+        }
+
+        $('.edit-data').hide();
+        $('#saving').hide();
+        $('#cancelling').hide();
+        $('.details-data').each(function (i, obj) {
+            if (!obj.textContent) {
+                obj.textContent = "NULL";
+            }
+        });
+
+        $('#edition').click(function () {
+            $('.details-data').hide(300);
+            $('.edit-data').show(300);
+            $('#edition').hide(100);
+            $('#cancelling').show();
+            $('#saving').show();
+        });
+
+        $('#cancelling').click(function () {
+            $('.edit-data').hide();
+            $('.details-data').show(300);
+            $('#cancelling').hide(100);
+            $('#saving').hide(100);
+            $('#edition').show(300);
+        });
+
+        $('#saving').click(function () {
+            $('#edit-form').submit();
+        });
+
+        $('#actions').click(function () {
+            if ($('#actions-content').attr('action') == '0') {
+                $('#actions-content').attr('action', '1');
+                $('#actions-content').show(300);
+            } else {
+                $('#actions-content').attr('action', '0');
+                $('#actions-content').hide(100);
+            }
+        });
+
+        $('#btn-envoye-beac').click(function () {
+            if (confirm('Vous êtes sur le point de soumettre le dossier à la BEAC. Voulez-vous confirmer?')) {
+                document.getElementById('EnvoieBEAC').checked = true;
+                document.getElementById('EnvoieBEAC').value = true;
+                $('#edit-form').submit();
+            } else {
+                location.reload();
+            }
+        });
+
+        $('#btn-apure').click(function () {
+            if (confirm("Vous êtes sur le point d'apurer la refererence. Voulez-vous continuer?")) {
+                document.getElementById('Apuré').checked = true;
+                document.getElementById('Apuré').value = true;
+                $('#edit-form').submit();
+            } else {
+                location.reload();
+            }
+        });
+    });
+</script>
+<script>
+    @{
+        if (actions_content_visible)
+        {
+            @: document.getElementById('actions-content').classList.remove('hidden');
+        }
+    }
+</script>
+<script>
+    $('#affiche-mail-info').click(function () {
+        var mailinfo = document.getElementById('mail-info');
+        if (mailinfo.classList.contains("hidden0")) {
+            $(mailinfo).show(300);
+            mailinfo.classList.remove('hidden0');
+        } else {
+            mailinfo.classList.add('hidden0');
+            $(mailinfo).hide(300);
+        }
+    });
+</script>

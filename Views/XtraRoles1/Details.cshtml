@@ -1,0 +1,75 @@
+﻿@model genetrix.Models.XtraRole
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>XtraRole</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Structure.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Structure.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstAdmin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstAdmin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiveauDossier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiveauDossier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirDossiersAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirDossiersAutres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirUsersAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirUsersAutres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirClientAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirClientAutres)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.RoleId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

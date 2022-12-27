@@ -1,0 +1,193 @@
+﻿@model genetrix.Models.PubItem
+
+@{
+    ViewBag.Title = "Ajout de la publication";
+    ViewBag.pTitle = "Ajout de la publication";
+    ViewBag.pageTitle = "Ajout de la publication";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1">Ajout de la publication</div>
+            <div class="card-body">
+                <div class="col-lg-12">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Titre, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Titre, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Titre, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.Bottom, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Bottom, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Bottom, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.Left, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Left, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Left, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.Rigth, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Rigth, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Rigth, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.Top, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.Top, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Top, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.ePubItemType, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EnumDropDownListFor(model => model.ePubItemType, htmlAttributes: new { @class = "form-control",id= "ePubItemType" })
+                                    @Html.ValidationMessageFor(model => model.ePubItemType, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3 row">
+                                <div class="form-group  col-md-4">
+                                    @Html.LabelFor(model => model.IsHtml, htmlAttributes: new { @class = "control-label" })
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            @Html.EditorFor(model => model.IsHtml,new {id= "IsHtml" })
+                                            @Html.ValidationMessageFor(model => model.IsHtml, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group  col-md-8">
+                                    @Html.LabelFor(model => model.Theme, htmlAttributes: new { @class = "control-label" })
+                                    <div class="col-md-12">
+                                        <div class="checkbox">
+                                            <select class="form-control" id="Theme" name="Theme">
+                                                <option value=""></option>
+                                                @{
+                                                    try
+                                                    {
+                                                        foreach (var item in ViewBag.Themes)
+                                                        {
+                                                            <option id="@item.Id">@item.Nom</option>
+                                                        }
+                                                    }
+                                                    catch
+                                                    {
+                                                    }
+                                                }
+                                            </select>
+                                            @Html.ValidationMessageFor(model => model.Theme, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.TitreColor, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.TitreColor, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.TitreColor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group col-md-6 mb-3">
+                                @Html.LabelFor(model => model.DescriptionColor, htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    @Html.EditorFor(model => model.DescriptionColor, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.DescriptionColor, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.TextAreaFor(model => model.Description,5,50, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Image, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <input type="file" name="Image" value="" accept="image/png, image/gif, image/jpeg" />
+                                @*@Html.EditorFor(model => model.Image, new { htmlAttributes = new { @class = "form-control" } })*@
+                                @Html.ValidationMessageFor(model => model.Image, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 hidden">
+                            @Html.LabelFor(model => model.IdePub, "IdePub", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("IdePub", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.IdePub, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <hr />
+                        <div class="form-group mb-3">
+                            <div class="col-md-offset-2 col-md-12">
+                                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+        <div>
+            @Html.ActionLink("Liste", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<script>
+    $('#ePubItemType').on('select', function () {
+        if (this.value != 0) {
+            document.getElementById('IsHtml').disabled = true;
+            document.getElementById('Theme').disabled = true;
+        } else {
+            document.getElementById('IsHtml').disabled = false;
+            document.getElementById('Theme').disabled = false;
+        }
+    });
+</script>

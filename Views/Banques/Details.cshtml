@@ -1,0 +1,77 @@
+﻿@model genetrix.Models.Banque
+
+@{
+    ViewBag.Title = "Banque";
+    ViewBag.pTitle = "Detail Banque";
+    ViewBag.pageTitle = "Banque";
+    ViewBag.pageImage = "~/assets/images/IU/bank.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1 text-white">
+                Deatils de la banque
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <dl class="dl-horizontal">
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Nom)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Nom)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Adresse)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Adresse)
+                            </dd>
+
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Telephone)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.Telephone)
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.MontantDFX)
+                            </dt>
+
+                            <dd>
+                                @Html.DisplayFor(model => model.MontantDFX)
+                            </dd>
+
+                        </dl>
+                    </div>
+                    <div class="col-4 border border-1 p-2 text-center">
+                        <p class="text-muted">Logo</p>
+                        @{
+                            if (string.IsNullOrEmpty(Model.Image))
+                            {
+                                Model.Image = "null";
+                            }
+                        }
+                        <img src="@Url.Content(Model.Image)" style="width:200px" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) 
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Views/_Shared/PartialViews/Configuration_Banque.cshtml")
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

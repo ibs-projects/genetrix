@@ -1,0 +1,1096 @@
+﻿@model IEnumerable<genetrix.Models.Fonctions.FileItemModel>
+<!DOCTYPE html>
+<html lang="fr">
+@{ 
+    ViewBag.mois = new string[] { "Jeanvier", "Fevier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aoùt", "Septembre", "Octobre", "Novembre", "Decembre" };
+    ViewBag.model = ViewData["sidebar"];
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> fournisseursModels = null;
+    IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>> datesModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> devisesModels = null;
+    Dictionary<string, string> fname = new Dictionary<string, string>();
+
+    try
+    {
+        fournisseursModels = ViewData["fournisseur"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        datesModels = ViewData["date"] as IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        devisesModels = ViewData["devise"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        fname = ViewData["fname"] as Dictionary<string, string>;
+    }
+    catch (Exception)
+    { }
+    if (fname == null)
+    {
+        fname = new Dictionary<string, string>();
+    }
+    bool est_admin = false;
+    if ((bool)Session["EstAdmin"])
+    {
+        est_admin = true;
+    }
+
+    string navigation = "aa";
+    navigation = ""+ViewBag.navigation;
+}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+    <style>
+        #sidebar-menu .has-arrow:after {
+            content: "\F0142";
+            font-family: 'Material Design Icons';
+            display: block;
+            float: left;
+            -webkit-transition: -webkit-transform .2s;
+            transition: -webkit-transform .2s;
+            transition: transform .2s;
+            transition: transform .2s,-webkit-transform .2s;
+            font-size: 1rem;
+        }
+        #sidebar-menu .mm-active > .has-arrow:after {
+            -webkit-transform: rotate( 90deg );
+            transform: rotate(90deg);
+        }
+        #body-arch {
+            @*background-image: url('@Url.Content("~/assets/images/IU/bg.jpeg")');*@
+        }
+        .corp {
+            text-justify:auto;
+            justify-content: center;
+        }
+        .folder{
+            cursor:pointer;
+        }
+        .folder:hover {
+            box-shadow: 10px 10px 5px #aaaaaa;
+/*                border: 1px solid #5fcbcb;
+*/       }
+        .icon-10:hover{
+            background-color:orangered;
+            color:white;
+        }
+        .icon-10 > i:hover{
+            color:white;
+        }
+        .icon-up-down:hover {
+            cursor: pointer;
+            color: white;
+            background-color: #50a5f1
+        }
+
+        .entete:hover {
+            cursor: pointer;
+        }
+        .entete {
+            background-color: white;
+            box-shadow: 1px 1px 12px #555;
+            padding:5px;
+            margin-bottom:15px;
+        }
+        .icon-donnee1{
+            -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+            box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+        }
+        ._folder-btn {
+            min-width: 100px;
+/*            height: 100px;
+*/            border: 1px solid orangered;
+            max-width: 200px;
+            height: auto
+        }
+        details > summary {
+            padding: 4px;
+            width: 300px;
+            background-color: #eeeeee;
+            border: none;
+            box-shadow: 1px 1px 2px #bbbbbb;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #2689a6;
+        }
+
+        details {
+            border: 1px solid #eeeeee;
+            margin-bottom: 2em;
+        }
+    </style>
+    <style>
+                * {
+                    padding: 0;
+                    margin: 0;
+                    box-sizing: border-box;
+                    font-family: 'Montserrat', sans-serif;
+                }
+
+                body { /*
+                    width: 100vw;
+                    height: 100vh;*/
+                    background: #f2f4f6;
+                    /*            overflow: hidden;
+        */
+                }
+
+                ul {
+                    list-style: none;
+                }
+
+                .context-menu {
+                    position: absolute;
+                }
+
+                .menu {
+                    display: flex;
+                    flex-direction: column;
+                    background-color: #fff;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 20px rgb(64 64 64 / 5%);
+                    padding: 10px 0;
+                }
+
+                    .menu > li > a {
+                        font: inherit;
+                        border: 0;
+                        padding: 10px 30px 10px 15px;
+                        width: 100%;
+                        display: flex;
+                        align-items: center;
+                        position: relative;
+                        text-decoration: unset;
+                        color: #000;
+                        font-weight: 500;
+                        transition: 0.5s linear;
+                        -webkit-transition: 0.5s linear;
+                        -moz-transition: 0.5s linear;
+                        -ms-transition: 0.5s linear;
+                        -o-transition: 0.5s linear;
+                    }
+
+                        .menu > li > a:hover {
+                            background: #f1f3f7;
+                            color: #4b00ff;
+                        }
+
+                        .menu > li > a > i {
+                            padding-right: 10px;
+                        }
+
+                    .menu > li.trash > a:hover {
+                        color: red;
+                    }
+    </style>
+
+</head>
+
+<body data-topbar="dark1" id="body-arch" class="p-0 bg-white1" style="padding-bottom: 0px; background-color: whitesmoke">
+    <!-- Begin page -->
+    <div id="layout-wrapper" class="mb-0">
+        @Html.Partial("~/Views/_Shared/File_Manager/_topbar_banque.cshtml")
+        @Html.Partial("~/Views/_Shared/File_Manager/_sidebar_banque.cshtml")
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+
+        <div class="main-content bg-white1" id="main-content-arch" style="width: auto; background-color: whitesmoke">
+            <div class="page-content" style="opacity:initial">
+                <div class="container-fluid">
+                    <div id="Preloader_partiel">
+                        @Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")
+                        @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel.cshtml")
+                    </div>
+                    <div class="row1">
+                        <div class=" entete hidden">
+                            <h6 class="text-dark">Type d'éléments (3)</h6>
+                            <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            @*<hr class="" />*@
+                        </div>
+                        <div style="display:block">
+                            <div class="float-left1">
+                                <a href="#" id="btn-precedent" onclick="goBack()" style="margin-bottom:-5px!important"> <i class="mdi mdi-undo-variant"></i>  Retour</a> &emsp;| &emsp;
+                                <span id="chemin"></span> @Html.Raw(ViewBag.serachString)
+                                @if (!string.IsNullOrEmpty(ViewBag.erreur))
+                                {
+                                    <span class="text-danger p-3" style="background-color:antiquewhite">@ViewBag.erreur</span>
+                                }
+                            </div>
+                            <script>
+                                function goBack() {
+                                    window.history.back();
+                                    try {
+                                        document.getElementById("img-loarder").style.display = 'none';
+                                    } catch (e) {
+
+                                    }
+                                }
+                            </script>
+                        </div>
+                        @*<div><span id="chemin"></span> @Html.Raw(ViewBag.serachString)</div>*@
+                        <div class="row corp hidden">
+                            <div class="col-md-3 col-xl-2 corp">
+                                <div class="card" style="background-color: #2689a6">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-folder-open fs-1"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">120</h4>
+                                            <p class="text-muted mb-0">Total repertoires</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-2">
+                                <div class="card bg-gradient-warning">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-file-pdf fs-1 text-danger"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">120</h4>
+                                            <p class="text-muted mb-0">Total fichiers pdf</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xl-2">
+                                <div class="card" style="background-color: #2689a6">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-file-image fs-1 text-success"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">
+                                                120
+                                                @*<i class="fas fa-ellipsis-h float-end"></i>*@
+                                            </h4>
+                                            <p class="text-muted mb-0">Total fichiers image</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr />
+                    @{ int nbr = 0;}
+                    @* Dossiers *@
+                    <div class="row1">
+                        <div id="nbr-dos" style="display:none;" class="entete1 hidden">
+                            <h6 class="text-dark" id="nbr-docs">Dossiers (6)</h6>
+                            <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            <hr class="" />
+                        </div>
+                        <div class="corp">
+                            @{
+                                if (ViewBag.navigation != "archives")
+                                {
+                                    if (Model != null)
+                                    {
+                                        switch (ViewBag.navigation)
+                                        {
+                                            case "agences":
+                                                foreach (var dos in Model.Where(m => m.IsFolder).GroupBy(m => m.GetAgenceName))
+                                                {
+                                                    <details>
+                                                        <summary><i class="mdi mdi-bank-minus"></i> @dos.Key</summary>
+                                                        @foreach (var item in dos)
+                                                        {
+                                                            <button id="@ViewBag.navigation" iddossier="@item.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                                <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                                @item.Name
+                                                            </button>
+                                                        }
+                                                    </details>
+                                                }
+                                                break;
+                                            case "clients":
+                                                foreach (var dos in Model.Where(m => m.IsFolder).GroupBy(m => m.ClientName))
+                                                {
+                                                    <details>
+                                                        <summary><i class="mdi mdi-handshake"></i> @dos.Key</summary>
+                                                        @foreach (var item in dos)
+                                                        {
+                                                            <button id="@ViewBag.navigation" iddossier="@item.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                                <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                                @item.Name
+                                                            </button>
+                                                        }
+                                                    </details>
+                                                }
+                                                break;
+                                            case "devises":
+                                                foreach (var dos in Model.Where(m => m.IsFolder).GroupBy(m => m.Devise))
+                                                {
+                                                    <details>
+                                                        <summary><i class="mdi mdi-currency-usd"></i> @dos.Key</summary>
+                                                        @foreach (var item in dos)
+                                                        {
+                                                            <button id="@ViewBag.navigation" iddossier="@item.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                                <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                                @item.Name
+                                                            </button>
+                                                        }
+                                                    </details>
+                                                }
+                                                break;
+                                            case "date":
+                                                foreach (var dos in Model.Where(m => m.IsFolder).OrderBy(m=>m.DateArchivage.Year).GroupBy(m => m.DateArchivage.Year))
+                                                {
+                                                    foreach (var mois in dos.OrderBy(m=>m.Date_Etape22.Value.Month).GroupBy(m => m.Date_Etape22.Value.Month))
+                                                    {
+                                                        <details>
+                                                            <summary><i class="mdi mdi-calendar-range"></i> @ViewBag.mois[mois.Key - 1] @dos.Key</summary>
+                                                            @foreach (var d in mois)
+                                                            {
+                                                                <button id="@ViewBag.navigation" iddossier="@d.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@d.ToString()">
+                                                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                                    @d.Name
+                                                                </button>
+                                                            }
+                                                        </details>
+                                                    }
+                                                }
+                                                break;
+                                            case "categorie":
+                                                foreach (var dos in Model.Where(m => m.IsFolder).GroupBy(m => m.DFX6FP6BEAC))
+                                                {
+                                                    <details>
+                                                        <summary><i class="mdi mdi-group"></i> @dos.Key</summary>
+                                                        @foreach (var item in dos)
+                                                        {
+                                                            <button id="@ViewBag.navigation" iddossier="@item.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                                <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                                @item.Name
+                                                            </button>
+                                                        }
+                                                    </details>
+                                                }
+                                                break;
+                                            default:
+                                                <details>
+                                                    <summary><i class="mdi mdi-filter"></i> @ViewBag.navLeb </summary>
+                                                    @foreach (var item in Model.Where(m => m.IsFolder))
+                                                    {
+                                                        <button id="@ViewBag.navigation" iddossier="@item.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                            <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                            @item.Name
+                                                        </button>
+                                                    }
+                                                </details>
+                                                break;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (ViewBag.navigation == "archives")
+                                    {
+                                        <button id="agences" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers classés par agence">
+                                            <i class="mdi mdi-bank-minus" style="font-size:3em;display:block"></i>
+                                            Agences
+                                        </button>
+                                        <button id="clients" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers classés par client">
+                                            <i class="mdi mdi-handshake" style="font-size:3em;display:block"></i>
+                                            Clients
+                                        </button>
+                                        <button id="devises" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers classés par devise">
+                                            <i class="mdi mdi-currency-eur" style="font-size:3em;display:block"></i>
+                                            Devises
+                                        </button>
+                                        <button id="date" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers classés par date: année-mois">
+                                            <i class="mdi mdi-calendar" style="font-size:3em;display:block"></i>
+                                            Période
+                                        </button>
+                                        <button id="dfx" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers DFX">
+                                            <i class="mdi mdi-group" style="font-size:3em;display:block"></i>
+                                            DFX
+                                        </button>
+                                        <button id="fp" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers traités sur fonds propres">
+                                            <i class="mdi mdi-home-group" style="font-size:3em;display:block"></i>
+                                            Fonds propres
+                                        </button>
+                                        <button id="ref" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Dossiers BEAC">
+                                            <i class="mdi mdi-lightbulb-group-outline" style="font-size:3em;display:block"></i>
+                                            Refinancement
+                                        </button>
+                                        <button id="dossiers" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="Tout les dossiers">
+                                            <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                            Tout
+                                        </button>
+                                    }
+                                    else if (ViewBag.navigation == "agences")
+                                    {
+                                        foreach (var ff in fournisseursModels)
+                                        {
+                                            try
+                                            {
+                                                <button id="ff-@ff.Key" idFournisseur="" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@ff.ToString()">
+                                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                    @ff.Key
+                                                </button>
+                                                foreach (var dos in ff)
+                                                {
+                                                    <script>
+                                                        document.getElementById('ff-@(ff.Key)').setAttribute('idFournisseur', '@dos.FournisseurId')
+                                                        document.getElementById('ff-@(ff.Key)').setAttribute('id', 'fou-@ff.Key')
+                                                    </script>
+                                                    break;
+                                                }
+                                            }
+                                            catch (Exception)
+                                            { }
+                                        }
+                                    }
+                                    else if (ViewBag.navigation == "devises")
+                                    {
+                                        foreach (var ff in devisesModels)
+                                        {
+                                            try
+                                            {
+                                                if (ViewBag.DeviseName != null)
+                                                {
+                                                    if (ff.Key != ViewBag.DeviseName)
+                                                    {
+                                                        continue;
+                                                    }
+                                                }
+                                                var _ff = ff.Key.Replace(" ", "");
+                                                <button id="ff-@_ff" idDevise="" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@ff.ToString()">
+                                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                    @ff.Key
+                                                </button>
+                                                foreach (var dos in ff)
+                                                {
+                                                    <script>
+                                                document.getElementById('ff-@(_ff)').setAttribute('idDevise', '@dos.Devise')
+                                                    </script>
+                                                    break;
+                                                }
+                                            }
+                                            catch (Exception)
+                                            { }
+                                        }
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    @* Fichiers *@
+                    <div class="row">
+                        <div style="display:none" id="nbr-file" class="hidden">
+                            <h6 class="text-dark" id="nbr-files">Fichiers (46)</h6>
+                            <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            <hr class="" />
+                        </div>
+                        <div class="corp">
+                            @{
+                                string typefile = "";
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model.Where(m => !m.IsFolder))
+                                    {
+                                        typefile = "mdi-file-image-outline text-success";
+                                        if (item.MimeType == ".pdf")
+                                        {
+                                            typefile = "mdi-file-pdf text-danger";
+                                        }
+                                        <button class="btn btn-outline-secondary p-0 border border-0 btn-file icon-donnee" style="width:120px;height:120px;overflow:hidden;padding:3px;" extension="@item.MimeType" path="@item.Path" title="@item.ToString()">
+                                            <i class="mdi @(typefile)" style="font-size:3em;display:block;"></i>
+                                            @{
+                                                @item.Name
+                                            }
+                                        </button>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+
+
+
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+    <a href="#" id="link-modal-recherche" class="hidden" data-bs-toggle="modal" data-bs-target="#model-recherche"></a>
+    <a href="#" id="link-preload" class="hidden"></a>
+    <a href="#" id="link-puch" class="hidden"></a>
+    <a href="#" id="link-puch2" class="hidden"></a>
+    <a href="#" id="link-archive-open-file" class="hidden" data-bs-toggle="modal" data-bs-target="#archive-open-file"></a>
+
+    <div id="contextMenu" class="context-menu" style="display: none">
+        <ul class="menu">
+            <li class="rename"><a href="#" id="link-ouvrir" class="right-click-action" folder-id="" elt-id=""><i class="fa fa-folder-open" aria-hidden="true"></i> Ouvrir</a></li>
+            <li class="share"><a href="#" id="link-partager" class="right-click-action" folder-id="" elt-id="" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier"><i class="fa fa-share" aria-hidden="true"></i> Partager</a></li>
+            <li class="link hidden"><a href="#"><i class="fa fa-link" aria-hidden="true"></i> Copy Link Address</a></li>
+            <li class="copy hidden"><a href="#"><i class="fa fa-copy" aria-hidden="true"></i> Copy to</a></li>
+            <li class="paste hidden"><a href="#"><i class="fa fa-paste" aria-hidden="true"></i> Move to</a></li>
+            <li class="download"><a href="#" id="link-telecharger" class="right-click-action" folder-id="" elt-id=""><i class="fa fa-download" aria-hidden="true"></i> Télécharger</a></li>
+            <li class="trash"><a href="#" id="link-supprimer" class="right-click-action @(est_admin?"":"hidden")" folder-id="" elt-id=""><i class="fa fa-trash" aria-hidden="true"></i> Supprimer</a></li>
+        </ul>
+    </div>
+
+
+    @Html.Partial("~/Views/_Shared/File_Manager/AffichageFichier.cshtml")
+    @Html.Partial("~/Views/_Shared/File_Manager/Modal_Recherche_banque.cshtml")
+    @Html.Partial("~/Views/_Shared/PartialViews/Modal_Extraire_Dossier.cshtml")
+
+    @*<button class="" don="">
+        </button>*@
+    <i id="view-btn" class="mdi mdi-drag fs-4"></i>
+    <script src="~/assets/custom.js"></script>
+
+    <script src="~/assets/libs/jquery/jquery.min.js"></script>
+    <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="~/assets/libs/node-waves/waves.min.js"></script>
+    <script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+    <script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+    <!-- Ion Range Slider-->
+    <script src="~/assets/libs/ion-rangeslider/js/ion.rangeSlider.min.js"></script>
+
+    <!-- Range slider init js-->
+    <script src="~/assets/js/pages/range-sliders.init.js"></script>
+    <script src="~/assets/js/app.js"></script>
+    <script src="~/assets/GlobalScript.js"></script>
+    <a href="#" class="hidden" id="link-act"></a>
+
+    <script>
+        var userMail = '@User.Identity.Name';
+        $('.right-click-action').click(function () {
+            var act = document.getElementById('link-act');
+            switch (this.id) {
+                case 'link-partager':
+                    $("#agentemails0").val('');
+                    $("#agentemails0").val(userMail);
+                    $("#agentemails").val(userMail);
+                    break;
+                case 'link-telecharger':
+                    var _url = '@Url.Content("~/dossiers_banque/DownloadZipFile?dossierId=")' + this.getAttribute('elt-id');
+                    act.setAttribute('href', _url);
+                    act.click();
+                    break;
+                case 'link-supprimer':
+                    SupprimeDossier(this.getAttribute('elt-id'));
+                    break;
+                default:
+            }
+        });
+
+        $('#btn-modal-extraction-doss').click(function () {
+            var partage = document.getElementById('link-partager');
+            var emails = $("#agentemails").val();
+            ExtraireDossier(partage.getAttribute('elt-id'), emails);
+        });
+
+        document.onclick = hideMenu;
+        document.oncontextmenu = rightClickNull;
+        var folders = document.getElementsByClassName('_folder-btn');
+        for (var i = 0; i < folders.length; i++) {
+            folders[i].oncontextmenu = rightClick;
+        }
+
+        function hideMenu() {
+            document.getElementById("contextMenu")
+                .style.display = "none"
+        }
+
+        function rightClickNull() {
+            //return false;
+        }
+        var currenteFolder = null;
+        function rightClick(e) {
+            if (!this.getAttribute('iddossier') || this.getAttribute('iddossier') == null) {
+                return false;
+            }
+            $('.right-click-action').attr('elt-id', this.getAttribute('iddossier'));
+            currenteFolder = this;
+            e.preventDefault();
+            if (document.getElementById("contextMenu").style.display == "block") {
+                hideMenu();
+            } else {
+                var menu = document.getElementById("contextMenu")
+                menu.style.display = 'block';
+                menu.style.left = e.pageX + "px";
+                menu.style.top = e.pageY + "px";
+            }
+        }
+
+        function SupprimeDossier(id) {
+            if (confirm("Voulez-vous supprimer le dossier?")) {
+                document.getElementById('link-preload').click();
+                $.ajax({
+                    type: 'get',
+                    dataType: 'json',
+                    cache: false,
+                    url: '@Url.Content("~/Dossiers_banque/ModifEtatDossierJS")',
+                    data: { etat: 27, idDossier: id },
+                  success: function (response, textStatus, jqXHR) {
+                      alert('Dossier supprimé avec succès!')
+                      document.location.reload();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert('La suppression n\'a pas marchée!');
+                    }
+                });
+            }
+        }
+
+        function ExtraireDossier(id, emails) {
+            if (emails && id) {
+                var fourn = document.getElementById('include-fournisseur').checked;
+                var clt = document.getElementById('include-client').checked;
+                document.getElementById('link-preload').click();
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/ExtraireDossier?dossierId=")' + id + '&agtemail=' + emails + '&includ_f=' + fourn + '&includ_cl=' + clt,
+                    success: function (responce) {
+                        alert('Dossier extrait avec succès!')
+                        location.reload();
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+             }
+        }
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            try {
+                //Charge fournisseurs
+                $('#sel_clients').on('input', function () {
+                    try {
+                         $.ajax({
+                             url: '@Url.Content("~/clients/GetFournisseurs")',
+                            type: 'GET',
+                             data: { clienId: this.value},
+                            success: function (result) {
+                                var daySelect = document.getElementById('sel_fournisseurs');
+                                //supprime toutes les options
+                                var length = daySelect.options.length;
+                                for (i = length - 1; i >= 0; i--) {
+                                    daySelect.options[i] = null;
+                                }
+                                daySelect.options[daySelect.options.length] = new Option('', '');
+
+                                $.each(result, function (index, item) {
+                                    daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                                });
+                            },
+                            error: function (error) {
+                                //alert("error: " + error);
+                            }
+                        });
+                    } catch (e) {
+
+                    }
+                });
+
+                //Charge clients
+                $('#sel_gestionnaires').on('input', function () {
+                    $.ajax({
+                        url: '@Url.Content("~/clients/GetClientByGestion")' +'?gestionId='+this.value,
+                        type: 'GET',
+                        data: {},
+                        success: function (result) {
+                            var daySelect = document.getElementById('sel_clients');
+                            //supprime toutes les options
+                            var length = daySelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                daySelect.options[i] = null;
+                            }
+                            daySelect.options[daySelect.options.length] = new Option('', '');
+
+                            $.each(result, function (index, item) {
+                                daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.ClientId);
+                            });
+                        },
+                        error: function (error) {
+                            //alert("error: " + error);
+                        }
+                    });
+                });
+
+                //Charge gestionnaires
+                $('#sel_agences').on('input', function () {
+                         $.ajax({
+                             url: '@Url.Content("~/CompteBanqueCommerciales/GetByStructure")',
+                             type: 'GET',
+                             data: { strucId: this.value},
+                             success: function (result) {
+                            var daySelect = document.getElementById('sel_gestionnaires');
+                            //supprime toutes les options
+                            var length = daySelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                daySelect.options[i] = null;
+                            }
+                            daySelect.options[daySelect.options.length] = new Option('', '');
+
+                            $.each(result, function (index, item) {
+                                daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                            });
+                        },
+                        error: function (error) {
+                            //alert("error: " + error);
+                        }
+                    });
+                });
+
+                } catch (e) {
+            }
+
+            try {
+                $.ajax({
+                        url: '@Url.Content("~/agences/GetAll")',
+                        type: 'GET',
+                        data: {},
+                            success: function (result) {
+                            var daySelect = document.getElementById('sel_agences');
+                            //supprime toutes les options
+                            var length = daySelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                daySelect.options[i] = null;
+                            }
+                            daySelect.options[daySelect.options.length] = new Option('', '');
+
+                            $.each(result, function (index, item) {
+                                daySelect.options[daySelect.options.length] = new Option('' + item.Nom, item.Id);
+                            });
+                        },
+                        error: function (error) {
+                            //alert("error: " + error);
+                        }
+                    });
+            } catch (e) {
+
+            }
+
+            try {
+                document.getElementById('input-recherche').addEventListener('click', function () {
+                    document.getElementById('link-modal-recherche').click();
+                });
+            } catch (e) {
+
+            }
+            try {
+                //preload
+                $('#link-preload').click('click', function () {
+                    $('#Preloader_partiel').css("display", "initial");
+                });
+                $('#Preloader_partiel').css("display", "none");
+            } catch (e) {
+
+            }
+            $("body").on("contextmenu", function (e) {
+                 return false;
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            try {
+                var w = document.getElementById('page-topbar').clientWidth;
+                document.getElementById('main-content-arch').style.width =w+ 'px';
+                //var wt = document.getElementById('navbar-header-archive').clientWidth;
+                //$('#vertical-menu-archive').css('width', Number(w + 100) + 'px');
+                //$('.sidbar').click(function () {
+                //    $('#vertical-menu-archive').css('width', Number(250 + this.textContent.length) + 'px');
+                ////    $('#navbar-header-archive').css('width', Number(wt - this.textContent.length-80) + 'px');
+                //});
+
+                document.getElementById('vertical-menu-archive').addEventListener('mouseenter', function () {
+                    $('#vertical-menu-archive,#navbar-icon').css('width', '350px');
+                });
+                document.getElementById('vertical-menu-archive').addEventListener('mouseleave', function () {
+                    $('#vertical-menu-archive,#navbar-icon').css('width', '250px');
+                });
+
+            } catch (e) {
+
+            }
+            //view file loder
+            try {
+                var iff = document.getElementById('iframe-archive-open-file');
+                var img = document.getElementById('img-pre-iframe0');
+                img.style.top = document.body.clientHeight / 3 + 'px';
+                iff.setAttribute("img-previ-id", img.getAttribute('id'));
+                iff.onload = function () {
+                    var img = document.getElementById('img-pre-iframe0');
+                    img.style.display = 'none';
+                };
+            } catch (e) {
+
+            }
+            //file btn action
+            try {
+                $('.btn-file').on('dblclick', function () {
+                    document.getElementById('iframe-archive-open-file').setAttribute('src', "");
+                    var _url = "";
+                    if (this.getAttribute('extension')=='.pdf') {
+                        _url = "@Url.Content("~/archivage/OpenView?path=")" + this.getAttribute('path');
+                    } else {
+                        _url = "@Url.Content("~/archivage/ImageViewer?path=")" + this.getAttribute('path');
+                    }
+                    document.getElementById('iframe-archive-open-file').setAttribute('src', _url);
+                    document.getElementById('link-archive-open-file').click();
+                })
+            } catch (e) {
+
+            }
+            //folder btn action
+            try {
+                $('._folder').on('click', function () {
+                    getDossiers(this);
+                });
+                $('#link-ouvrir').on('click', function () {
+                    getDossiers(currenteFolder);
+                });
+            } catch (e) {
+
+            }
+
+            $('#view-btn').click(function () {
+                if (this.getAttribute("don")) {
+                    //preload
+                    document.getElementById('link-preload').click();
+                var _url = '@Url.Content("~/archivage/Donnees?adx=")' + this.getAttribute("don");
+                var link = document.getElementById('link-puch');
+                link.setAttribute('href', _url);
+                    link.click();
+                }
+            });
+
+            var donnees = $('.has-arrow');
+            for (var i = 0; i < donnees.length; i++) {
+                try {
+                    if (donnees[i].getAttribute('id') && !donnees[i].classList.contains('non')) {
+                           var btn = document.getElementById('view-btn').cloneNode();
+                            btn.style.display = 'none';
+                            btn.setAttribute('don', donnees[i].id);
+                            btn.setAttribute('title', 'Voir le contenu');
+                            btn.setAttribute('id', "btn-view-" + donnees[i].id);
+                            btn.setAttribute('_id', "" + donnees[i].id);
+                            btn.setAttribute('annee', "" + donnees[i].getAttribute('annee'));
+                            btn.setAttribute('annee-mois', "" + donnees[i].getAttribute('annee-mois'));
+                            btn.setAttribute('idDossier', "" + donnees[i].getAttribute('idDossier'));
+                            btn.setAttribute('idFournisseur', "" + donnees[i].getAttribute('idFournisseur'));
+                            btn.setAttribute('iddevise', "" + donnees[i].getAttribute('iddevise'));
+                            donnees[i].appendChild(btn);
+                            donnees[i].addEventListener('mouseenter', function () {
+                                document.getElementById("btn-view-" + this.id).style.display = 'initial';
+                            });
+                            donnees[i].addEventListener('mouseleave', function () {
+                                document.getElementById("btn-view-" + this.id).style.display = 'none';
+                            });
+                        btn.addEventListener('click', function () {
+                                if (this.getAttribute("don")) {
+                                    getDossiers(document.getElementById(this.getAttribute('don')));
+                            }
+                        });
+                   }
+                } catch (e) {
+
+                }
+            }
+            donnes = null;
+
+            function getDossiers(moi) {
+                //preload
+                document.getElementById('link-preload').click();
+                var annee = 0; var mois = 0; var idDossier = 0; var idFournisseur = 0; var idDevise = 0;
+                if (moi.getAttribute('annee')) {
+                    annee = moi.getAttribute('annee');
+                }
+                if (moi.getAttribute('annee-mois')) {
+                    annee = moi.getAttribute('annee').split('-')[0];
+                    mois = moi.getAttribute('annee').split('-')[1];
+                }
+                if (moi.getAttribute('iddossier')) {
+                    idDossier = moi.getAttribute('iddossier');
+                }
+                if (moi.getAttribute('idFournisseur')) {
+                    idFournisseur = moi.getAttribute('idFournisseur');
+                }
+                if (moi.getAttribute('iddevise')) {
+                    idDevise = moi.getAttribute('iddevise');
+                }
+                //preload
+                document.getElementById('link-preload').click();
+                var _url = '@Url.Content("~/archivages/index?idDossier=")' + idDossier + '&idFournisseur=' + idFournisseur + '&annee=' + annee + '&mois=' + mois + '&_id=' + moi.getAttribute('id') + '&idDevise=' + idDevise;
+                    var link = document.getElementById('link-puch');
+                    link.setAttribute('href', _url);
+                    link.click();
+            }
+        });
+    </script>
+    <script>
+        //cache le loader apres retour
+        try {
+            $(window).bind("pageshow", function (event) {
+                try {
+                    $("#Preloader_partiel").hide();
+                } catch (e) {
+
+                }
+                try {
+                    $("#img-loarder").hide();
+                } catch (e) {
+
+                }
+            });
+        } catch (e) {
+
+        }
+    </script>
+    <script>
+        var nv = "@(ViewBag.navigation)";
+        if (!nv) {
+            nv= 'archives';
+        }
+        document.getElementById("" + nv).classList.add("active");
+        document.getElementById("" + nv).parentElement.classList.add("mm-active");
+        $(document).ready(function () {
+            var active = $('.active')[0];
+            var link = "";
+            var tab = [];
+            var mm = $('.mm-active');
+            for (var i = 0; i < mm.length; i++) {
+                try {
+                    link += generateLink(mm[i].children[1].id, mm[i].getAttribute('intitule'));
+                    tab.push(mm[i].getAttribute('intitule'));
+                } catch (e) {
+
+                }
+            }
+
+            if (!tab.includes(active.getAttribute('intitule'))) {
+                link += generateLink(active.children[1].id, active.getAttribute('intitule'));
+            }
+            document.getElementById('chemin').innerHTML = link ;
+        });
+
+        function generateLink(id,text) {
+            return '<a href="#" id="'+id+'">'+text+'</a> /';
+        }
+    </script>
+    <script>
+        //affichage par appel des documents
+        try {
+            $(".icon-up-down").click(function (e) {
+                e.preventDefault();
+                var next = this.parentElement.nextSibling;
+                while (next) {
+                    if (next.tagName == 'DIV') {
+                        if (this.classList.contains('mdi-chevron-up')) {
+                            try {
+                                $(next).show(500);
+                                if (!this.classList.contains('ouvert')) {
+                                    this.classList.add("ouvert");
+                                    var actions = $('.' + this.getAttribute('_src'));
+                                    for (var i = 0; i < actions.length; i++) {
+                                        try {
+                                            var action = actions[i];
+                                            var ifram = document.getElementById(action.getAttribute('target'));
+                                            ifram.style.display = 'none';
+                                            duplicateChildNodes(ifram.parentNode, ifram);
+                                            ifram.setAttribute('src', action.getAttribute('_src'));
+                                            ifram.onload = function () {
+                                                this.style = "width:100%;height:" + window.innerHeight + 'px';
+                                                this.style.display = 'initial';
+                                                document.getElementById('lf-' + this.id).style.display = "none";
+                                                document.getElementById('lf-' + this.id).remove();
+                                            };
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                            }
+                            this.classList.remove('mdi-chevron-up');
+                            this.classList.add('mdi-chevron-down');
+                        } else {
+                            this.classList.add('mdi-chevron-up');
+                            this.classList.remove('mdi-chevron-down');
+                            $(next).hide(300);
+                        }
+                    }
+                    next = next.nextSibling;
+                }
+            });
+
+            function duplicateChildNodes(parent, oldChild) {
+                var parent0 = document.getElementById('timeline-wrapper-id');
+                NodeList.prototype.forEach = Array.prototype.forEach;
+                var children = parent0.childNodes;
+                children.forEach(function (item) {
+                    try {
+                        var cln = item.cloneNode(true);
+                        //parent.appendChild(cln);
+                        cln.setAttribute('id', 'lf-' + oldChild.getAttribute('id'));
+                        parent.insertBefore(cln, oldChild);
+                    } catch (e) {
+
+                    }
+                });
+            };
+
+            //parent icon click access
+            var pps = $('.entete');
+            for (var i = 0; i < pps.length; i++) {
+                $(pps[i]).click(function () {
+                    var ffs = this.childNodes;
+                    for (var j = 0; j < ffs.length; j++) {
+                        if (ffs[j].tagName == 'I') {
+                            ffs[j].click();
+                            break;
+                        }
+                    }
+                    ffs = null;
+                })
+            }
+            pps = null;
+
+        } catch (e) {
+
+        }
+    </script>
+</body>
+
+</html>
+

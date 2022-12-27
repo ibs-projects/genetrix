@@ -1,0 +1,887 @@
+﻿@model genetrix.Models.Justificatif
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<link href="~/assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" />
+<style>
+    .num-loading {
+        background-color: #eae0a9!important;
+        position: relative;
+        z-index: 800;
+        margin-top: -32px;
+        padding:5px;
+    }
+</style>
+<div class="row">
+    <div class="col-6">
+        <div id="cp-form" method="post" class="card pr-1" style="height:100%" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal fs-6 text-dark card-body" style="height:100%">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="row mb-3">
+                    <input type="number" class="hidden" id="DossierId" name="DossierId" value="@ViewBag.dossierId" />
+                    <input type="number" class="hidden" id="Fournisseur-id" name="fournisseurId01" value="@ViewBag.fournisseurId" />
+                    <input type="number" class="hidden" id="devise-id" name="deviseId01" value="@ViewBag.deviseId" />
+                    <input type="number" class="hidden" id="CompteurFactures" name="CompteurFactures" value="" />
+
+                    <div class="card p-0">
+                        <div class="card-header p-1 m-0" id="instruction-panel">
+                             Instruction <button id="instruction-show" class="fa fa-eye btn"></button>
+                        </div>
+                        <div class="card-body" id="instruction-body" style="display:none">
+                            <table id="table1" class="col" border="1" style="border-collapse: collapse;width:100%">
+                                <tr style="width:20%">
+                                    <th class="col">Fournisseur</th>
+                                    <td class="col">@ViewBag.fournisseur</td>
+                                </tr>
+                                <tr>
+                                    <th class="col">Devise</th>
+                                    <td class="col">@ViewBag.devise</td>
+                                </tr>
+                                <tr>
+                                    <th class="col">Montant</th>
+                                    <td class="col">@ViewBag.montant</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        @Html.Label("Numéro de facture *", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.NumeroJustif, new { htmlAttributes = new { @class = "form-control mdi mdi-spin mdi-loading text-dark", required = "required", id = "NumeroJustif", @autocomplete = "off" } })
+                            <p class="mdi mdi-spin mdi-loading num-loading text-dark" style="padding-left:5px;cursor:wait" title="Vérification n° de facture en cours"><span>Vérification n° de facture en cours</span></p>
+                            @Html.ValidationMessageFor(model => model.NumeroJustif, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        @Html.Label("Date d'émission", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <input type="date" name="DateEmissioJustif" id="DateEmissioJustif" max="@(DateTime.Now.ToString("dd/MM/yyyy"))" value="" class="form-control num-wait text-dark" />
+                            <p class="mdi mdi-spin mdi-loading num-loading text-dark bg-white" style="padding-left:5px;cursor:wait;background-color:aliceblue" title="Vérification n° de facture en cours"><span>Vérification n° de facture en cours</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row mb-3">
+                        @*<div class="col-lg-6">
+                                @Html.Label("Banque *", htmlAttributes: new { @class = "control-label" })
+                                <div class="col-md-12">
+                                    <input type="text" name="BanqueJustif" id="BanqueJustif" class="form-control" required="required" value="" />
+                                </div>
+                            </div>*@
+                        <div class="col-lg-6">
+
+                            @Html.Label("Montant de la facture *", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @{
+                                    //Model.MontantTotalDossierString2 = Model.MontantTotalDossier;
+                                }
+                                @*@Html.EditorFor(model => model.MontantTotalDossierString2, new { htmlAttributes = new { @class = "form-control", @autocomplete = "off", @id = "MontantJustif", @max = "100000000000.0000", @required = "required", @step = "any" } })*@
+                                @*<input type="text" id="MontantJustif" autocomplete="off" name="MontantTotalDossierString2" class="form-control valided" required="required" value="@Model.MontantTotalDossierString" />*@
+                                <input type="text" id="MontantJustif" autocomplete="off" name="MontantTotalDossierString" class="form-control valided num-wait" required="required" value="@ViewBag.MontantRestantString" />
+                                <p class="mdi mdi-spin mdi-loading num-loading text-dark" style="padding-left:5px;cursor:wait" title="Vérification n° de facture en cours"><span>Vérification n° de facture en cours</span></p>
+                                <label class="text-danger" id="MontantJustif-lab"></label>
+                                @Html.ValidationMessageFor(model => model.MontantTotalDossierString, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <p></p>
+                            <div class="form-check form-switch form-switch-lg" id="parent-facturePartielle" style="margin-top:30px" dir="ltr">
+                                <input name="facturePartielle" type="checkbox" class="form-check-input" style="margin-left:0px;cursor:pointer" id="facture-Partielle">
+                                <label class="form-check-label1" for="facture-Partielle">Règlement partiel</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3" style="display:none" id="partiel-contener">
+                        <hr />
+                        <div class="form-group col-lg-6">
+                            @Html.Label("Montant payé", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <input type="text" id="MontantPartiel" autocomplete="off" name="MontantPartiel" class="form-control valided" value="@ViewBag.MontantRestantString"" />
+                                @*<input type="text" id="MontantPartiel" autocomplete="off" name="MontantPartiel" class="form-control valided" value="@Model.MontantTotalDossierString" />*@
+                                <label class="text-danger" id="MontantPartiel-lab"></label>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-6">
+                            @Html.Label("Reste", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <input type="text" id="MontantRestant" name="MontantRestant" class="form-control valided" readonly="readonly" value="@Model.MontantRestantString" />
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+                </div>
+                <div id="preload-contenaire" style="display:none">
+                    @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel.cshtml")
+                </div>
+                <div class="row mb-3 hidden">
+                    <div class="col-lg-6">
+                        @Html.Label("Fournisseur *", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" name="FournisseurJustif" id="FournisseurJustif" readonly="readonly" required="required" value="@Model.FournisseurJustif" />
+                            @*<select class="form-control" name="FournisseurJustif" id="FournisseurJustif" required>
+                                    <option value="@Model.Dossier.FournisseurId">@Model.FournisseurJustif</option>
+                                    @{
+
+                                        if (ViewBag.FournisseurId !=null)
+                                        {
+                                            foreach (var item in ViewBag.FournisseurId)
+                                            {
+                                                try
+                                                {
+                                                    <option value="@item.Text">@item.Text</option>
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+
+                                        }
+                                    }
+                                </select>*@
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        @Html.Label("Devise *", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <input type="text" class="form-control" id="DeviseJustif" name="DeviseJustif" readonly="readonly" value="@Model.DeviseJustif" required="required" />
+                            @*<select class="form-control" id="DeviseJustif" name="DeviseJustif" required>
+                                    <option value="@Model.Dossier.DeviseMonetaireId">@Model.DeviseJustif</option>
+                                    @{
+                                        foreach (var item in ViewBag.DeviseMonetaireId)
+                                        {
+                                            try
+                                            {
+                                                <option value="@item.Text">@item.Text</option>
+                                            }
+                                            catch (Exception)
+                                            { }
+                                        }
+                                    }
+                                </select>*@
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3 row">
+
+                    <div class="col-lg-6">
+                        @Html.Label("Nombre de pages", htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            <input type="number" name="NbrePieces" id="NbrePieces" min="0" value="@Model.NbrePieces" class="form-control fact-files1" required="required" style="float:left;width:70%" />
+                            @Html.ValidationMessageFor(model => model.NbrePieces, "", new { @class = "text-danger" })
+                            <button class="btn btn-soft-info" type="button" id="btn-red-nbr-pages" title="Changer nombre de page" style="" disabled>
+                                <i class="mdi mdi-lead-pencil"></i>
+                                Editer
+                            </button>
+                            @*<p class="hidden-sm" style="margin-top:20px"></p>*@
+                            @*<div id="btn-red-nbr-pages-contener" style="margin-left: -20px; float: right;display: none ">
+            <label>N° du fichier</label>
+            <select id="index-images" title="Choisir le numero de l'image pour la manipuler" style="">
+                <option value="0"></option>
+            </select>
+            <button class="btn-red-nbr-pages btn btn-outline-danger p-0 m-0" type="button" id="btn-red-nbr-pages" title="Changer nombre de page" style="" disabled>
+                <i class="mdi mdi-lead-pencil"></i>
+                Editer
+            </button>
+        </div>*@
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <p class="hidden-sm" style="margin-top:20px"></p>
+                        <button id="btn-scanner" disabled type="button" class="btn btn-outline-info scan-bt">
+                            <i class="mdi mdi-scanner"></i>
+                            Scanner
+                        </button>
+                        <button type="button" id="btn-choix-fichier" disabled title="Choisir un fichier" class="btn btn-outline-pink">
+                            <i class="mdi mdi-upload"></i>
+                            Fichier
+                        </button>
+                        <span class="btn btn-outline-info hidden" style="max-width:150px;max-height:40px;">
+                            <label for="upload-img-6" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                            <input class="upload-file" name="ImagesFacture" id="ImagesFacture" max="7" type="file" multiple="multiple" accept=".jpg, .jpeg, .png, .pdf">
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group mb-3 upload-file" id="upload-file-panel" onclick="return false" style="display:none1">
+                    <div class="row">
+                        <div class="col-lg-1 p-0 hidden">
+                            <button id="img-agd" type="button" class="btn text-white img-manip " data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important;display:block" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></button>
+                            <button id="img-pri" type="button" disabled class="btn text-white img-manip hidden" style="font-size:x-large ;margin-block:0px!important;display:block" title="Imprimer"><i class="mdi mdi-printer"></i></button>
+                        </div>
+                        <div id="upload-file-actived" class="col-lg-12 p-3 text-center">
+                            <div class="fallback hidden">
+                            </div>
+                            <div class="dz-message needsclick p-1 bg-light" id="images-contenaire">
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="form-group hidden">
+                        @Html.LabelFor(model => model.DossierId, htmlAttributes: new { @class = "control-label" })
+                        <div class="col-md-12">
+                            @Html.EditorFor(model => model.DossierId, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.DossierId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-12">
+                        <button type="button" id="bt-valider" value="Valider" class="btn btn-primary"><i class="mdi mdi-check"></i> Valider</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="col-6">
+        <div class="card bg-gradient-light" style="height:100%">
+            <div class="card-body p-0" style="height:100%">
+                <div class="col-lg-12 text-center m-0 row" style="height:100%">
+                    <div class="dz-message needsclick p-2" id="image-contenaire" style="height:100%">
+                        <div id="image-contenaire-info">
+                            <i class="display-4 text-dark uil uil-cloud-upload" reste="0" id="icon-upload"></i>
+                            <h6 id="label-upload" class="text-dark" reste="0">Aperçu de fichiers.</h6>
+                        </div>
+                        <iframe id="iframe-apercu" style="display:none;width:100%;height:100%" src="" ></iframe>
+                        <img src="#" id="img-apercu" style="display:none;width:100%;height:auto" alt="" />
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer" style="">
+                <div class="">
+                    <button id="img-pri" type="button" disabled class="btn text-white img-manip hidden" style="font-size:x-large ;" title="Imprimer"><i class="mdi mdi-printer"></i></button>
+                    <button id="supp-fichier0" type="button" _id="" class="supp-fichier mdi mdi-delete" style="font-size:x-large ;" title="supprimer"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@* Si ancienne facture de moins de 6 mois est utilisée. L'utilisateur ne renseigne plus les fichiers *@
+<input type="number" class="hidden" id="est-ancienne-de-6-mois" value="0" />
+
+<style>
+    .fram-im:hover{
+        border:3px solid #0094ff;
+        height:150px;
+    }
+    .fram-im-active {
+        border: 2px solid #0094ff;
+        padding: 10px;
+        box-shadow: 5px 10px 8px 10px #0094ff;
+    }
+</style>
+<script>
+    //attente vérification du n° de la facture
+    try {
+        $('.num-loading').hide();
+    } catch (e) {
+
+    }
+
+    try {
+        document.getElementById('iframe-apercu').onload = function () {
+            this.style = "height:100%;width:100%;";
+        };
+    } catch (e) {
+
+    }
+
+    //redefinir le nombre de pages
+    try {
+        document.getElementById("btn-red-nbr-pages").addEventListener('click', function () {
+            document.getElementById("NbrePieces").disabled = false;
+            document.getElementById("btn-red-nbr-pages").disabled = true;
+            //    document.getElementById("btn-red-nbr-pages").style.display = "none";
+        });
+    } catch (e) {
+
+    }
+
+    //agrandir image
+    try {
+        document.getElementById("img-agd").addEventListener('click', function () {
+            document.getElementById('img-2').src = document.getElementById("multi-img-" + document.getElementById("index-images").value).getAttribute("src");
+        });
+    } catch (e) {
+
+    }
+
+    //imprimer image
+    try {
+        document.getElementById("img-pri").addEventListener('click', function () {
+            document.getElementById('printer-contenair').classList.remove("hidden");
+            // Clone the image
+            const image = document.getElementById("multi-img-" + document.getElementById("index-images").value).cloneNode();
+            image.style.maxWidth = '100%';
+            image.style.maxHeight = '100%';
+            image.style.width = '100%';
+            image.style.height = 'auto';
+            document.getElementById('printer-contenair').contentDocument.body.appendChild(image);
+            document.getElementById("printer-contenair").contentWindow.print();
+        });
+    } catch (e) {
+
+    }
+
+    //supprimer image
+    try {
+        $('.supp-fichier').on('click', function () {
+            alert("Nbre fact-files avant suppression: " + imputs.length)
+            $('#image-contenaire-info').show();
+            document.getElementById('iframe-apercu').style.display = 'none';
+            var imputs = document.getElementsByClassName('fact-files');
+            document.getElementById("multi-img-" + this.getAttribute('_id')).style.display = "none";
+            document.getElementById("multi-img-" + this.getAttribute('_id')).remove();
+            document.getElementById("parent-multi-img-" + this.getAttribute('_id')).remove();
+            document.getElementById('parent_' + imputs[0].getAttribute('_id')).click();
+            document.getElementById("input-" + this.getAttribute('_id')).remove();
+            alert("Nbre fact-files apres suppression: "+imputs.length)
+        });
+    } catch (e) {
+
+    }
+
+    // Pages
+    try {
+        document.getElementById("NbrePieces").addEventListener("input", function (e) {
+            if (this.value > 0) {
+                document.getElementById("btn-scanner").disabled = false;
+                document.getElementById("btn-choix-fichier").disabled = false;
+
+            } else {
+                document.getElementById("btn-scanner").disabled = true;
+                document.getElementById("btn-choix-fichier").disabled = true;
+                var elts = document.getElementsByClassName("img-fille");
+                for (var i = 0; i < elts.length; i++) {
+                    elts[i].remove();
+                    document.getElementById("ImagesFacture").value = "";
+                }
+            }
+        });
+    } catch (e) {
+
+    }
+
+    //manipulation image
+    try {
+        document.getElementById("index-images").addEventListener("input", function () {
+            var elts = document.getElementsByClassName("img-manip");
+
+            if (this.value > 0) {
+                for (var i = 0; i < elts.length; i++) {
+                    elts[i].disabled = false;
+                }
+            } else {
+                for (var i = 0; i < elts.length; i++) {
+                    elts[i].disabled = true;
+                }
+            }
+        });
+    } catch (e) {
+
+    }
+    var nbr = 0;
+    //obtenir les images
+    document.getElementById("btn-choix-fichier").addEventListener("click", function () {
+        nbrPage = document.getElementById("NbrePieces").value;
+        nbr = document.getElementsByClassName("fact-files").length;
+        if (nbrPage > nbr) {
+            document.getElementById("NbrePieces").disabled = true;
+            document.getElementById("btn-red-nbr-pages").disabled = false;
+            //document.getElementById("btn-red-nbr-pages-contener").style.display = "inherit";
+            //document.getElementById("ImagesFacture").click();
+            try {
+                var x = document.createElement("INPUT");
+                x.setAttribute("type", "file");
+                x.setAttribute("type", "file");
+                x.setAttribute("accept",".jpg, .jpeg, .png, .pdf");
+                x.setAttribute("_id", "" + nbr);
+                x.classList.add("fact-files");
+                x.classList.add("ajout-dyna");
+                //x.classList.add("hidden");
+                x.onchange = getFilePreview;
+                document.getElementById('cp-form').appendChild(x);
+                x.click();
+                //overflow event
+                var imcont = document.getElementById("images-contenaire");
+                if (Number((imcont.childElementCount + 1) * 100) > imcont.offsetWidth) {
+                    document.getElementById("images-contenaire").style = 'overflow-x:scroll';
+                }
+            } catch (e) {
+                alert(e)
+            }
+        } else {
+            alert("Nombre de pages atteint !")
+        }
+    });
+
+    document.getElementById("ImagesFacture").onchange = getFilePreview;
+
+    function getFilePreview(evt) {
+        const [file] = evt.target.files;
+        if (file) {
+            document.getElementById("icon-upload").style.display = "none";
+            document.getElementById("label-upload").style.display = "none";
+            var Nbrchilds = document.getElementById('images-contenaire').childNodes.length;
+            var div = document.createElement('div');
+            div.style = "width:100px;height:100px;overflow:hidden!important;cursor:pointer";
+            div.classList.add('card');
+            div.classList.add('bg-info');
+            div.style.margin = "5px";
+            div.style.display = "inline-block";
+
+            if (file.type == "application/pdf" || true) {
+                var ifrm = document.createElement("iframe");
+                var _div = document.createElement("div");
+                ifrm.onload = function () {
+                    this.style = "height:250px;width:250px;margin-top:-150px;mart;overflow:hidden!important;position:static;margin-left:-100px;cursor:pointer";
+                    this.setAttribute("scroll", "no");
+                    this.classList.add('fram-im');
+                    //var _body = this.contentWindow.document.getElementsByTagName('body');
+                };
+                ifrm.setAttribute("src", URL.createObjectURL(file));
+                ifrm.setAttribute("class", "img-responsive mg-fluid imf-taille img-fille");
+                ifrm.setAttribute("class", "ajout-dyna");
+                //var nbr = Number(document.getElementById("images-contenaire").childElementCount - 1);
+                ifrm.setAttribute("id", "multi-img-" + nbr);
+                _div.setAttribute("_id", "" + nbr);
+                _div.setAttribute("id", "parent_" + nbr);
+                div.setAttribute("id", "parent-multi-img-" + nbr);
+                div.appendChild(_div);
+                div.appendChild(ifrm);
+                _div.style = 'z-index:700;position:relative;margin-bottom:-100px;height:250px;width:250px;background-color:transparent';
+                _div.addEventListener('click', apercuFichier);
+                document.getElementById("images-contenaire").appendChild(div);
+                //var option = new Option("" + nbr, "" + nbr);
+                //option.setAttribute("id", "option-" + nbr);
+                //document.getElementById("index-images").appendChild(option);
+                _div.click();
+            } else {
+                var img = new Image(100, 100);
+                img.src = URL.createObjectURL(file);
+                //img.setAttribute("class", "img-responsive mg-fluid imf-taille img-fille");
+                img.setAttribute("class", "ajout-dyna");
+                //var nbr = Number(document.getElementById("images-contenaire").childElementCount - 1);
+                img.setAttribute("id", "multi-img-" + nbr);
+                div.setAttribute("id", "parent-multi-img-" + nbr);
+                img.classList.add('fram-im');
+                img.addEventListener('click', apercuFichier);
+                div.appendChild(img);
+                document.getElementById("images-contenaire").appendChild(div);
+                //var option = new Option("" + nbr, "" + nbr);
+                //option.setAttribute("id", "option-" + nbr);
+                //document.getElementById("index-images").appendChild(option);
+                img.click();
+            }
+        }
+    }
+
+    function apercuFichier() {
+        $('.fram-im-active').removeClass('fram-im-active');
+        this.classList.add('fram-im-active');
+        $('#image-contenaire-info').hide();
+        var fram = document.getElementById('iframe-apercu');
+        fram.style = 'display:initial';
+        if (this.tagName == 'IMG') {
+            fram.src = '' + this.getAttribute('src');
+            $('.supp-fichier').attr('_id', this.Id);
+        } else {
+            fram.src = '' + $('#multi-img-' + this.getAttribute('_id')).attr('src');
+            $('.supp-fichier').attr('_id', this.getAttribute('_id'));
+        }
+    };
+
+</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+    //verifie si montant des justificatifs ne depasse pas le montant total du transfert
+    var montDossier = Number('@Model.MontantTotalDossier'.replace(',', '.').replace(" ",""));
+    var devise = '@Model.DeviseJustif';
+    var montantTmp = document.getElementById("MontantJustif").value;
+    document.getElementById("MontantJustif").addEventListener('input', function () {
+        document.getElementById('MontantPartiel').value = this.value;
+    });
+    var _mtp = '';
+    document.getElementById("MontantPartiel").addEventListener('input', function () {
+        var mtt = Number(document.getElementById("MontantJustif").value.replace(',', '.').replace(" ", ""));
+        var mtp = Number(this.value.replace(',', '.').replace(" ", ""))
+        if (mtt>=mtp) {
+            var mt = Number((mtt - mtp).toFixed(2));
+            document.getElementById('MontantRestant').value = mt;
+            _mtp = this.value;
+            document.getElementById('MontantPartiel-lab').textContent = "";
+        } else {
+            //alert('Le montant payé ne peut pas être superieur au motant de la facture !');
+            document.getElementById('MontantPartiel-lab').textContent = "Le montant payé ne peut pas être superieur au motant de la facture";
+            this.value = _mtp;
+        }
+    });
+</script>
+<script>
+    //show instruction
+    try {
+        $('#instruction-show').on('click', function (e) {
+            if (!this.classList.contains('vue')) {
+                $('#instruction-body').show(100);
+                this.classList.add('vue');
+            } else {
+                $('#instruction-body').hide(100);
+                this.classList.remove('vue');
+            }
+        })
+    } catch (e) {
+
+    }
+
+    //facture partielle
+    try {
+        $('#facture-Partielle').on('click', function () {
+            //document.getElementById('facture-Partielle').checked = !document.getElementById('facture-Partielle').checked;
+            if (document.getElementById('facture-Partielle').checked) {
+                $('#partiel-contener').show(100);
+            } else {
+                $('#partiel-contener').hide(100);
+            }
+        });
+    } catch (e) {
+
+    }
+
+    //gestion du champ date d'emission
+    try {
+        document.getElementById('DateEmissioJustif').addEventListener('change', function () {
+            var date = new Date();
+            var dateEmission = new Date(this.value);
+            const diffTime = Math.abs(date - dateEmission);
+            var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            if (diffDays >= 360) {
+                alert('La facture date de plus de 12 mois. Veuillez fournir la version actualisée de cette facture');
+                document.getElementById('NbrePieces').disabled = true;
+                document.getElementById('DateEmissioJustif').value="";
+                document.getElementById('DateEmissioJustif').focus();
+            } else {
+                document.getElementById('NbrePieces').disabled = false;
+            }
+        });
+    } catch (e) {
+
+    }
+
+    //gestion du champ n° factutre
+        try {
+            document.getElementById('NumeroJustif').addEventListener('change', function () {
+                if (this.value) {
+                     $('.num-loading').show();
+                    $('#est-ancienne-de-6-mois').val(0);
+                    //try {
+                    //    $("#NbrePieces").attr('readonly', 'readonly');
+                    //} catch (e) {
+
+                    //}
+                    $(".num-wait").removeAttr('readonly');
+                    document.getElementById('MontantJustif').readOnly = false;
+                    var num_fact = this.value;
+                    $.ajax({
+                    url: '@Url.Content("~/justificatifs/GetfactureCorrespondants")',
+                    type: 'GET',
+                        data: {
+                            DossierId: '@(ViewBag.dossierId)', fournisseurId: '@ViewBag.fourId', deviseId: '@ViewBag.devId', num: num_fact
+                    },
+                    success: function (result) {
+                        $('.num-loading').hide();
+                        $(".num-wait").removeAttr('readonly');
+                        if (result.estPartiel=='-1') {//Il n'existe aucune facture de même numero
+
+                        }
+                        else if (result.estPartiel == '1') {//Il existe une facture partielle de même numero
+                            if (confirm(result.msg)) {
+                                $("#NbrePieces").attr('readonly', 'readonly');
+                                $('#MontantJustif').val(result.montant);
+                                document.getElementById('MontantJustif').readOnly = true;
+                                document.getElementById('facture-Partielle').readOnly = true;
+                                document.getElementById('facture-Partielle').click();
+                                $('#MontantJustif-lab').text("Reste à payer pour cette facture: " + result.reste);
+                                $("#DateEmissioJustif").attr('readonly', 'readonly');
+                                $('#MontantPartiel').val(result.reste);
+                                $('#MontantJustif').val(result.montant);
+                                //valeur testant si l'ancienne facture est utilisée
+                                document.getElementById('DateEmissioJustif').valueAsDate = new Date(result.anneeFact, Number(result.moisFact - 1), result.jourFact);
+                                try {
+                                    var date = new Date();
+                                    var dateEmission = new Date(document.getElementById('DateEmissioJustif').valueAsDate);
+                                    const diffTime = Math.abs(date - dateEmission);
+                                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    if (diffDays >= 180) {
+                                        $('#est-ancienne-de-6-mois').val(0);
+                                        alert('La facture date de plus de 6 mois. Veuillez fournir la facture actualisée');
+                                        document.getElementById('NbrePieces').disabled = true;
+                                        document.getElementById('DateEmissioJustif').focus();
+                                    } else {
+                                        $('#est-ancienne-de-6-mois').val(1);
+                                        document.getElementById('NbrePieces').disabled = false;
+                                    }
+                                } catch (e) {
+
+                                }
+
+                                for (var i = 0; i < result.files.length; i++) {
+                                    filePreviewJS(result.files[i], result.dossierId);
+                                }
+                            } else {
+                                document.getElementById('NumeroJustif').value = "";
+                            }
+                        } else if (result.estPartiel == '0') { //Il existe une facture non partielle de même numéro
+                            alert('Il existe une facture de même numéro pour ce fournisseur. Le numéro de facture ' + num_fact + ' ne peut plus être utilisé pour ce fournisseur.');
+                            try {
+                                $('#MontantPartiel').val(result.reste);
+                                $('#MontantJustif').val(result.montant);
+                                $('#NbrePieces').val(result.nbrePieces);
+                                document.getElementById('DateEmissioJustif').valueAsDate = new Date(result.anneeFact, Number(result.moisFact - 1), result.jourFact);
+                            } catch (e) {
+
+                            }
+                            for (var i = 0; i < result.files.length; i++) {
+                                filePreviewJS(result.files[i], result.dossierId);
+                            }
+                        }
+                    },
+                        error: function (error) {
+                        $('.num-loading').hide();
+                        $(".num-wait").removeAttr('readonly');
+                    }
+                });
+                }
+            });
+        } catch (e) {
+
+        }
+
+    function filePreviewJS(fileId, dossierId) {
+        if (fileId && dossierId) {
+            document.getElementById("icon-upload").style.display = "none";
+            document.getElementById("label-upload").style.display = "none";
+            //var Nbrchilds = document.getElementById('images-contenaire').childNodes.length;
+            var div = document.createElement('div');
+            div.style = "width:100px;height:100px;overflow:hidden!important;cursor:pointer";
+            div.classList.add('card');
+            div.classList.add('bg-info');
+            div.style.margin = "5px";
+            div.style.display = "inline-block";
+
+            if (true) {
+                var ifrm = document.createElement("iframe");
+                var _div = document.createElement("div");
+                ifrm.onload = function () {
+                    this.style = "height:250px;width:250px;margin-top:-150px;mart;overflow:hidden!important;position:static;margin-left:-100px;cursor:pointer";
+                    this.setAttribute("scroll", "no");
+                    this.classList.add('fram-im');
+                };
+                ifrm.setAttribute("src", '@Url.Content("~/dossiers/GetPDF?idDoc=")'+ fileId + "&estDocAttache=false&idDossier="+dossierId);
+                ifrm.setAttribute("class", "img-responsive mg-fluid imf-taille img-fille");
+                ifrm.setAttribute("class", "ajout-dyna");
+                ifrm.setAttribute("id", "multi-img-" + nbr);
+                _div.setAttribute("_id", "" + nbr);
+                _div.setAttribute("id", "parent_" + nbr);
+                div.setAttribute("id", "parent-multi-img-" + nbr);
+                div.appendChild(_div);
+                div.appendChild(ifrm);
+                _div.style = 'z-index:700;position:relative;margin-bottom:-100px;height:250px;width:250px;background-color:transparent';
+                _div.addEventListener('click', apercuFichier);
+                document.getElementById("images-contenaire").appendChild(div);
+                _div.click();
+            } else {
+                //var img = new Image(100, 100);
+                //img.src = URL.createObjectURL(file);
+                ////img.setAttribute("class", "img-responsive mg-fluid imf-taille img-fille");
+                //img.setAttribute("class", "ajout-dyna");
+                ////var nbr = Number(document.getElementById("images-contenaire").childElementCount - 1);
+                //img.setAttribute("id", "multi-img-" + nbr);
+                //div.setAttribute("id", "parent-multi-img-" + nbr);
+                //img.classList.add('fram-im');
+                //img.addEventListener('click', apercuFichier);
+                //div.appendChild(img);
+                //document.getElementById("images-contenaire").appendChild(div);
+                ////var option = new Option("" + nbr, "" + nbr);
+                ////option.setAttribute("id", "option-" + nbr);
+                ////document.getElementById("index-images").appendChild(option);
+                //img.click();
+            }
+        }
+    }
+
+   //
+        //try {
+        //    document.getElementById('DateEmissioJustif').valueAsDate = new Date();
+        //} catch (e) {
+
+        //}
+        //Contrôle date edit facture
+        try {
+            $(function () {
+                var dtToday = new Date();
+                var month = dtToday.getMonth() + 1;
+                var day = dtToday.getDate();
+                var year = dtToday.getFullYear();
+                if (month < 10)
+                    month = '0' + month.toString();
+                if (day < 10)
+                    day = '0' + day.toString();
+
+                var maxDate = year + '-' + month + '-' + day;
+                $('#DateEmissioJustif').attr('max', maxDate);
+            });
+
+        } catch (e) {
+
+        }
+
+        $('#bt-valider').on('click', function () {
+            var totalFiles = $('.fact-files');
+            //restriction de validation
+            try {
+                if (!$('#NumeroJustif').val()) {
+                    document.getElementById('NumeroJustif').focus();
+                    alert('Renseigner le numéro de la facture!')
+                    return;
+                }
+                //if (!$('#BanqueJustif').val()) {
+                //    document.getElementById('BanqueJustif').focus();
+                //    alert('Renseigner le champ banque!')
+                //    return;
+                //}
+                if (totalFiles.length < 1 && $('#est-ancienne-de-6-mois').val()==0) {
+                    alert('Renseigner le fichier de la facture!')
+                    document.getElementById('NbrePieces').focus();
+                    return;
+                }
+
+            } catch (e) {
+
+            }
+            try {
+                if (true) {
+                    var nbr_fact_actuel = Number($('#NbreJustif').attr('min'));
+                    var reste = Number($('#reste-montant12').val());
+                    var nbr_facts = $('#NbreJustif').val();
+                    if (reste == montantTmp && nbr_fact_actuel < nbr_facts - 1) {
+                        alert('Vous avez atteint le montant total du transfert. Aucune facture supplémentaire ne peut être ajourtée');
+                        return;
+                    }
+                }
+            } catch (e) {
+
+            }
+            //active preloard
+            document.getElementById("preload-contenaire").style.display = "initial";
+
+            //Images files
+            var formData = new FormData();
+            //var totalFiles = document.getElementById("ImagesFacture").files.length;
+
+            //for (var i = 0; i < totalFiles; i++) {
+            //    var file = document.getElementById("ImagesFacture").files[i];
+            //    formData.append("ImagesFacture" + Number(i+1), file);
+            //}
+
+            for (var i = 0; i < totalFiles.length; i++) {
+                try {
+                    var file = totalFiles[i].files[0];
+                    formData.append("ImagesFacture" + i, file);
+                } catch (e) {
+
+                }
+            }
+
+            //Initialisation et serialisation du formulaire
+            formData.append('CompteurFactures', $("#CompteurFactures").val());
+            formData.append('Libellé', $("#Libellé").val());
+            formData.append('FournisseurJustif', $("#FournisseurJustif").val());
+            formData.append('FournisseurId', '@(Model.FournisseurId)');
+            formData.append('MontantTotalDossierString2', $("#MontantJustif").val());
+            formData.append('NumeroJustif', $("#NumeroJustif").val());
+            formData.append('NbrePieces', $("#NbrePieces").val());
+            formData.append('DeviseJustif', $("#DeviseJustif").val());
+            formData.append('DossierId', $("#DossierId").val());
+            formData.append('BanqueJustif', $("#BanqueJustif").val());
+            formData.append('MontantPartiel', $("#MontantPartiel").val());
+            formData.append('MontantRestant', $("#MontantRestant").val());
+            formData.append('EstAncienneFactMoins6mois', $("#est-ancienne-de-6-mois").val());
+            //formData.aModelodelMontantTotalDossierpenMontantTotalDossierontantTotalDossierontantTotalDossierontantTotalDossierd('NbreJustif_modal', $("#NbreJustif_modal").val());
+            //Serialize the form datas.
+            var valdata = $("#cp-form").serialize();
+            var _url_detail = "@Url.Content("~/Justificatifs/Details/")";
+            var _url = "@Url.Content("~/Justificatifs/CreateJs/")";
+                $.ajax({
+                    url: _url,
+                    type: "POST",
+                    contentType: false, 
+                    processData: false,
+                    data: formData,
+                    success: function (e) {
+                        //desactive preloard
+                        document.getElementById("preload-contenaire").style.display = "none";
+                        if (e[1] == 1) {
+                           // var _url = "~/Justificatifs/Details/" + e[0].Id;
+                            var table = document.getElementById("justificatifs_table_body");
+                            // Create an empty <tr> element and add it to the 1st position of the table:
+                            var row = table.insertRow(0);
+                            // Insert new cells (<td> elements) at the 1st and 2nd position of the "new" <tr> element:
+                            var cell1 = row.insertCell(0);
+                            var cell2 = row.insertCell(1);
+                            var cell3 = row.insertCell(2);
+                            var cell4 = row.insertCell(3);
+                            var cell5 = row.insertCell(4);
+                            var cell6 = row.insertCell(5);
+                            // Add some text to the new cells:
+                            cell1.innerHTML = "" + e[0].NumeroJustif;
+                            cell2.innerHTML = "" + e[0].NbrePieces;
+                            cell3.innerHTML = "" + e[0].MontantString;
+                            cell4.innerHTML = "" + e[0].MontantPartielString;
+                            cell5.innerHTML = "" + e[0].MontantRestantString;
+                            cell6.innerHTML = "<a href=\"" + _url_detail + "" + e[0].Id + " \">Details<a />";
+                            //Montant restant
+                            $("#MontantJustif").val(e[5]);
+                            $("#montant-reste").text(e[4] + "@ViewBag.devise");
+                            //Effacer le formilaire
+                            //Numero;DateEmissio;Banque;Fournisseur;Montant;Devise;NbrePieces;ImagesFacture
+                            document.getElementById('btn_ajout_fact').disabled = true;
+                            $("#NumeroJustif").val("");
+                            //$("#DateEmissioJustif").val('');
+                            $("#NbrePieces").val("0");
+                            $("#NbrePieces").prop('disabled', false);
+                            $("#ImagesFacture").val("");
+                            document.getElementById("icon-upload").style.display = "initail";
+                            document.getElementById("label-upload").style.display = "initial";
+
+                            document.getElementById('upload-file-panel').style.display = 'none';
+                            $('.ajout-dyna').remove();
+                            var nbr_facts = Number($('#NbreJustif').val());
+                            if (e[3] <= nbr_facts && Number(e[0].MontantTpmp) > 0 && Number(e[3])>0) {
+                                //Change le libellé du modal
+                                $("#staticBackdropLabel").text("Détail de la facture n°" + e[3]);
+                            }
+                            else {
+                                document.getElementById('staticBackdropLabel').click();
+                                //Fermeture du modal
+                                location.reload();
+                                $("#modal-ajout-facture").modal('hide');
+                                location.reload();
+                            }
+                        } else {
+                            alert(e[2]);
+                        }
+                    }, error: function (er) {
+                        alert(er[2]);
+                        document.getElementById("preload-contenaire").style.display = "none";
+                    }
+                });
+            });
+</script>

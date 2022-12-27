@@ -1,0 +1,87 @@
+﻿@model genetrix.Models.XtraRole
+@{
+    ViewBag.Title = "Rôle";
+    ViewBag.pTitle = "Détails du rôle";
+    ViewBag.pageTitle = "Rôle";
+    ViewBag.pageImage = "~/assets/images/IU/role.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Rôle</h4>
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Structure.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Structure.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EstAdmin)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EstAdmin)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NiveauDossier)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NiveauDossier)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.VoirDossiersAutres)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.VoirDossiersAutres)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.VoirUsersAutres)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.VoirUsersAutres)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.VoirClientAutres)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.VoirClientAutres)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.RoleId }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

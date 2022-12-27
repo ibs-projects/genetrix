@@ -1,0 +1,66 @@
+﻿@using System;
+@using System.Globalization;
+@using System.Linq;
+@using System.Security.Claims;
+@using System.Threading.Tasks;
+@using System.Web;
+@using System.Web.Mvc;
+@using Microsoft.AspNet.Identity;
+@using Microsoft.AspNet.Identity.Owin;
+@using Microsoft.Owin.Security;
+@using genetrix.Models;
+@using genetrix.Models;
+@using genetrix;
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    @Html.Partial("~/Views/_Shared/_title_meta.cshtml")
+    @RenderSection("styles", false)
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+</head>
+@{
+    var ctr = new genetrix.Controllers.IndexController();
+    ApplicationUser user = ctr.GetUser().Result;
+    var cc = user;
+}
+<body>
+
+    <!-- Begin page -->
+    <div id="layout-wrapper">
+        @Html.Partial("~/Views/_Shared/_topbar.cshtml")
+        @Html.Partial("~/Views/_Shared/_sidebar.cshtml")
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+
+        <div class="main-content">
+            <div class="page-content">
+                <div class="container-fluid">
+                    @Html.Partial("~/Views/_Shared/_page_title.cshtml")
+
+                    @RenderBody()
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+            @Html.Partial("~/Views/_Shared/_footer.cshtml")
+        </div>
+        <!-- end main content-->
+
+    </div>
+
+    @RenderSection("externalhtml", required: false)
+
+    <!-- END layout-wrapper -->
+    @Html.Partial("~/Views/_Shared/_right_sidebar.cshtml")
+
+    @*@Html.Partial("~/Views/_Shared/_vendor_scripts.cshtml")*@
+
+    @RenderSection("scripts", required: false)
+
+</body>
+
+</html>

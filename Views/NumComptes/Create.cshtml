@@ -1,0 +1,48 @@
+﻿@model genetrix.Models.NumCompte
+
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("create", "Numcomptes", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group mb-3">
+        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        @Html.LabelFor(model => model.CodeAgence, htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.CodeAgence, new { htmlAttributes = new { @class = "form-control", @maxlength = "5" } })
+            @Html.ValidationMessageFor(model => model.CodeAgence, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        @Html.LabelFor(model => model.Numero, htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control", @maxlength = "11" } })
+            @Html.ValidationMessageFor(model => model.Numero, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        @Html.LabelFor(model => model.Cle, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.Cle, new { htmlAttributes = new { @class = "form-control", @maxlength = "2" } })
+            @Html.ValidationMessageFor(model => model.Cle, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        <div class="col-md-offset-2 col-md-12">
+            <button type="submit" class="btn card-header1"><i class="mdi mdi-check"></i> Valider</button>
+        </div>
+    </div>
+</div>
+}

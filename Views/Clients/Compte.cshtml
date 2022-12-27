@@ -1,0 +1,156 @@
+﻿@model genetrix.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Création Compte client";
+    ViewBag.pTitle = "Création Compte client";
+    ViewBag.pageTitle = "Création Compte client";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="text-danger">@ViewBag.msg</div>
+<div class="card">
+    <div class="card-header card-header1">Nouveau client</div>
+    <div class="card-body">
+        <div class="form-horizontal">
+            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal row1 login_form1", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <fieldset>
+                    <legend>Entreprise</legend>
+                    <div class="row">
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">Nom de l'entreprise</div>
+                            @Html.TextBoxFor(m => m.NomEntreprise, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">NIF</div>
+                            @Html.TextBoxFor(m => m.NIF, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">Adresse</div>
+                            @Html.TextBoxFor(m => m.Adresse, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">Telephone</div>
+                            @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="divider text-center text-dark" style="">
+                    <span class="or-text fs-1 text-danger"><img src="~/assets/images/IU/user.png" style="width:25px;height:25px" alt="Alternate Text" /></span>
+                </div>
+                <hr style="margin-top:-25px" />
+                <fieldset>
+                    <legend>Administrateur</legend>
+                    <div class="row">
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">Prenom</div>
+                            @Html.TextBoxFor(m => m.Prenom, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-6 form-group mb-3">
+                            <div class="small_text">Nom</div>
+                            @Html.TextBoxFor(m => m.Nom, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        </div>
+                        <div class="col-sm-6 form-group mb-3">
+                            <label class="form-label" for="username">Nom d'utilisateur</label>
+                            <input type="text" name="UserName" class="form-control" id="Username" placeholder="Nom d'utilisateur">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 form-group mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Entrer le mot de passe" })
+                        </div>
+                        <div class="col-sm-6 form-group mb-3">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmer le mot de passe" })
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                @*<div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="auth-terms-condition-check">
+                        <label class="form-check-label" for="auth-terms-condition-check">J'accepte <a href="javascript: void(0);" class="text-dark">les termes et conditions</a></label>
+                    </div>*@
+
+
+                <div class="mt-3 text-end">
+                    <button class="btn btn-primary float-end" type="submit"><i class="fa fa-save"></i> Enregistrer</button>
+                </div>
+
+            }
+
+
+
+            @*<form action="~/clients/create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <h4>Client</h4>
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Logo, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Logo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Logo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 mb-3">
+                            @Html.LabelFor(model => model.Telephone, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Telephone, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Telephone, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3 mb-3">
+                            <div class="col-md-offset-2 col-md-12">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="mdi mdi-check"></i> Créer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>*@
+        </div>
+    </div>
+</div>
+<div>
+    @Html.ActionLink("Consulter la liste", "Index")
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

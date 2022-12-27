@@ -1,0 +1,198 @@
+﻿@model genetrix.Models.BanqueTierClient
+@using genetrix.Models;
+
+@{
+    ViewBag.IdBanque = Model.Id;
+    ViewBag.Title = "Banque tierce";
+    ViewBag.pTitle = "Banque tierce";
+    ViewBag.pageTitle = "Banque tierce";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+<style>
+    details > summary {
+        padding: 4px;
+        width: 300px;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.3em;
+        color: #2689a6;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1 text-white">Edition</div>
+            <div class="card-body">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        <hr />
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Ville, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 hidden">
+                            @Html.LabelFor(model => model.IdClient, "IdClient", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                <input type="number" name="IdClient" value="@Model.IdClient" />
+                                @Html.ValidationMessageFor(model => model.IdClient, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <hr />
+                        <div class="form-group mb-3">
+                            <div class="col-md-offset-2 col-md-12">
+                                <input type="submit" value="Enregistrer" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="card-footer">
+                <p>
+                </p>
+            </div>
+        </div>
+    </div>
+
+</div>
+<hr />
+<div class="card bg-light">
+    <div class="card-header card-header1 text-white">Attestations de non defaut d'apurement</div>
+    <div class="card-body">
+        <div class="row">
+            <details class="mb-4">
+                <summary>Version à jour</summary>
+                <div class="col-md-12 border border-1">
+                    @if (Session["Profile"].ToString() == "banque")
+                    {
+                        <p class="p-3 pb-0">
+                            <a href="#" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-ajout-document" id="Inserer_document"><i class="mdi mdi-plus"></i> Inserer un document</a>
+                            <a href="@Url.Content("~/banquetierClients/document-client?idBanque="+Model.Id)" class="btn btn-danger"><i class="mdi mdi-delete"></i>Supprimer</a>
+                        </p>
+                        <hr />
+                    }
+                    <iframe id="iframe-2" class="pdf-view" src="@Url.Content("~/BanqueTierClients/GetPDF/?idbanque="+Model.Id+"&estValide=true")" style="max-width:221mm;height:143mm"></iframe>
+                </div>
+            </details>
+            <hr />
+            <details class="mt-2">
+                <summary>Anciennes attestations</summary>
+                <div class="col-md-12 border border-1">
+                    @Html.Partial("~/Views/BanqueTierClients/HistoriqueAttestations.cshtml", Model.AttestationNonDefautAp)
+                </div>
+            </details>
+        </div>
+    </div>
+</div>
+
+<div id="modal-view-attest" class="modal fade" tabindex="-1" aria-labelledby="#view-attest" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-light" style="border-bottom: 13px solid #2689a6">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0 text-white" id="view-attest">Attestation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="">
+                <iframe id="fram-modal-attest" src="" style="height:100%;width:100%"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="hidden" id="ouvre-modal-view-attest" data-bs-toggle="modal" data-bs-target="#modal-view-attest"></a>
+
+<div class="modal fade" id="modal-ajout-document" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Ajout d'un document</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    DocumentAttache documentAttache = new DocumentAttache()
+                    {
+                        DateCreation = DateTime.Now,
+                        EstAttestation = true,
+                        IdBanqueTierce = Model.Id
+                    };
+                }
+                @Html.Partial("~/Views/BanqueTierClients/NewAttestation.cshtml", documentAttache)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+@if (Session["Profile"].ToString() == "banque")
+{
+   <script>
+       $('input').attr('readonly', 'readonly');
+       $('#Inserer_document').on('click', function () {
+           $('.modif').removeAttr('readonly');
+       });
+   </script>
+}
+<script>
+    $(document).ready(function () {
+        $('.doc-attest').click(function () {
+            $('#fram-modal-attest').attr('src', '');
+            $('#fram-modal-attest').attr('src', '@Url.Content("~/dossiers/BanqueTierClients?idclient="+Model.IdClient)' + '&idDoc=' + this.getAttribute('_id'));
+        });
+
+        try {
+            document.getElementById('fram-modal-attest').onload = function () {
+                this.style = "height:100%;width:100%";
+                document.getElementById('ouvre-modal-view-attest').click();
+                document.getElementById('Preloader_partiel').style.display = 'none';
+            };
+        } catch (e) {
+
+        }
+    });
+</script>

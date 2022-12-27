@@ -1,0 +1,645 @@
+﻿@using genetrix.Models;
+
+@model genetrix.Models.Dossier
+@{
+    Layout = null;
+}
+<style>
+    /*    body {
+        margin: 30px;
+        font-family: sans-serif;
+    }*/
+
+    #fontSizeWrapper {
+        font-size: 16px;
+    }
+
+    #fontSize {
+        width: 100px;
+        font-size: 1em;
+    }
+
+    /* ————————————————————–
+      Tree core styles
+    */
+    .tree {
+        margin: 1em;
+        font-size: 1.5em;
+    }
+
+        .tree input {
+            position: absolute;
+            clip: rect(0, 0, 0, 0);
+        }
+
+            .tree input ~ ul {
+                display: none;
+            }
+
+            .tree input:checked ~ ul {
+                display: block;
+            }
+
+        /* ————————————————————–
+      Tree rows
+    */
+        .tree li {
+            line-height: 1.2;
+            position: relative;
+            padding: 0 0 1em 1em;
+        }
+
+        .tree ul li {
+            padding: 1em 0 0 1em;
+        }
+
+        .tree > li:last-child {
+            padding-bottom: 0;
+        }
+
+    /* ————————————————————–
+      Tree labels
+    */
+    .tree_label {
+        position: relative;
+        display: inline-block;
+        background: transparent;
+    }
+
+    label.tree_label {
+        cursor: pointer;
+    }
+
+        label.tree_label:hover {
+            color: #2689a6;
+        }
+
+        /* ————————————————————–
+      Tree expanded icon
+    */
+        label.tree_label:before {
+            background: #2689a6;
+            color: #fff;
+            position: relative;
+            z-index: 1;
+            float: left;
+            margin: 0 1em 0 -2em;
+            width: 1em;
+            height: 1em;
+            border-radius: 1em;
+            content: '+';
+            text-align: center;
+            line-height: .9em;
+        }
+
+    :checked ~ label.tree_label:before {
+        content: '–';
+    }
+
+    /* ————————————————————–
+      Tree branches
+    */
+    .tree li:before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -.5em;
+        display: block;
+        width: 0;
+        border-left: 1px solid #2689a6;
+        content: "";
+    }
+
+    .tree_label:after {
+        position: absolute;
+        top: 0;
+        left: -1.5em;
+        display: block;
+        height: 0.5em;
+        width: 1em;
+        border-bottom: 1px solid #777;
+        border-left: 1px solid #777;
+        border-radius: 0 0 0 .3em;
+        content: '';
+    }
+
+    label.tree_label:after {
+        border-bottom: 0;
+    }
+
+    :checked ~ label.tree_label:after {
+        border-radius: 0 .3em 0 0;
+        border-top: 1px solid #777;
+        border-right: 1px solid #777;
+        border-bottom: 0;
+        border-left: 0;
+        bottom: 0;
+        top: 0.5em;
+        height: auto;
+    }
+
+    .tree li:last-child:before {
+        height: 1em;
+        bottom: auto;
+    }
+
+    .tree > li:last-child:before {
+        display: none;
+    }
+
+    .tree_custom {
+        display: block;
+        background: #eee;
+        padding: 1em;
+        border-radius: 0.3em;
+    }
+
+    li label {
+        background-color: transparent;
+    }
+
+    .tree-icon {
+        cursor: pointer;
+    }
+
+        .tree-icon:hover:before {
+            font-family: "Font Awesome 5 Free";
+            font-weight: 900;
+            content: "\f002";
+        }
+</style>
+
+<div id="fontSizeWrapper" class="hidden">
+    <label for="fontSize">Font size</label>
+    <input type="range" value="1" id="fontSize" step="0.5" min="0.5" max="5" />
+</div>
+<ul class="tree" id="tree">
+    <li>
+        <input type="checkbox" checked="checked" id="c1" />
+        <label class="tree_label" for="c1" style=""> <i class="text-warning mdi mdi-folder-open-outline"></i> Documents du transfert</label>
+        <ul>
+            @{string fileIcon = "";
+                if (Model.EstPdf)
+                {
+                    fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                }
+                else
+                {
+                    fileIcon = "text-info mdi mdi-file-image-outline";
+                }
+            }
+            <li><span class="tree_label tree-icon doc-attache" type="ins" _id="instruction" id="mas-instruction"> <i class="@fileIcon"></i> Instruction</span></li>
+            <li>
+                <input type="checkbox" checked="checked" id="c2" />
+                <label for="c2" class="tree_label"> <i class="text-warning mdi mdi-folder-open-outline"></i> Factures (@Model.NbreJustif)</label>
+                <ul>
+                    @{int i = 0;
+                        foreach (var item in Model.Justificatifs)
+                        {
+                            i = 0;
+                            try
+                            {
+                                foreach (var p in item.GetImages)
+                                {
+                                    try
+                                    {
+                                        if (p.EstPdf)
+                                        {
+                                            fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                                        }
+                                        else
+                                        {
+                                            fileIcon = "text-info mdi mdi-file-image-outline";
+                                        }
+                                        i++;
+                                        <li><span class="tree_label tree-icon doc-facture" type="fac" _id="@p.Id"> <i class="@fileIcon"></i>Facture n° @item.NumeroJustif - page @i</span></li>
+                                    }
+                                    catch 
+                                    {}
+                                }
+                            }
+                            catch
+                            { }
+                        }
+                    }
+                </ul>
+            </li>
+            @{
+                try
+                {
+                    fileIcon = "";
+                    if (Model.LettreEngage != null)
+                    {
+                        if (Model.LettreEngage.EstPdf)
+                        {
+                            fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                        }
+                        else
+                        {
+                            fileIcon = "text-info mdi mdi-file-image-outline";
+                        }
+                        <li><span class="tree_label tree-icon doc-attache" type="att" _id="@Model.LettreEngage.Id" id="mas-lettre"> <i class="@fileIcon"></i> Lettre d'engagement</span></li>
+                    }
+                }
+                catch (Exception)
+                { }
+                try
+                {
+                    fileIcon = "";
+                    if (Model.QuittancePay != null)
+                    {
+                        if (Model.QuittancePay.EstPdf)
+                        {
+                            fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                        }
+                        else
+                        {
+                            fileIcon = "text-info mdi mdi-file-image-outline";
+                        }
+                        <li><span class="tree_label tree-icon doc-attache" type="att" _id="@Model.QuittancePay.Id" id="mas-quittance"> <i class="@fileIcon"></i> Quittance de paiement</span></li>
+                    }
+                }
+                catch (Exception)
+                { }
+                try
+                {
+                    fileIcon = "";
+                    if (Model.DomicilImport != null)
+                    {
+                        if (Model.DomicilImport.EstPdf)
+                        {
+                            fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                        }
+                        else
+                        {
+                            fileIcon = "text-info mdi mdi-file-image-outline";
+                        }
+                        <li><span class="tree_label tree-icon doc-attache" type="att" _id="@Model.DomicilImport.Id" id="mas-domiciliation"> <i class="@fileIcon"></i> Domiciliation d'importation</span></li>
+                    }
+                }
+                catch (Exception)
+                { }
+                try
+                {
+                    fileIcon = "";
+                    if (Model.DeclarImport != null)
+                    {
+                        if (Model.DeclarImport.EstPdf)
+                        {
+                            fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                        }
+                        else
+                        {
+                            fileIcon = "text-info mdi mdi-file-image-outline";
+                        }
+                        <li><span class="tree_label tree-icon doc-attache" type="att" _id="@Model.DeclarImport.Id" id="mas-declaration"> <i class="@fileIcon"></i> Declaration d'importation</span></li>
+                    }
+                }
+                catch (Exception)
+                { }
+            }
+            <li>
+                <input type="checkbox" id="c3" />
+                <label for="c3" class="tree_label"> <i class="text-warning mdi mdi-folder-open-outline"></i> Autres documents</label>
+                <ul>
+                    @{
+                        fileIcon = "";
+                        foreach (var item in Model.DocumentAttaches)
+                        {
+                            if (item.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            i++;
+                            <li><span class="tree_label tree-icon doc-autre" type="att" _id="@item.Id"> <i class="@fileIcon"></i> @item.Nom</span></li>
+                        }
+                    }
+                </ul>
+            </li>
+        </ul>
+    </li>
+
+
+    <li>
+        <input type="checkbox" id="c5" />
+        <label class="tree_label" for="c5"> <i class="text-warning mdi mdi-folder-open-outline"></i> Documentation juridique du client</label>
+        <ul>
+            @{
+                if (Model.Client != null)
+                {
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.FicheKYC != null)
+                        {
+                            if (Model.Client.FicheKYC.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.FicheKYC.Id"> <i class="@fileIcon"></i> Fiche KYC</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.PlanLSS != null)
+                        {
+                            if (Model.Client.PlanLSS.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.PlanLSS.Id"> <i class="@fileIcon"></i> Plan de localisation du siège social</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.RCCM_Cl != null)
+                        {
+                            if (Model.Client.RCCM_Cl.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.RCCM_Cl.Id"> <i class="@fileIcon"></i> Extrait RCCM ou autre document tenant lieu</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.Statut != null)
+                        {
+                            if (Model.Client.Statut.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.Statut.Id"> <i class="@fileIcon"></i> Copie des statuts</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.ProcesVerbal != null)
+                        {
+                            if (Model.Client.ProcesVerbal.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.ProcesVerbal.Id"> <i class="@fileIcon"></i> Procès-verbal nommant les dirigeants</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.EtatFinanciers != null)
+                        {
+                            if (Model.Client.EtatFinanciers.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.EtatFinanciers.Id"> <i class="@fileIcon"></i> Etats financiers des deux derniers exercices</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.AtestationHinneur != null)
+                        {
+                            if (Model.Client.AtestationHinneur.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.AtestationHinneur.Id"> <i class="@fileIcon"></i> Attestation sur l'honneur</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Client.AtestationHinneur != null)
+                        {
+                            if (Model.Client.AtestationHinneur.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Client.AtestationHinneur.Id"> <i class="@fileIcon"></i> Attestation sur l'honneur</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+
+                }
+            }
+            <li>
+                <input type="checkbox" id="c7" />
+                <label for="c7" class="tree_label"> <i class="text-warning mdi mdi-folder-open-outline"></i> Autres documents</label>
+                <ul>
+                    @try
+                    {
+                        foreach (var item in Model.Client.AutresDocuments)
+                        {
+                            try
+                            {
+                                fileIcon = "";
+                                if (item != null)
+                                {
+                                    if (item.EstPdf)
+                                    {
+                                        fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                                    }
+                                    else
+                                    {
+                                        fileIcon = "text-info mdi mdi-file-image-outline";
+                                    }
+                                    <li><span class="tree_label tree-icon doc-client-autre" type="att" _id="@item.Id"> <i class="@fileIcon"></i> @item.Nom</span></li>
+                                }
+                            }
+                            catch (Exception)
+                            { }
+                        }
+                    }
+                    catch
+                    { }
+                </ul>
+            </li>
+        </ul>
+    </li>
+
+    <li>
+        <input type="checkbox" id="d5" />
+        <label class="tree_label" for="d5"> <i class="text-warning mdi mdi-folder-open-outline"></i> Documents du bénéficiaire</label>
+        <ul>
+            @try
+            {
+                if (Model.Fournisseur != null)
+                {
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Fournisseur.RCCM != null)
+                        {
+                            if (Model.Fournisseur.RCCM.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Fournisseur.RCCM.Id"> <i class="@fileIcon"></i>  RCCM ou autre document tenant lieu et devant obligatoirement indiquer la dénomination sociale, l'adresse, la date de création et la raison sociale de la société</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+                if (Model.Fournisseur != null)
+                {
+                    try
+                    {
+                        fileIcon = "";
+                        if (Model.Fournisseur.ListeGerants != null)
+                        {
+                            if (Model.Fournisseur.ListeGerants.EstPdf)
+                            {
+                                fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                            }
+                            else
+                            {
+                                fileIcon = "text-info mdi mdi-file-image-outline";
+                            }
+                            <li><span class="tree_label tree-icon doc-client" type="att" _id="@Model.Fournisseur.ListeGerants.Id"> <i class="@fileIcon"></i>  Une liste du ou des gérants de la société</span></li>
+                        }
+                    }
+                    catch (Exception)
+                    { }
+                }
+            }
+            catch
+            { }
+            <li>
+                <input type="checkbox" id="d6" />
+                <label for="d6" class="tree_label"> <i class="text-warning mdi mdi-folder-open-outline"></i> Autres documents</label>
+                <ul>
+                    @try
+                    {
+                        foreach (var item in Model.Client.AutresDocuments)
+                        {
+                            try
+                            {
+                                fileIcon = "";
+                                if (item != null)
+                                {
+                                    if (item.EstPdf)
+                                    {
+                                        fileIcon = "text-danger mdi mdi-file-pdf-outline";
+                                    }
+                                    else
+                                    {
+                                        fileIcon = "text-info mdi mdi-file-image-outline";
+                                    }
+                                    <li><span class="tree_label tree-icon doc-fournisseur-autre" type="att" _id="@item.Id"> <i class="@fileIcon"></i> @item.Nom</span></li>
+                                }
+                            }
+                            catch (Exception)
+                            { }
+                        }
+                    }
+                    catch
+                    { }
+                </ul>
+            </li>
+        </ul>
+    </li>
+</ul>
+
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script>
+    function isNumber(n) {
+        return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
+    function setFontSize(el) {
+        var fontSize = el.val();
+
+        if (isNumber(fontSize) && fontSize >= 0.5) {
+            $('#tree').css({ fontSize: fontSize + 'em' });
+        } else if (fontSize) {
+            el.val('1');
+            $('#tree').css({ fontSize: '1.2em' });
+        }
+    }
+
+    $(function () {
+
+        $('#fontSize')
+            .bind('change', function () { setFontSize($(this)); })
+            .bind('keyup', function (e) {
+                if (e.keyCode == 27) {
+                    $(this).val('1');
+                    $('#tree').css({ fontSize: '1.2em' });
+                } else {
+                    setFontSize($(this));
+                }
+            });
+
+        $(window)
+            .bind('keyup', function (e) {
+                if (e.keyCode == 27) {
+                    $('#fontSize').val('1');
+                    $('#tree').css({ fontSize: '1em' });
+                }
+            });
+
+    });
+</script>

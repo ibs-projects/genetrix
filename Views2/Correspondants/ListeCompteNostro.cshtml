@@ -1,0 +1,27 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.CompteNostro>
+@{
+//var model = new CompteNostro();
+//try
+//{
+//    model.IdCorrespondant = Convert.ToInt32(ViewBag.IdCorespondant);
+//    model.IdCorrespondant = Convert.ToInt32(ViewBag.IdCorespondant);
+//}
+//catch (Exception)
+//{ }
+}
+
+<div class="modal fade" id="modal-liste-compte-nostro" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="#note-renvoi-lab" aria-hidden="true">
+    <div class="modal-dialog modal-xl" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="text-white">Comptes nostro</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("~/Views/CompteNostroes/ListeComptesNostro.cshtml", Model)
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

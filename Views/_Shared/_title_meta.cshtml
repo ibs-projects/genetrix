@@ -1,0 +1,17 @@
+﻿
+<meta charset="utf-8" />
+<title>@ViewBag.Title | Genetrix</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta content="Gestion et suivi des transferts et apurement" name="description" />
+<meta content="Gestion et suivi des transferts et apurement" name="Transfert" />
+<!-- App favicon -->
+<link rel="shortcut icon" href="~/assets/images/favicon.ico">
+@{
+    if (Session == null)
+    {
+        <a href="@Url.Content("~/Account/LogOff2")" id="a-a1"></a>
+        <script>
+            document.getElementById("a-a1").click();
+        </script>
+    }
+}

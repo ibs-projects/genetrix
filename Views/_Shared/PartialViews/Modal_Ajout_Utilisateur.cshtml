@@ -1,0 +1,91 @@
+﻿@*@model IEnumerable<e_apurement.Models.CompteBanqueCommerciale>*@
+@using genetrix.Models;
+@*@model IEnumerable<eApurement.Models.Composant>*@
+@{
+    string url = ViewBag.estStructure == null ? "~/XtraRoles/AddUser" : "~/Structures/AddUser";
+    var Model = new List<genetrix.Models.CompteBanqueCommerciale>();
+    try
+    {
+        foreach (genetrix.Models.CompteBanqueCommerciale item in ViewBag.users)
+        {
+            Model.Add(item);
+        }
+    }
+    catch (Exception)
+    { }
+}
+
+
+<div class="modal fade ajout-users" id="ajout-users" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajout d'utilisateurs</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="@Url.Content(""+url)" method="post">
+                    @Html.AntiForgeryToken()
+                    @{
+                        if (ViewBag.estStructure == null)
+                        {
+                            <input type="number" class="hidden" name="RoleId" value="@ViewBag.RoleId" />
+                        }
+                        else
+                        {
+                            <input type="number" class="hidden" name="StructureId" value="@ViewBag.StructureId" />
+                        }
+                    }
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" id="sel-all" value="" /></th>
+                                <th>
+                                    Nom utilisateur
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+                                <th>
+                                    Role actuel
+                                </th>
+                                <th>
+                                    Site
+                                </th>
+                            </tr>
+                            </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" name="user_@item.Id" value="@item.Id" />
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NomUtilisateur)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @(item.XRole!=null? item.XRole.Nom:"")
+                                    </td>
+                                    <td>
+                                        <span>@(item.Structure!=null? item.Structure.Nom:"Null")</span>
+                                    </td>
+
+                                </tr>
+
+                            }
+                            </tbody>
+                    </table>
+                    </div>
+                    <input type="submit" _action_requied_loader="0" class="btn btn-soft-primary" value="Ajouter" />
+</form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

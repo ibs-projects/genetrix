@@ -1,0 +1,165 @@
+﻿@using genetrix.Models
+@model genetrix.Models.RegisterViewModel
+@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="fr-fr">
+
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" href="~/Content/con_ann/img/favicon.ico" type="image/x-icon">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/Content/con_ann/assets/bootstrap/css/bootstrap.min.css">
+    <!-- icon css-->
+    <link rel="stylesheet" href="~/Content/con_ann/assets/elagent-icon/style.css">
+    <link rel="stylesheet" href="~/Content/con_ann/assets/animation/animate.css">
+    <link rel="stylesheet" href="~/Content/con_ann/css/style.css">
+    <link rel="stylesheet" href="~/Content/con_ann/css/responsive.css">
+    <title>Genetrix</title>
+</head>
+
+<body data-scroll-animation="true">
+    <!-- Loader -->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner">
+                <i class="uil-shutter-alt spin-icon"></i>
+            </div>
+        </div>
+    </div>
+    <div class="body_wrapper">
+        <section class="signup_area1 signup_area_height1">
+            <div class="row ml-0 mr-0">
+                <div class="sign_left signup_left hidden" style="display:none">
+                    <h2 style="color:transparent">...</h2>
+                    <p style="margin-top:15px"></p>
+                    <h2>Genetrix</h2>
+                    <hr />
+                    <h3 style="">Creation du compte client</h3>
+                    <img class="position-absolute top" src="~/Content/con_ann/img/signup/top_ornamate.png" alt="top">
+                    <img class="position-absolute bottom" src="~/Content/con_ann/img/signup/bottom_ornamate.png" alt="bottom">
+                    <img class="position-absolute middle wow fadeInRight" src="~/Content/con_ann/img/signup/man_image.png" alt="bottom">
+                    <div class="round wow zoomIn" data-wow-delay="0.2s"></div>
+                </div>
+                <div class="sign_right signup_right" style="background-color:#65b9f6!important;padding:5px!important">
+                    <div class="sign_inner signup_inner" style="width:100%!important">
+                        <div class="text-center">
+                            <a href=@Url.Action("Index", "index") class="mb-5 d-block auth-logo">
+                                <img src="~/assets/images/logo/logo-dark1.png" alt="" height="22" class="logo logo-dark">
+                                @*<img src="~/assets/images/logo/logo-light1.png" alt="" height="22" class="logo logo-light">*@
+                            </a>
+                            <h3>Obtenez votre compte client</h3>
+                            <p>
+                                Vous avez un compte? <a href="@Url.Action("Login", "Account")">S'identifier</a>
+                            </p>
+                            <p class="text-danger">@ViewBag.msg</p>
+                            <div class="divider text-center">
+                                <span class="or-text fs-1 text-danger"><img src="~/assets/images/IU/client.png" style="width:25px;height:25px" alt="Alternate Text" /></span>
+                            </div>
+                            @*<a href="#" class="btn-google"><img src="~/Content/con_ann/img/signup/gmail.png" alt=""><span class="btn-text">Se connecter avr Google</span></a>*@
+                            @*@Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })*@
+                        </div>
+                        @*<div class="divider">
+                                <span class="or-text">Ou</span>
+                            </div>*@
+                        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal row1 login_form1", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <fieldset>
+                                <legend>Entreprise</legend>
+                                <div class="row">
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">Nom de l'entreprise</div>
+                                        @Html.TextBoxFor(m => m.NomEntreprise, new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">NIF</div>
+                                        @Html.TextBoxFor(m => m.NIF, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">Adresse</div>
+                                        @Html.TextBoxFor(m => m.Adresse, new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">Telephone</div>
+                                        @Html.TextBoxFor(m => m.Telephone, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="divider text-center">
+                                <span class="or-text fs-1 text-danger"><img src="~/assets/images/IU/user.png" style="width:25px;height:25px" alt="Alternate Text" /></span>
+                            </div>
+                            <fieldset>
+                                <legend>Administrateur</legend>
+                                <div class="mb-3">
+                                    @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">Prenom</div>
+                                        @Html.TextBoxFor(m => m.Prenom, new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        <div class="small_text">Nom</div>
+                                        @Html.TextBoxFor(m => m.Nom, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="username">Nom d'utilisateur</label>
+                                    <input type="text" name="UserName" class="form-control" id="Username" placeholder="Nom d'utilisateur">
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6 form-group">
+                                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Entrer le mot de passe" })
+                                    </div>
+                                    <div class="col-sm-6 form-group">
+                                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirmer le mot de passe" })
+                                    </div>
+                                </div>
+                            </fieldset>
+
+
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="auth-terms-condition-check">
+                                <label class="form-check-label" for="auth-terms-condition-check">J'accepte <a href="javascript: void(0);" class="text-dark">les termes et conditions</a></label>
+                            </div>
+
+
+
+                            <div class="mt-3 text-end">
+                                <button class="btn btn-primary w-sm waves-effect waves-light" type="submit">S'inscrire</button>
+                            </div>
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="~/Content/con_ann/js/jquery-3.2.1.min.js"></script>
+    <script src="~/Content/con_ann/js/pre-loader.js"></script>
+    <script src="~/Content/con_ann/assets/bootstrap/js/popper.min.js"></script>
+    <script src="~/Content/con_ann/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="~/Content/con_ann/js/parallaxie.js"></script>
+    <script src="~/Content/con_ann/js/TweenMax.min.js"></script>
+    <script src="~/Content/con_ann/assets/wow/wow.min.js"></script>
+    <script src="~/Content/con_ann/js/main.js"></script>
+</body>
+
+
+</html>

@@ -1,0 +1,105 @@
+﻿@model genetrix.Models.Contact
+
+
+@{
+    ViewBag.Title = "Contact";
+    ViewBag.pTitle = "Details Contact";
+    ViewBag.pageTitle = "Contact";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header bg-gradient-primary text-white">
+                Details du contact
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Client.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Client.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Grestionnaire.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Grestionnaire.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NomComplet)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NomComplet)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Pays)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Pays)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Ville)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Ville)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Telephone)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Telephone)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Telephone2)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Telephone2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Groupe)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Groupe)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id })
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+

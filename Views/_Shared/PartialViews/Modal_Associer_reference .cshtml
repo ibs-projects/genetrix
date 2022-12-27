@@ -1,0 +1,67 @@
+﻿<style>
+    fieldset {
+        display: block;
+        margin-left: 2px;
+        margin-right: 2px;
+        padding: 1.35em;
+        border: 1px dotted #0094ff;
+    }
+</style>
+<div id="modal-associer-ref" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content badge border border-3 p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel-attrib">Associer la référence au dossier</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <fieldset>
+                    <div class="row">
+                        <div class="col-lg-5" style="border-right:1px dotted #808080">
+                            <input type="number" class="hidden" name="DossierId" value="@ViewBag.DossierId" />
+                            <div>
+                                <label style="color:#0094ff;font-size:small;margin-bottom:10px">Référence banque</label>
+                                <select class="form-control mdi mdi-spin mdi-loading " name="Reference_asso" id="select-Reference" required placeholder="référence...">
+                                </select>
+                                
+                            </div>
+                        </div>
+                        <div class="col-lg-7" style="border-left:1px dotted #808080">
+                            <div>
+                                <label style="color:#0094ff;font-size:small;margin-bottom:10px">Dossiers associés</label>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                                        <thead class="bg-gradient-pink text-white">
+                                            <tr>
+                                                <th>Fournisseur</th>
+                                                <th>Montant</th>
+                                                <th>Devise</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tab-dossiers-associes">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <hr />
+                <button type="button" id="bt-annul-associer" class="btn btn-danger waves-effect close-ref-modal bt-annul" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                <button type="button" id="bt-associer-ref" onclick="showLoarder1" class="btn btn-soft-primary bt-add-ref"><i class="mdi mdi-check"></i> Valider</button>
+                &emsp;
+                <div style="margin-top:10px;display:inline-block">
+                    <p style="display: none;color:black" id="dd-loader">
+                        <i class="mdi mdi-spin mdi-loading fs-1 text-dark"></i> Veuillez patientez, validation en cours
+                    </p>
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    function showLoarder() {
+        document.getElementById('dd-loader').style.display = 'initial';
+    }
+</script>

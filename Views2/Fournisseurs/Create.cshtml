@@ -1,0 +1,144 @@
+﻿@model genetrix.Models.Fournisseurs
+
+
+@{
+    ViewBag.Title = "Fournisseur";
+    ViewBag.pTitle = "Ajout d'un fournisseur";
+    ViewBag.pageTitle = "Fournisseur";
+    ViewBag.pageImage = "~/assets/images/IU/fournisseur.png";
+}
+<link href="~/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
+<style>
+    .icon-dos {
+        font-size: 1.5em;
+        color: #2689a6;
+    }
+</style>
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="row">
+    <div class="col-lg-12">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="card">
+                <div class="card-header card-header1 text-white">
+                    Ajout d'un bénéficiaire
+                </div>
+                <div class="card-body">
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-information"></i></div>
+                                    @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Tel1, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-phone"></i></div>
+                                    @Html.EditorFor(model => model.Tel1, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Tel2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-email"></i></div>
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-flag"></i></div>
+                                    @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-city"></i></div>
+                                    @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group mb-3">
+                            <div class="col-12">
+                                @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group">
+                                    <div class="input-group-text"><i class="icon-dos mdi mdi-home"></i></div>
+                                    @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group mb-3 hidden">
+                            @Html.LabelFor(model => model.ClientId, "ClientId", htmlAttributes: new { @class = "control-label" })
+                            <div class="col-md-12">
+                                @Html.DropDownList("ClientId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" value="Enregistrer" class="btn btn-outline-info" style="float:right!important;padding-right:10px!important">
+                        <i class="far fa-save me-2"></i>
+                        Enrégistrer
+                    </button>
+                    <p>
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                </div>
+            </div>
+        }
+    </div>
+
+            </div>
+
+
+            <script src="~/assets/libs/jquery/jquery.min.js"></script>
+            <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+            <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+            <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+            <script src="~/assets/libs/node-waves/waves.min.js"></script>
+            <script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+            <script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+            @*jquery step*@
+            <script src="~/assets/libs/jquery-steps/build/jquery.steps.min.js"></script>
+            @*form wizard init*@
+            <script src="~/assets/js/pages/form-wizard.init.js"></script>
+
+            <!-- form repeater js -->
+            <script src="~/assets/libs/jquery.repeater/jquery.repeater.min.js"></script>
+
+            <script src="~/assets/js/pages/form-repeater.int.js"></script>
+            <!-- Magnific Popup-->
+            <script src="~/assets/libs/magnific-popup/jquery.magnific-popup.min.js"></script>
+
+            <!-- lightbox init js-->
+            <script src="~/assets/js/pages/lightbox.init.js"></script>
+
+            <script src="~/assets/js/app.js"></script>

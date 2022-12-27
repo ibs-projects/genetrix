@@ -1,0 +1,197 @@
+﻿@using genetrix.Models
+@model genetrix.Models.Dossier
+
+@{
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Nouveau Dossiers";
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    ViewBag.dossierId = Model.Dossier_Id;
+    ViewBag.afficheInstruct = true;
+}
+<style>
+    input[type='radio'], label[class='form-check-label'] {
+        font-size: 1.5em;
+    }
+</style>
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body bg-light">
+                @*<h4 class="card-title mb-4">Saisie de données</h4>*@
+
+                <div id="basic-example">
+                    <!-- Seller Details -->
+                    <h3>Nature de l'opération</h3>
+                    <section>
+                        <form id="form-create" action="~/dossiers/create" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="text" class="hidden" id="nature" name="nature" value="bien" />
+                            <input type="number" class="hidden" name="IdSite" value="@ViewBag.IdBank" />
+                            <h1 class="font-size-14 mb-4"> <i class="fas fa-asterisk"></i> Définir la nature de l'opération</h1>
+                            <hr />
+                            <div class="row">
+                                <div class="col-md-6 offset-md-4" style="text-align:center!important">
+                                    <div>
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="natureTransfert"
+                                                   id="natureTransfert1" checked>
+                                            <label class="form-check-label" for="natureTransfert1">
+                                                Bien
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="natureTransfert"
+                                                   id="natureTransfert2">
+                                            <label class="form-check-label" for="natureTransfert2">
+                                                Service
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <button id="btn-valid" type="submit" class="btn btn-primary"><i class="fas fa-check"></i> Valider</button>
+                        </form>
+                    </section>
+
+                    <!-- Company Document -->
+                    <h3>Saisie des données</h3>
+                    <section>
+                        <form>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-pancard-input">PAN Card</label>
+                                        <input type="text" class="form-control" id="basicpill-pancard-input">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-vatno-input">VAT/TIN No.</label>
+                                        <input type="text" class="form-control" id="basicpill-vatno-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-cstno-input">CST No.</label>
+                                        <input type="text" class="form-control" id="basicpill-cstno-input">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-servicetax-input">Service Tax No.</label>
+                                        <input type="text" class="form-control" id="basicpill-servicetax-input">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-companyuin-input">Company UIN</label>
+                                        <input type="text" class="form-control" id="basicpill-companyuin-input">
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="basicpill-declaration-input">Declaration</label>
+                                        <input type="text" class="form-control" id="basicpill-Declaration-input">
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </section>
+
+                    <!-- Bank Details -->
+                    <h3>Numérisation des documents</h3>
+                    <section>
+                        <div>
+                            <form>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="basicpill-namecard-input">Name on Card</label>
+                                            <input type="text" class="form-control" id="basicpill-namecard-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label>Credit Card Type</label>
+                                            <select class="form-select">
+                                                <option selected>Select Card Type</option>
+                                                <option value="AE">American Express</option>
+                                                <option value="VI">Visa</option>
+                                                <option value="MC">MasterCard</option>
+                                                <option value="DI">Discover</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="basicpill-cardno-input">Credit Card Number</label>
+                                            <input type="text" class="form-control" id="basicpill-cardno-input">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="basicpill-card-verification-input">Card Verification Number</label>
+                                            <input type="text" class="form-control" id="basicpill-card-verification-input">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label for="basicpill-expiration-input">Expiration Date</label>
+                                            <input type="text" class="form-control" id="basicpill-expiration-input">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            <!-- end card body -->
+        </div>
+        <!-- end card -->
+    </div>
+    <!-- end col -->
+</div>
+<!-- end row -->
+
+
+@Scripts.Render("~/Content/js")
+@Scripts.Render("~/Content/wizard")
+<script>
+    $(document).ready(function () {
+        $('.actions').hide();
+        $('#btn-valid').click(function () {
+            document.getElementById('formcreate').submit();
+        });
+        $('.form-check-input').click(function () {
+            if (this.checked) {
+                if (this.id == "natureTransfert1") {
+                    $('#nature').val('bien');
+                } else {
+                    $('#nature').val('service');
+                }
+            }
+        });
+    });
+</script>

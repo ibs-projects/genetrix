@@ -1,0 +1,78 @@
+﻿@model genetrix.Models.Justificatif
+
+@{
+    ViewBag.Title = "Facture";
+    ViewBag.pTitle = "Suppression de la facture";
+    ViewBag.pageTitle = "Facture";
+   ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<div class="card">
+    <div class="card-header"><h4 class="text-danger">Vous êtes sur le point de supprimer cet élément !</h4></div>
+    <div class="card-body">
+        <dl class="dl-horizontal">
+
+            <dt>
+                @Html.DisplayName("Fournisseur")
+            </dt>
+
+            <dd>
+                @Model.Dossier.Fournisseur.Nom
+            </dd>
+
+            <dt>
+                @Html.DisplayName("Montant")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MontantJustif)
+            </dd>
+            <dt>
+                Devise
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DeviseJustif)
+            </dd>
+            <dt>
+                @Html.DisplayName("Numéro")
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NumeroJustif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.DateModifJustif)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.DateModifJustif)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NbrePieces)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NbrePieces)
+            </dd>
+
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Valider" class="btn btn-default" /> |
+                @Html.ActionLink("Details", "Details",new {id=Model.Id })
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

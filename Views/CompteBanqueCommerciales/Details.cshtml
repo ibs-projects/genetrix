@@ -1,0 +1,183 @@
+﻿@model genetrix.Models.CompteBanqueCommerciale
+
+
+@{
+    ViewBag.Title = "Agent";
+    ViewBag.pTitle = "Detail de l'agent";
+    ViewBag.pageTitle = "Agent";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1">Détails de l'agent</div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EstAdmin)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EstAdmin)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NomUtilisateur)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NomUtilisateur)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Prenom)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Prenom)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NomComplet)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NomComplet)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Sexe)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Sexe)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tel2)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Tel2)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Tel1)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Tel1)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Email)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Email)
+                    </dd>
+
+                    @*<dd>
+                        @Html.DisplayFor(model => model.UserName)
+                    </dd>*@
+
+                    @*<dt>
+                        @Html.DisplayNameFor(model => model.Categorie)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Categorie)
+                    </dd>*@
+
+                    @*<dt>
+                        @Html.DisplayNameFor(model => model.Structure)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Structure)
+                    </dd>*@
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EstGestionnaire)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.EstGestionnaire)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayName("Banque")
+                    </dt>
+                    <dt>
+                        @Html.DisplayName("Site")
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Structure.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayName("Rôle")
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.XRole.Nom)
+                    </dd>
+
+                </dl>
+
+            </div>
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+        <hr />
+        @{   
+            var histor = ViewBag.Historisations as List<genetrix.Models.Historisation>;
+            if (histor==null)
+            {
+                histor = new List<genetrix.Models.Historisation>();
+            }
+        }
+    <div class="card">
+        <div class="card-header text-entete">
+            <i class="mdi mdi-bank-minus"></i>  Affectations aux différentes agences
+        </div>
+        <div class="card-body">
+            @Html.Partial("~/Views/_Shared/PartialViews/Management_Agent.cshtml",new object[] { histor.Where(h => h.TypeHistorique == 0),"0"})
+        </div>
+    </div>
+        <div class="card">
+            <div class="card-header text-entete">
+                <i class="mdi mdi-group"></i> Gestion des clients
+            </div>
+            <div class="card-body">
+                @Html.Partial("~/Views/_Shared/PartialViews/Management_Agent.cshtml", new object[] { histor.Where(h => h.TypeHistorique == 1),"1" })
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header text-entete">
+               <i class="mdi mdi-folder-move"></i> Gestion des dossiers d'autres gestionnaires
+            </div>
+            <div class="card-body">
+                @Html.Partial("~/Views/_Shared/PartialViews/Management_Agent.cshtml", new object[] { histor.Where(h => h.TypeHistorique == 2),"2" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@*@Html.Partial("~/Views/_Shared/PartialViews/Configuration_Banque.cshtml")*@
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

@@ -1,0 +1,154 @@
+﻿
+@{
+    ViewBag.Title = "Maintenance";
+    Layout = "~/Views/_Shared/_BlankLayout.cshtml";
+}
+<style>
+    .maintenance-box {
+        min-height: 200px;
+        height: 200px;
+        cursor: pointer;
+    }
+
+        .maintenance-box:hover {
+            /*-ms-transform: rotate(7deg);*/ /* IE 9 */
+            /*-webkit-transform: rotate(7deg);*/ /* Safari */
+            /*transform: rotate(7deg);*/
+/*            border: 1px solid #BFBFBF;
+*/            box-shadow: 10px 10px 5px #aaaaaa;
+        }
+
+    #dd {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 40%;
+        height: 320px;
+        margin-top: 0px;
+        background-color: #006f83;
+    }
+
+    #dd1 {
+        height: 50%;
+        width: 100%;
+        min-height: 120px;
+        background-image: url('@Url.Content("~/assets/images/IU/img-banque.jpg")'),url('@Url.Content("~/assets/images/IU/img-banque2.jpg")'),url('@Url.Content("~/assets/images/IU/img-banque3.jpg")');
+        background-color: #cccccc;
+        background-position: right bottom, left top;
+        background-repeat: no-repeat, repeat;
+    }
+
+    #dd2 {
+        height: 50%;
+        min-height: 100px;
+/*        background-color: lawngreen;
+*/    }
+
+    #dd0 {
+        margin-bottom: -345px
+    }
+
+    #_body {
+        background-color: white;
+    }
+</style>
+<div class="home-btn d-none d-sm-block">
+    <a href=@Url.Action("Index", "index") class="text-dark"><i class="mdi mdi-home-variant h2"></i></a>
+</div>
+<div class="my-5 pt-sm-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="home-wrapper">
+                    <a href=@Url.Action("Index", "index") class="mb-5 d-block auth-logo">
+                        <img src="~/assets/images/logo/logo-dark1.png" alt="" height="22" class="logo logo-dark">
+                        <img src="~/assets/images/logo/logo-light1.png" alt="" height="22" class="logo logo-light">
+                    </a>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-4 col-sm-5">
+                            <div class="maintenance-img">
+                                <img src="~/assets/images/maintenance.png" alt="" class="img-fluid mx-auto d-block">
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="mt-5">Le module est en Maintenance</h3>
+                    <p>S'il vous plait revenez dans un certain temps.</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div id="wf" info="Gestion de transferts" class="card card-item mt-4 maintenance-box border border-2 " style="background-color:#32a1a6">
+                                <div class="card-body p-4">
+                                    <div class="avatar-sm mx-auto mb-6">
+                                        <div class="avatar-title rounded-circle bg-soft-light text-light font-size-20">
+                                            <i class="fas fa-route"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="text-uppercase text-white" style="font:bolder;font-size:22px">
+                                        Gestion de transferts
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="11,12,13,14" info="Gestion des apurements" class="card card-item mt-4 maintenance-box  border border-2 " style="background-color:#2689a6;">
+                                <div class="card-body p-4">
+                                    <div class="avatar-sm mx-auto mb-6">
+                                        <div class="avatar-title rounded-circle bg-soft-light text-left font-size-20">
+                                            <i class="fas fa-life-ring"></i>
+                                        </div>
+                                    </div>
+                                    <h5 class="text-uppercase text-white" style="font:bolder;font-size:20px">
+                                        Gestion des apurements
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- end row -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end container -->
+</div>
+<a href="@Url.Content("~/index/indexbanque?panel=")" id="link-sub" class="hidden"></a>
+
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- owl.carousel js -->
+<script src="~/assets/libs/owl.carousel/owl.carousel.min.js"></script>
+<!-- init js -->
+<script src="~/assets/js/pages/auth-carousel.init.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $('.maintenance-box').click(function () {
+        var url = document.getElementById("link-sub").getAttribute("href");
+        var info = this.getAttribute("info");
+        url += this.id + "&ges=" + info + "&acc=" + info;
+        document.getElementById("link-sub").setAttribute("href", url);
+        document.getElementById("link-sub").click();
+    });
+</script>
+<script>
+    $('.card-item').click(function () {
+         var img = document.createElement("img");
+        img.setAttribute("width", "50");
+        img.setAttribute("height", "50");
+        img.style.position = 'absolute';
+        img.style.left = (this.offsetWidth / 2-25) + 'px'
+        img.style.top = (this.offsetHeight / 2-25) + 'px'
+        img.setAttribute('src', '@(Url.Content("~/assets/images/IU/loading.gif"))');
+        this.appendChild(img);
+    });
+</script>

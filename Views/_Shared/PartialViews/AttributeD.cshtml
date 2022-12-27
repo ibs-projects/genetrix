@@ -1,0 +1,45 @@
+﻿@model genetrix.Models.Dossier
+@{ 
+    int minSite = 0, maxSite=0;
+    bool vanne = true,testApurement=false,testStructure=false;
+
+    try
+    {
+        minSite = Convert.ToInt32(Session["userSIteMinNiveau"]);
+        maxSite = Convert.ToInt32(Session["NiveauMaxManager"]);
+    }
+    catch (Exception)
+    { }
+    if (minSite==9 && Model.EtapesDosier>=19)
+    {
+        vanne = false;
+    }
+    if (minSite <= Model.EtapesDosier && Model.EtapesDosier <= maxSite)
+    {
+        testStructure = true;
+    }
+    if (Model.EtapesDosier == -2 || Model.EtapesDosier == 22 || Model.EtapesDosier == 23 || Model.EtapesDosier == 230 || Model.EtapesDosier == 231 || Model.EtapesDosier == -230
+      || Model.EtapesDosier == -231 || Model.EtapesDosier == 232 || Model.EtapesDosier == -232    || Model.EtapesDosier == 25 || Model.EtapesDosier == 250 || Model.EtapesDosier == -250 || Model.EtapesDosier <= 19)
+    {
+        testApurement = true;
+    }
+}
+<span>
+    @{
+        if (Session["estChef"].ToString() == "True" && (Session["estDirection"]==null || Session["estDirection"].ToString() !="True"))
+        {
+            if ((testStructure || testApurement) && vanne)
+            {
+                <a href="#" idd="@Model.Dossier_Id" for="att-sel-@Model.Dossier_Id" id="att-link-@Model.Dossier_Id" class="btn btn-outline-info att-link" title="Attribuer le dossier à un agent"><i class="fa fa-user-edit"></i></a>
+                <a href="#" idd="@Model.Dossier_Id" id="att-close-@Model.Dossier_Id" class="btn btn-outline-dark att-close" style="display:none"><i class="mdi mdi-close"></i></a>
+            }
+        }
+    }
+    <i class="mdi mdi-spin mdi-loading" style="display:none;color:black" id="att-icon-@Model.Dossier_Id"></i>
+    @*<label id="att-lab-@Model.Dossier_Id" style="">@(Model.AgentResponsableDossier!=null? Model.AgentResponsableDossier.NomComplet:"")</label>*@
+    <label id="att-lab-@Model.Dossier_Id" style="color:black">@(Model.GetCurrenteResponsable(minSite))</label>
+    <select class="att-sel" style="display:none" name="att-sel-@Model.Dossier_Id" id="att-sel-@Model.Dossier_Id" idd="@Model.Dossier_Id">
+        <option></option>
+    </select>
+
+</span>

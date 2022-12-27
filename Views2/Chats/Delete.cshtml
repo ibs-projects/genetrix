@@ -1,0 +1,143 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.Chat
+
+@{
+    ViewBag.Title = "Chat";
+    ViewBag.pTitle = "Suppression Chat";
+    ViewBag.pageTitle = "Chat";
+    ViewBag.pageImage = "~/assets/images/IU/bank.png";
+    var userName = (string)Session["userName"];
+}
+
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+<h3 class="text-danger">Vous êtes sur le point de supprimer la convertion d'un client !</h3>
+<div>
+    <div>
+        <div class="">
+            <dl class="dl-horizontal">
+                <dt>
+                    Emetteur
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Emetteur.Nom)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.NumeroTopic)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.NumeroTopic)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Sujet)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Sujet)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateHeure)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DateHeure)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.DateFermeture)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.DateFermeture)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Statut)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Statut)
+                </dd>
+
+                <dt>
+                    @Html.DisplayNameFor(model => model.Situation)
+                </dt>
+
+                <dd>
+                    @Html.DisplayFor(model => model.Situation)
+                </dd>
+
+            </dl>
+            
+            <div class="card">
+                <div class="chat-conversation p-4 m-0 pt-5">
+                    <ul class="list-unstyled mb-0" id="discussion" data-simplebar style="max-height: 455px;">
+                        <li class="">
+                            <div class="conversation-list">
+                                <div class="ctext-wrap">
+                                    <div class="ctext-wrap-content">
+                                        <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">@Model.Emetteur.NomComplet</a> <span class="d-inline-block font-size-12 text-muted ms-2">@Model.DateHeure.Value.Hour:@Model.DateHeure.Value.Minute:@Model.DateHeure.Value.Second </span></h5>
+                                        <p class="mb-0" style="font-weight:bold;color:green">
+                                            @Model.Sujet
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        @{
+                            string right = "";
+                            foreach (var item in Model.Contenu)
+                            {
+                                right = "";
+                                if (item.EmetteurName == userName)
+                                {
+                                    right = "right";
+                                }
+                                <li class="@right">
+                                    <div class="conversation-list">
+                                        <div class="ctext-wrap">
+                                            <div class="ctext-wrap-content">
+                                                <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">@item.EmetteurName</a> <span class="d-inline-block font-size-12 text-muted ms-2">@item.Date.Hour:@item.Date.Minute:@item.Date.Second </span></h5>
+                                                <p class="mb-0">
+                                                    @item.Text
+                                                </p>
+                                            </div>
+                                            <div class="dropdown align-self-start">
+                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="uil uil-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">Copier</a>
+                                                    <a class="dropdown-item" href="#">Editer</a>
+                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                            }
+                        }
+
+                    </ul>
+                </div>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-actions no-color">
+                    <input type="submit" value="Supprimer" class="btn btn-danger" /> |
+                    @Html.ActionLink("Liste", "Index")
+                </div>
+            }
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

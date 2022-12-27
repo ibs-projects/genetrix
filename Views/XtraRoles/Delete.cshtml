@@ -1,0 +1,86 @@
+﻿@model genetrix.Models.XtraRole
+@{
+    ViewBag.Title = "Rôle";
+    ViewBag.pTitle = "Suppression du rôle";
+    ViewBag.pageTitle = "Rôle";
+    ViewBag.pageImage = "~/assets/images/IU/role.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer ce rôle?</h3></div>
+    <div class="card-body">
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Structure.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Structure.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Nom)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Nom)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.EstAdmin)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.EstAdmin)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.NiveauDossier)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NiveauDossier)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.VoirDossiersAutres)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.VoirDossiersAutres)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.VoirUsersAutres)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.VoirUsersAutres)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.VoirClientAutres)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.VoirClientAutres)
+            </dd>
+
+        </dl>
+
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

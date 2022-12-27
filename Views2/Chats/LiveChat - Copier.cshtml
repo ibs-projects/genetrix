@@ -1,0 +1,143 @@
+﻿@{
+    ViewBag.Title = "Chat";
+}
+<h2>Chat</h2>
+<div class="container">
+    <input type="text" id="message" />
+    <input type="button" id="sendmessage" value="Send" />
+    <input type="hidden" id="displayname" />
+    <ul id="discussion">
+    </ul>
+</div>
+
+<div class="chat-conversation p-0 m-0">
+    <ul class="list-unstyled mb-0" id="discussion" data-simplebar style="">
+        <li class="chat-day-title">
+            <div class="title">Today</div>
+        </li>
+        <li>
+            <div class="conversation-list">
+                <div class="ctext-wrap">
+                    <div class="ctext-wrap-content">
+                        <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">John Howard</a> <span class="d-inline-block font-size-12 text-muted ms-2">10:00</span></h5>
+                        <p class="mb-0">
+                            Good morning everyone !
+                        </p>
+                    </div>
+                    <div class="dropdown align-self-start">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="uil uil-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Copy</a>
+                            <a class="dropdown-item" href="#">Save</a>
+                            <a class="dropdown-item" href="#">Forward</a>
+                            <a class="dropdown-item" href="#">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+
+        <li class="right">
+            <div class="conversation-list">
+                <div class="ctext-wrap">
+                    <div class="ctext-wrap-content">
+                        <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">Marcus</a> <span class="d-inline-block font-size-12 text-muted ms-2">10:02</span></h5>
+                        <p class="mb-0">
+                            Good morning everyone !
+                        </p>
+                    </div>
+                    <div class="dropdown align-self-start">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="uil uil-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Copy</a>
+                            <a class="dropdown-item" href="#">Save</a>
+                            <a class="dropdown-item" href="#">Forward</a>
+                            <a class="dropdown-item" href="#">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+
+        <li>
+            <div class="conversation-list">
+                <div class="ctext-wrap">
+                    <div class="ctext-wrap-content">
+                        <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">John Howard</a> <span class="d-inline-block font-size-12 text-muted ms-2">10:06</span></h5>
+                        <p class="mb-0">
+                            img-1.jpg & img-2.jpg images for a New Projects
+                        </p>
+
+                        <ul class="list-inline message-img mt-3  mb-0">
+                            <li class="list-inline-item message-img-list">
+                                <a class="d-inline-block m-1" href="">
+                                    <img src="~/assets/images/small/img-1.jpg" alt="" class="rounded img-thumbnail">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="dropdown align-self-start">
+                        <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="uil uil-ellipsis-v"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#">Copy</a>
+                            <a class="dropdown-item" href="#">Save</a>
+                            <a class="dropdown-item" href="#">Forward</a>
+                            <a class="dropdown-item" href="#">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </li>
+
+    </ul>
+</div>
+
+@section scripts {
+    <!--Script references. -->
+    <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
+    <!--Reference the SignalR library. -->
+    <script src="~/Scripts/realTime.js"></script>
+    <script src="~/Scripts/jquery.signalR-2.4.2.min.js"></script>
+    <!--Reference the autogenerated SignalR hub script. -->
+    <script src="~/signalr/hubs"></script>
+    <!--SignalR script to update the chat page and send messages.-->
+    <script>
+        $(function () {
+            // Reference the auto-generated proxy for the hub.
+            var chat = $.connection.chatHub;
+            // Create a function that the hub can call back to display messages.
+            chat.client.addNewMessageToPage = function (message) {
+                // Add the message to the page.
+                $('#discussion').append('<li><strong>' + htmlEncode(name)
+                    + '</strong>: ' + htmlEncode(message) + '</li>');
+            };
+            // Get the user name and store it to prepend to messages.
+            $('#displayname').val(prompt('Enter your name:', ''));
+            // Set initial focus to message input box.
+            $('#message').focus();
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    // Call the Send method on the hub.
+                    chat.server.send($('#displayname').val(), $('#message').val());
+                    // Clear text box and reset focus for next comment.
+                    $('#message').val('').focus();
+                });
+            });
+        });
+        // This optional function html-encodes messages for display in the page.
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+    </script>
+}

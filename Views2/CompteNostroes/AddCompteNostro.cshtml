@@ -1,0 +1,49 @@
+﻿@model genetrix.Models.CompteNostro
+
+@using (Html.BeginForm("Create","CompteNostroes",FormMethod.Post)) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal text-dark">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group mb-3 fs-6">
+            @Html.LabelFor(model => model.Libellé, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Libellé, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Libellé, "", new { @class = "text-danger" })
+            </div>
+        </div>
+         <div class="form-group mb-3 fs-6">
+            @Html.LabelFor(model => model.Numero, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Numero, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group mb-3 fs-6">
+            @Html.LabelFor(model => model.IdDevise, "Devise", htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.DropDownList("IdDevise", null, htmlAttributes: new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.IdDevise, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group mb-3 hidden">
+            <input type="number" name="IdCorrespondant" value="@ViewBag.IdCorespondant" />
+        </div>
+
+        <div class="form-group mb-3">
+            <div class="col-md-offset-2 col-md-12">
+                <input type="submit" value="Créer" class="btn card-header1" />
+            </div>
+            &emsp;
+            <div style="margin-top:10px;display:inline-block">
+                <p style="display: none;color:black" id="ajout-raison-loader">
+                    <i class="mdi mdi-spin mdi-loading text-dark fs-1"></i> Veuillez patientez, validation en cours
+                </p>
+            </div>
+        </div>
+    </div>
+}
+

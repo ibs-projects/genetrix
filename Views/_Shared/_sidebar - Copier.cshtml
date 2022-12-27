@@ -1,0 +1,463 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+<style>
+    .separateur {
+        font: bolder !important;
+        font-size: 14px !important;
+        color: lightseagreen !important;
+        background-color: rgb(91, 115, 232, 0.12)!important
+    }
+</style>
+
+<div class="vertical-menu">
+
+    <!-- LOGO -->
+    <div class="navbar-brand-box">
+        <a href=@Url.Action("Index", "index") class="logo logo-dark">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="22">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-dark1.png" alt="" height="30">
+            </span>
+        </a>
+
+        <a href=@Url.Action("Index", "index") class="logo logo-light">
+            <span class="logo-sm">
+                <img src="~/assets/images/logo/logo-sm1.png" alt="" height="22">
+            </span>
+            <span class="logo-lg">
+                <img src="~/assets/images/logo/logo-light1.png" alt="" height="20">
+            </span>
+        </a>
+    </div>
+
+    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+        <i class="fa fa-fw fa-bars"></i>
+    </button>
+
+    <div data-simplebar class="sidebar-menu-scroll">
+
+        <!--- Sidemenu -->
+        <div id="sidebar-menu">
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu">
+                <li class="menu-title separateur">Menu principal</li>
+
+                <li>
+                    <a href=@Url.Action("Index", "index")>
+                        <i class="uil-home-alt"></i><span class="badge rounded-pill bg-primary float-end">01</span>
+                        <span>Tableau de bord</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-message"></i>
+                        <span>Messagérie</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li>
+                            <a href=@Url.Action("Index", "EmailInbox")>
+                                Mails
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                                <span class="badge rounded-pill bg-secondary float-end">01</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Index", "Chat")>
+                                Chats
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                                <span class="badge rounded-pill bg-primary float-end">01</span>
+                            </a>
+                        </li>
+                        @*<li>
+                            <a href=@Url.Action("Index", "LayoutsIconSidebar")>
+                                Notifications
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                                <span class="badge rounded-pill bg-primary float-end">01</span>
+                            </a>
+                        </li>*@
+                    </ul>
+                </li>
+
+                <li>
+                    <a href=@Url.Action("Create", "Dossiers") class="waves-effect">
+                        <i class="uil-folder-plus"></i>
+                        <span>Nouveau transfert</span>
+                    </a>
+                </li>
+
+                @*<li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-book-alt"></i>
+                        <span>Contacts</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href=@Url.Action("Index", "Calendar")>
+                                Agenda
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Index", "ContactsGrid")>
+                                Clients
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Action("Index", "ContactsList")>
+                                Fournisseurs
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>*@
+
+                <li class="menu-title separateur">Gestion des dossiers</li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-folder-search"></i>
+                        <span>Apurement</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=aapure") class=" waves-effect">
+                                <i class="mdi mdi-folder-move-outline"></i>
+                                <span class="badge rounded-pill bg-warning float-end">0</span>
+                                <span>Apurer un dossier</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=aapure") class=" waves-effect">
+                                <i class="mdi mdi-folder-remove"></i>
+                                <span>Rappeler un dossier</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-folder-search"></i>
+                        <span>Consulter des apurés</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=apure&par=bank")>
+                                Par banque
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=apure&par=ddepot")>
+                                Par date de depôt
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=apure&par=fourn")>
+                                Par fournisseur
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=apure")>
+                                Tous
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-folder-search"></i>
+                        <span>Traitements dossiers</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Create")>
+                                Nouveau dossier
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?mode_gp=gp")>
+                                Dossiers groupés
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?mode_gp=uq")>
+                                Dossiers uniques
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index")>
+                                Tous
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-invoice"></i>
+                        <span>Factures</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "InvoicesList")>Liste de factures</a></li>
+                        <li><a href=@Url.Action("Index", "InvoicesDetail")>Détails</a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-title separateur">Gestion des tiers</li>
+                <li>
+                    <a href=@Url.Content("~/BanqueClients/Index")>
+                        <i class="mdi mdi-folder-lock"></i>
+                        Banques
+                    </a>
+                </li>
+                <li>
+                    <a href=@Url.Content("~/Fournisseurs/Index?st=echu")>
+                        <i class="mdi mdi-folder-remove"></i>
+                        Fournisseurs
+                    </a>
+                </li>
+
+                @*<li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="mdi mdi-folder-refresh"></i>
+                        <span>Dossiers en cours</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=encours&par=ech")>
+                                Par echéance
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=encours&par=bank")>
+                                Par banque
+                                <i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href=@Url.Content("~/Dossiers/Index?st=encours&par=fourn")>
+                                Par fournisseur<i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li><a href=@Url.Content("~/Dossiers/Index?st=encours")>Tous<i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-title separateur">Gestion des utilisateurs</li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-user-cog"></i>
+                        <span>Administrateurs</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Content("~/XtraRoles/Index")>Rôles<i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Content("~/ApplicationUsers/Index")>Utilisateurs<i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Banques</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href=@Url.Action("Index", "XtraRoles")>
+                                Rôles<i class="fas fa-caret-right float-lg-start"></i>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <span>Utilisateurs<i class="fas fa-caret-right float-lg-start"></i></span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li>
+                                    <a href=@Url.Action("Index", "AuthLogin")>
+                                        Agents
+                                        <i class="dripicons-minus float-lg-start"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "AuthRegister")>
+                                        Chefs d'agences
+                                        <i class="dripicons-minus float-lg-start"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "AuthRecoverpw")>
+                                        Conformistes
+                                        <i class="dripicons-minus float-lg-start"></i>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href=@Url.Action("Index", "AuthRecoverpw")>
+                                        Services transferts
+                                        <i class="dripicons-minus float-lg-start"></i>
+                                    </a>
+                                </li>
+                                <li><a href=@Url.Action("Index", "AuthLockScreen")>Tous<i class="dripicons-minus float-lg-start"></i></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-users-cog"></i>
+                        <span>Clients</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "UiAlerts")>Rôles <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "UiButtons")>Profiles <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+
+                <li class="menu-title separateur">Configurations</li>
+
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-handshake"></i>
+                        <span>Clients</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "FormElements")>Créer un client <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormValidation")>Listes des clients <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormAdvanced")>Nouveaux clients <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="bx bxs-bank"></i>
+                        <span>Banques</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Create", "Banques")>Créer une Banque <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "Banques")>Listes de Banques <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="fas fa-folder"></i>
+                        <span>Dossiers</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "FormElements")>Créer un client <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormValidation")>Listes des clients <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormAdvanced")>Historiques <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="dripicons-gear"></i>
+                        <span>Parametres</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "DeviseMonetaires")>Devise <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "Clients")>Clients <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "StatutDossiers")>Statuts dossiers <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow waves-effect">
+                        <i class="uil-analytics"></i>
+                        <span>Reporting & déclarations</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li><a href=@Url.Action("Index", "FormElements")>Analyses <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormValidation")>Rapports <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                        <li><a href=@Url.Action("Index", "FormAdvanced")>Déclarations <i class="fas fa-caret-right float-lg-start"></i></a></li>
+                    </ul>
+                </li>*@
+
+
+                @*<li>
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="uil-list-ul"></i>
+                <span>Tables</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li><a href=@Url.Action("Index", "TablesBasic")>Bootstrap Basic</a></li>
+                <li><a href=@Url.Action("Index", "TablesDatatable")>Datatables</a></li>
+                <li><a href=@Url.Action("Index", "TablesResponsive")>Responsive</a></li>
+                <li><a href=@Url.Action("Index", "TablesEditable")>Editable</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="uil-chart"></i>
+                <span>Charts</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li><a href=@Url.Action("Index", "ChartsApex")>Apex</a></li>
+                <li><a href=@Url.Action("Index", "ChartsChartjs")>Chartjs</a></li>
+                <li><a href=@Url.Action("Index", "ChartsFlot")>Flot</a></li>
+                <li><a href=@Url.Action("Index", "ChartsKnob")>Jquery Knob</a></li>
+                <li><a href=@Url.Action("Index", "ChartsSparkline")>Sparkline</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="uil-streering"></i>
+                <span>Icons</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li><a href=@Url.Action("Index", "IconsUnicons")>Unicons</a></li>
+                <li><a href=@Url.Action("Index", "IconsBoxicons")>Boxicons</a></li>
+                <li><a href=@Url.Action("Index", "IconsMaterialDesign")>Material Design</a></li>
+                <li><a href=@Url.Action("Index", "IconsDripicons")>Dripicons</a></li>
+                <li><a href=@Url.Action("Index", "IconsFontAwesome")>Font Awesome</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="uil-location-point"></i>
+                <span>Maps</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li><a href=@Url.Action("Index", "MapsGoogle")>Google</a></li>
+                <li><a href=@Url.Action("Index", "MapsVector")>Vector</a></li>
+                <li><a href=@Url.Action("Index", "MapsLeaflet")>Leaflet</a></li>
+            </ul>
+        </li>
+
+        <li>
+            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="uil-share-alt"></i>
+                <span>Multi Level</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="true">
+                <li><a href="javascript: void(0);">Level 1.1</a></li>
+                <li>
+                    <a href="javascript: void(0);" class="has-arrow">Level 1.2</a>
+                    <ul class="sub-menu" aria-expanded="true">
+                        <li><a href="javascript: void(0);">Level 2.1</a></li>
+                        <li><a href="javascript: void(0);">Level 2.2</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>*@
+
+               
+
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

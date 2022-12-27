@@ -1,0 +1,2010 @@
+﻿@using genetrix.Models
+@using System.Globalization;
+
+@model genetrix.Models.Dossier
+
+@{
+    ViewBag.montant = Model.MontantString;
+    ViewBag.montantPassif = Model.MontantPassif;
+    ViewBag.MontantRestant = Model.MontantTpmp;
+    ViewBag.MontantRestantString = Model.MontantTmpString;
+    ViewBag.devise = Model.DeviseMonetaire.Nom;
+    ViewBag.devId = Model.DeviseMonetaireId;
+    ViewBag.fournisseur = Model.GetFournisseur;
+    ViewBag.fourId = Model.FournisseurId;
+    ViewBag.TotalPageFactures = Model.TotalPageFactures;
+    ViewBag.TotalMontantFacture = Model.TotalMontantFactureString;
+    ViewBag.TotalPayeFactures = Model.TotalPayeFacturesString;
+    ViewBag.TotalResteFactures = Model.TotalResteFacturesString;
+    bool autorise = true;
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Edition du Dossier";
+    ViewBag.pageTitle = "Dossier";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    ViewBag.dossierId = Model.Dossier_Id;
+    ApplicationDbContext db = new ApplicationDbContext();
+    var afficheInstruct = false;
+    if (Model.GetImageInstruction() != "#")
+    {
+        afficheInstruct = true;
+    }
+    ViewBag.afficheInstruct = afficheInstruct;
+    bool edtionClient = false,editionApurement = false;
+    if (Model.EtapesDosier == null || Model.EtapesDosier == -1 || Model.EtapesDosier == 0)
+    {
+        edtionClient = true;
+    }
+    if (Model.EtapesDosier == 22 || Model.EtapesDosier == 23 || Model.EtapesDosier == 230 || Model.EtapesDosier == -230 || Model.EtapesDosier == -231
+        || Model.EtapesDosier == -232 || Model.EtapesDosier == 25 || Model.EtapesDosier == 250 || Model.EtapesDosier == -250)// || Model.EtapesDosier <= 19)
+    {
+        editionApurement = true;
+    }
+    ViewBag.apurement = editionApurement;
+    string msg = "";
+    try
+    {
+        msg = "" + ViewBag.msg;
+
+    }
+    catch (Exception)
+    { }
+}
+
+@*}*@
+<style>
+    input[type='file'] {
+        opacity: 0;
+    }
+    .file-show {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 38%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+</style>
+<style>
+    .detail {
+        border: 1px solid #eef1fd;
+        border-radius: 5px 3px;
+        margin-bottom: 10px
+    }
+
+    .detail0 {
+        padding: 5px
+    }
+
+    legend {
+        background-color: #eef1fd;
+        padding: 5px;
+        font-size: large;
+        font: bold
+    }
+
+    .imf-taille {
+        /*max-height: 420px;
+        max-width: 320px;*/
+        width: 150px;
+        height: 200px
+    }
+
+    #list-info {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333333;
+    }
+
+        #list-info li {
+            float: left;
+        }
+
+    .col-1 {
+        display: none
+    }
+
+    .icon-dos {
+        font-size: 1.5em;
+        color: #2689a6;
+    }
+
+    .separation {
+        margin: 5px;
+    }
+</style>
+<style>
+    details > summary {
+        padding: 4px;
+        width: 300px;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.1em;
+        color: #2689a6;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+</style>
+
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        @{
+            //string msg = "" + ViewBag.msg;
+            if (!string.IsNullOrEmpty(msg))
+            {
+                <div id="msg" class="alert text-white alert-border alert-border-white bg-danger alert-dismissible fade show" role="alert">
+                    <i class="uil uil-exclamation-triangle font-size-16 text-white me-2"></i>
+                    @Html.Raw(ViewBag.msg)
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+                <script>
+                    alert(document.getElementById('msg').textContent.trim().replace(" ", ""));
+                </script>
+                <hr />
+            }
+        }
+        @{
+            if (!string.IsNullOrEmpty(Model.InfoPercentage))
+            {
+                <div class="alert alert-border alert-border-warning alert-dismissible fade show" role="alert">
+                    <i class="uil uil-exclamation-triangle font-size-16 text-warning me-2"></i>
+                    @*@ViewBag.msg_sauvegardeTmp*@
+                    @Html.Raw(Model.InfoPercentage)
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                    </button>
+                </div>
+            }
+
+        }
+    <div class="card">
+        <div class="form-group card-header">
+            @{
+                string statu = "";
+                try
+                {
+                    statu = Model.GetEtapDossier()[0];
+                }
+                catch (Exception)
+                { }
+            }
+            <h4 class="card-title" style="display:inline!important">Etat du dossier : <span style="font-size:1em;" class="text-primary">@statu</span></h4>
+        </div>
+        @using (Html.BeginForm("Edit", "Dossiers", FormMethod.Post, new { enctype = "multipart/form-data", id = "form-edit" }))
+        {
+            @Html.AntiForgeryToken()
+            @*<input type="number" name="Dossier_Id" class="hidden" value="@Model.Dossier_Id" />*@
+            @*@Html.HiddenFor(model => model.DeviseMonetaireId)*@
+            <div class="hidden">
+                @Html.HiddenFor(model => model.ClientId)
+                @Html.HiddenFor(model => model.Dossier_Id)
+            </div>
+            <input type="number" id="Transmis" name="Transmis" class="hidden" value="@Model.Transmis" />
+            <input type="number" class="hidden" name="EtapesDosier" id="EtapesDosier" value="@Model.EtapesDosier" />
+            @*<input type="text" class="hidden" name="Message" id="Message101" value="@Model.Message" />*@
+            <input type="text" class="hidden" name="MessageTmp" id="MessageTmp" value="" />
+            <input type="text" class="hidden" name="ItemsRaison" id="ItemsRaison" value="" />
+            @*<div class="card-header @(Model.Traité?"bg-gradient-info":"")"></div>*@
+            <div class="card-body bg-transparent">
+                <div id="vertical-example" class="vertical-wizard button-items">
+                    <!-- Seller Details -->
+                    <h3>Instruction </h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            @{
+                                //if (Model.EtapesDosier == null || Model.EtapesDosier == 0 || Model.EtapesDosier == -1)
+                                if (edtionClient || editionApurement)
+                                {
+                                    <fieldset class="detail @(editionApurement ? "hidden" : "")" id="detail-pan">
+                                        <legend class="p-2">Détails ordre de transfert</legend>
+                                        <details class="card">
+                                            <summary id="detail-donneur">Informations donneur d'ordre</summary>
+                                            <div class="row p-2">
+                                                <div class="form-group mb-3 col-lg-6" style="padding-left:15px">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.NumCompteClient, htmlAttributes: new { @class = "control-label" })
+                                                        &emsp;&emsp;&emsp; <label class="control-label">Code agence </label>
+                                                        <label class="control-label float-end">Clé &emsp;</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <select class="form-control input-sel" name="NumCompteClient" id="NumCompteClient">
+                                                                <option id="num-compte" title="RIB: @Model.RibClient" cle="@Model.Cle" CodeAgence="@Model.CodeAgence" value="@Model.NumCompteClient">@Model.NumCompteClient</option>
+                                                                @{
+                                                                    string numCompte = "";
+                                                                    foreach (var item in ViewBag.NumCompteClient)
+                                                                    {
+                                                                        if (Model.NumCompteClient == item.Id + "")
+                                                                        {
+                                                                            numCompte = item.Numero;
+                                                                        }
+                                                                        <option title="RIB: @item.RIB" cle="@item.Cle" CodeAgence="@item.CodeAgence" value="@item.Numero">@item.Numero</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                            @{
+                                                                if (!string.IsNullOrEmpty(numCompte))
+                                                                {
+                                                                    <script>
+                                                                    document.getElementById('num-compte').textContent = '@numCompte';
+                                                                    </script>
+                                                                }
+                                                            }
+                                                            <input type="text" class="input-group-text input-sel" style="width:100px!important;background-color:white" name="CodeAgence" id="CodeAgence" value="@Model.CodeAgence" />
+                                                            <input type="text" class="input-group-text input-sel" style="width:60px!important;background-color:white" name="Cle" id="Cle" value="@Model.Cle" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.NumCompteClient, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 col-lg-6" style="padding-left:15px">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.PaysClient, htmlAttributes: new { @class = "control-label pl-2" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-flag"></i></div>
+                                                            <input type="@Model.PaysClient" class="form-control input-sel" name="PaysClient" id="PaysClient" value="@Model.PaysClient" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.PaysClient, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </details>
+                                        <details>
+                                            <summary id="detail-beneficiaire">Informations du bénéficiaire</summary>
+                                            <div class="row p-2">
+                                                <div class="col-lg-6 hidden">
+                                                    <div class="mb-3">
+                                                        <input type="number" class="hidden" name="IdSite" value="@Model.IdSite" />
+                                                        <input type="text" class="hidden" id="BanqueId" name="IdSite00" value="@ViewBag.BanqueId" />
+                                                       
+                                                        <label>Agence</label>
+                                                        <select class="form-control input-sel" disabled id="IdSite" name="Agence">
+                                                            <option></option>
+                                                        </select>
+                                                        @Html.ValidationMessageFor(model => model.IdSite, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.FournisseurId, "Bénéficiaire/Nom, Raison sociale", htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <input type="number" class="hidden" name="FournisseurId" id="FournisseurId0" value="" />
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <select class="form-control input-sel" id="FournisseurId">
+                                                                <option value="@Model.FournisseurId">@Model.GetFournisseur</option>
+                                                                @{
+                                                                    foreach (var item in ViewBag.FournisseurId)
+                                                                    {
+                                                                        if (item.Id != Model.FournisseurId)
+                                                                        {
+                                                                            <option value="@item.Id">@item.Nom</option>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.FournisseurId, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.AdresseFournisseur, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <input type="text" class="form-control input-sel" name="AdresseFournisseur" id="AdresseFournisseur" value="@Model.AdresseFournisseur" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.AdresseFournisseur, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group mb-3 mt-3 col-lg-6 hidden">
+                                                    <div class="col-12">
+                                                        <label class="control-label float-start">Code établissement &emsp; &emsp; &emsp; &emsp;</label>
+                                                        @Html.LabelFor(model => model.CodeAgenceBenf, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <input type="text" class="input-group-text input-sel" maxlength="5" style="width:45%!important;background-color:white" name="CodeEtablissement" id="CodeEtablissement" value="@Model.CodeEtablissement" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.NumCompteBenef, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 mt-3 col-lg-6">
+                                                    <div class="col-12">
+                                                        <label class="control-label float-start">Code établissement &emsp; &emsp; &emsp; &emsp;</label>
+                                                        @Html.LabelFor(model => model.CodeAgenceBenf, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <input type="text" class="input-group-text input-sel" maxlength="5" style="width:45%!important;background-color:white" name="CodeEtsBenf" id="CodeEtsBenf" value="@Model.CodeEtsBenf" />
+                                                            <input type="text" class="form-control input-sel" style="width:40%!important;" min="5" max="5" maxlength="5" name="CodeAgenceBenf" id="CodeAgenceBenf" value="@Model.CodeAgenceBenf" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.NumCompteBenef, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group mb-3 mt-3 col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.Label("Numéro du compte", htmlAttributes: new { @class = "control-label" })
+                                                        <label class="control-label float-end">Clé &emsp;&emsp;</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <select class="form-control input-sel" name="NumCompteBenef" id="NumCompteBenef">
+                                                                <option value="@Model.NumCompteBenef">@Model.NumCompteBenef</option>
+                                                            </select>
+                                                            <input type="text" class="input-group-text input-sel" style="width:60px!important;background-color:white" name="CleCompteBenf" id="CleCompteBenf" value="@Model.CleCompteBenf" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.NumCompteBenef, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.NomBanqueBenf, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-bank"></i></div>
+                                                            <input class="form-control input-sel" name="NomBanqueBenf" id="NomBanqueBenf" value="@Model.NomBanqueBenf" />
+                                                            @Html.ValidationMessageFor(model => model.NomBanqueBenf, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.AdresseBanqueBenf, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <input type="text" name="AdresseBanqueBenf" id="AdresseBanqueBenf" class="form-control input-sel" value="@Model.AdresseBanqueBenf" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.AdresseBanqueBenf, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 col-lg-6">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.CodeSwiftBic, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                            <input type="text" name="CodeSwiftBic" id="CodeSwiftBic" maxlength="15" class="form-control input-sel" value="@Model.CodeSwiftBic" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.CodeSwiftBic, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </details>
+                                        <hr class="separation" />
+                                        <details>
+                                            <summary id="detail-transfert">Informations du transfert</summary>
+                                            <div class="row p-2">
+                                                <div class="form-group col-lg-6" id="p-motif">
+                                                    <div class="col-12">
+                                                        <label class="visually-hidden1" for="Motif">Motif du transfert</label>
+                                                        <div class="input-group motif">
+                                                            <div class="input-group-text motif"><i class="icon-dos mdi mdi-package-variant-closed motif"></i></div>
+                                                            <input type="text" name="Motif" rows="3" cols="43" class="form-control motif input-sel" id="Motif" value="@Model.Motif" />
+                                                        </div>
+                                                        <div class="input-group motif" id="motifs" style="display:none" title="Selectionner le modifi de l'opération">
+                                                            <div class="input-group-text bg-info motif" for="_motif" style="background-color:transparent;height:5px;">Motifs: </div>
+                                                            <select class="form-control motif" style="height:5px" id="_motif" name="_motif" onchange="document.getElementById('Motif').value=this.value">
+                                                                <option value=""></option>
+                                                                @{
+                                                                    foreach (var item in ViewBag.motifs)
+                                                                    {
+                                                                        <option value="@item">@item</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.Motif, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-lg-6">
+                                                    @{
+                                                        var natureOps = new List<string>() { "Bien", "Service", "Nulle" };
+                                                    }
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.NatureOperation, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-nintendo-wiiu"></i></div>
+                                                            <select name="_NatureOp" class="form-control input-sel" requied="reduied">
+                                                                <option value="@Model.NatureOperation">@(Model.NatureOperation==NatureOperation.Nulle?"":""+Model.NatureOperation)</option>
+                                                                @foreach (var item in natureOps)
+                                                                {
+                                                                    if (item != Model.NatureOperation.ToString())
+                                                                    {
+                                                                        <option value="@item">@(item=="Nulle"?"":item)</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                            @*@Html.EnumDropDownListFor(model => model.NatureOperation, "", htmlAttributes: new { @class = "form-control input-sel", requied = "reduied" })*@
+                                                            @Html.ValidationMessageFor(model => model.NatureOperation, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mt-3">
+                                                    <div class="col-12">
+                                                        @Html.Label("Montant en Devise", htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-clock-digital"></i></div>
+                                                            @*<input type="number" min="0.00" name="Montant" value="@Model.Montant" lang="en" step="0.01" class="form-control parite valided0 input-sel" id="Montant" />*@
+                                                            @Html.EditorFor(model => model.Montant, new { htmlAttributes = new { @class = "form-control parite valided input-sel", @id = "Montant", @lang = "en" } })
+                                                        </div>
+                                                        <label class="text-muted" style="padding-left:12px;display:inline-block" id="montantToString">@Model.MontantStringDevise</label>
+                                                        @Html.ValidationMessageFor(model => model.Montant, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 mt-3" style="">
+                                                    <div class="row">
+                                                        <div class="col-lg-5">
+                                                            <div class="col-12">
+                                                                @Html.LabelFor(model => model.DeviseMonetaireId, "Devise", htmlAttributes: new { @class = "control-label" })
+                                                                <div class="input-group">
+                                                                    <div class="input-group-text"><i class="icon-dos mdi mdi-currency-eur"></i></div>
+                                                                    @Html.DropDownList("DeviseMonetaireId", null, htmlAttributes: new { @class = "form-control input-sel", id = "DeviseMonetaireId" })
+                                                                </div>
+                                                                @Html.ValidationMessageFor(model => model.DeviseMonetaireId, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-7">
+                                                            @Html.LabelFor(model => model.ContreValeurXAF, htmlAttributes: new { @class = "control-label" })
+                                                            <div class="input-group">
+                                                                @*<div class="input-group-text"><span class="icon-dos">i</span></div>*@
+                                                                @{
+                                                                    string devise = "";
+                                                                    try
+                                                                    {
+                                                                        devise = Model.DeviseMonetaire.Nom;
+                                                                    }
+                                                                    catch (Exception)
+                                                                    { }
+                                                                    <input type="text" name="ContreValeurXAF" class="form-control input-sel icon-dos" style="font-size:1.1em;height:50px" id="ContreValeurXAF" value="@Model.MontantCVstring" readonly="readonly" />
+                                                                    if (devise == "EUR")
+                                                                    {
+                                                                        <label class="text-muted" style="padding-left:12px" id="ContreValeurToString"></label>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <label class="text-muted" style="padding-left:12px" id="ContreValeurToString">Le cours vous sera communiqué par votre gestionnaire</label>
+                                                                    }
+                                                                }
+                                                                @Html.ValidationMessageFor(model => model.ContreValeurXAF, "", new { @class = "text-danger" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 mb-3" style="padding-right:0px">
+                                                    <div class="col-12" style="margin-right:0px;padding-right:0px">
+                                                        @Html.LabelFor(model => model.MontantEnLettre, "Montant en lettre", htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <textarea name="MontantEnLettre" class="form-control input-sel" multiple id="MontantEnLettre" value="@Model.MontantEnLettre" readonly="readonly">@Model.MontantEnLettre</textarea>
+                                                            @*<input type="text" name="MontantEnLettre" class="form-control input-sel" multiple id="MontantEnLettre" value="" readonly="readonly" />*@
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mt-3 col-lg-6">
+                                                    <p></p>
+                                                    <div class="form-check form-switch form-switch-lg" dir="ltr" id="pan-customSwitchsizelg">
+                                                        <input name="MarchandiseArrivee" type="checkbox" @(Model.MarchandiseArrivee ? "checked value=true" : "value=false") class="form-check-input" style="margin-left:0px" id="customSwitchsizelg">
+                                                        <label class="form-check-label" for="customSwitchsizelg">Marchandise déjà arrivée</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group mb-3 col-lg-6 ">
+                                                    <div style="padding-left:10px!important">
+                                                        <p></p>
+                                                        @Html.LabelFor(model => model.DateSignInst, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-calendar-edit"></i></div>
+                                                            <input type="date" name="DateSignInst" readonly="readonly" required class="form-control input-sel" id="DateSignInst" value="@Model.DateSignInst" />
+                                                            @*@Html.EditorFor(model => model.DateSignInst.Value.Date, "{0:dd/MM/yyyy}", new { htmlAttributes = new { @class = "form-control"}})*@
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.DateSignInst, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </details>
+                                    </fieldset>
+
+                                }
+                            }
+
+                            <fieldset class="detail">
+                                <legend class="p-2" id="legende-inst">Fichier associé</legend>
+                                <div class=" detail0">
+                                    @{
+                                        if (edtionClient || !editionApurement)
+                                        {
+                                            <div class="col-lg-12 p-0 btn-numerisation">
+                                                @if (!editionApurement)
+                                                {
+                                                    <a id="btn-down-inst" class="btn btn-primary down-instruc" href="#"><i class="fa fa-download"></i>  Télécharcher le fichier</a>
+                                                }
+                                                <button id="scanner-1" infoImage="img1-parent" href="#" class="btn btn-info scan-bt">
+                                                    <i class="mdi mdi-scanner"></i>
+                                                    Scanner
+                                                </button>
+                                                <span class="btn btn-info" style="max-width:150px;max-height:40px;">
+                                                    <label for="upload-img-1" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                    <input class="img-input" infoImage="img1-parent" imgid="img-1" infoModal="Instruction (ordre de transfert)" id="upload-img-1" type="file" name="ImageInstruction" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                                </span>
+                                                <span class="text-muted pl-1" id="upload-img-1-file-size"></span>
+                                            </div>
+                                        }
+                                    }
+                                    <div class="col-lg-12k" id="img1-parent" style="max-height:10%;">
+                                        @{
+                                            <div class="row bg-gradient-dark1">
+                                                <div class="col-1 p-0">
+
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="col-12 text-left" style="background-color:rgb(163, 232, 237, 0.04);">
+                                                    @*<h4 class="text-warning"><i class="uil uil-exclamation-triangle"></i> Non renseignée</h4>*@
+                                                    @{
+                                                        var estPdf = false; bool affiche = true;
+                                                        string url = "", msgdoc = "Afficher le document", msgstyle = "btn-outline-light";
+                                                        if (Model.EstPdf)
+                                                        {
+                                                            estPdf = true;
+                                                            url = Url.Content("~/dossiers/GetPDF?idDossier=" + Model.Dossier_Id);
+                                                        }
+                                                        else
+                                                        {
+                                                            url = Model.GetImageInstruction();
+                                                        }
+                                                        try
+                                                        {
+                                                            if (Model.GetImageInstruction() == "#")
+                                                            {
+                                                                affiche = false;
+                                                                msgdoc = "Non renseigné";
+                                                                msgstyle = "text-warning";
+                                                            }
+                                                        }
+                                                        catch (Exception)
+                                                        {
+                                                        }
+                                                        <div style="text-align:center;margin-top:150px" class="">
+                                                            <button id="-iframe-img-1" _id="1" src="@url" _estpdf="@(estPdf?"True":"False")" class="btn @msgstyle file-show" type="button"><i class="uil @(affiche?"uil-cloud-upload":"uil-exclamation-triangle") fs-1"></i><br /> @msgdoc</button>
+                                                            <label id="-img-1" style="display:none" src="@Model.GetImageInstruction()"></label>
+                                                        </div>
+                                                        <iframe id="iframe-img-1" class="pdf-view @(estPdf?"":"hidden")" src="" style="max-width:221mm;@(!affiche?"display:none1":"")"></iframe>
+                                                        <img class="card-img img-fluid @(!estPdf?"":"hidden")" src="" id="img-1" alt="" style="@(!affiche?"display:none1":"")" />
+
+                                                    }
+
+                                                </div>
+
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <button type="submit" style="margin-bottom:10px;display:none" class="btn btn-info" id="btn-valider-dossier">Suivant</button>
+                        </div>
+                    </section>
+
+                    <!-- Company Document -->
+                    <h3>Factures</h3>
+                    <section>
+                        <div class="card border1 border-info" style="height:100%!important">
+                            <div class="card-header">
+                                <h5 class="my-0 text-primary"><i class="uil-invoice me-3 fs-1"></i>Factures</h5>
+                            </div>
+                            <div class="card-body">
+
+                                <div class="row btn-numerisation">
+                                    <div class="col-4 form-group">
+                                        <input id="NbreJustif" class="form-control" type="number" min="@Model.NbreJustif" name="NbreJustif" placeholder="Nombre de factures" value="@Model.NbreJustif" />
+                                    </div>
+                                    <div class="col-3">
+                                        <button id="btn_ajout_fact" type="button" onclick="OuvreModaleFact()" disabled class="btn btn-primary waves-effect waves-light">
+                                            <i class="mdi mdi-plus"></i>
+                                            Ajouter
+                                        </button>
+                                    </div>
+                                </div>
+                                @Html.Partial("~/Views/_Shared/PartialViews/Justificatifs.cshtml", Model.Justificatifs)
+                            </div>
+                        </div>
+
+                    </section>
+
+                    <h3>Lettre d'engagement</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0">
+                                <div class="m-0 p-0 hidden1" style="display:inline-block;margin-top:-8px!important;float:right">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Lettre d'engament</h3>
+                                </div>
+                                <div class="p-0 btn-numerisation" style="">
+                                    @{
+                                        if (edtionClient || editionApurement && Model.Get_LettreEngage == "#")
+                                        {
+                                            <a id="btn-down-lettre" class="btn btn-primary down-docs" href="#"><i class="fa fa-download"></i>  Télécharcher le fichier</a>
+                                            <button id="scanner-4" href="#" class="btn btn-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-4" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-lettre-parent" imgid="img-lettre" infoModal="Lettre d'engament" id="upload-img-4" type="file" name="ImageLettreEngage" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            </span>
+                                            <span class="text-muted pl-1" id="upload-img-4-file-size"></span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-lg-12" id="img-lettre-parent" style="max-height:100%;">
+                                    <div class="row">
+                                        <div class="col-1 p-0">
+                                            <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                            <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                            <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                        </div>
+                                        <div class="col-12 text-center">
+                                            @{
+                                                int idDoc = 0;
+                                                estPdf = false;
+                                                url = ""; msgdoc = "Afficher le document"; msgstyle = "btn-outline-light";
+                                                try
+                                                {
+                                                    estPdf = Model.LettreEngage.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                if (estPdf)
+                                                {
+                                                    try
+                                                    {
+                                                        idDoc = Model.LettreEngage.Id;
+                                                        url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    url = Model.Get_LettreEngage;
+                                                }
+                                                affiche = true;
+                                                if (Model.Get_LettreEngage == "#")
+                                                {
+                                                    affiche = false;
+                                                    msgdoc = "Non renseigné";
+                                                    msgstyle = "text-warning";
+                                                }
+                                                <div style="text-align:center" class="">
+                                                    <button id="-iframe-img-lettre" _id="lettre" src="@url" _estpdf="@(estPdf?"True":"False")" class="btn @msgstyle file-show" type="button"><i class="uil @(affiche?"uil-cloud-upload":"uil-exclamation-triangle") fs-1"></i><br /> @msgdoc</button>
+                                                    <label id="-img-lettre" style="display:none" src="@url"></label>
+                                                </div>
+                                                <iframe id="iframe-img-lettre" class="pdf-view @(estPdf?"":"hidden")" src="" style="max-width:221mm;@(!affiche?"display:none1":"")"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(!estPdf?"":"hidden")" src="" id="img-lettre" alt="" style="@(!affiche?"display:none1":"")" />
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <h3>Quittance de paiement</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0 ">
+                                <div class="m-0 p-0 hidden1" style="display:inline-block;margin-top:-8px!important;float:right">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Quittance de paiement</h3>
+                                </div>
+                                <div class="p-0 btn-numerisation" style="">
+                                    @{
+                                        if (edtionClient || editionApurement && Model.Get_QuittancePay == "#")
+                                        {
+                                            <button id="scanner-5" href="#" class="btn btn-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-5" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-quit-parent" imgid="img-quit" infoModal="Quittance de paiement" id="upload-img-5" type="file" name="ImageQuittancePay" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                            </span>
+                                            <span class="text-muted pl-1" id="upload-img-5-file-size"></span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-lg-12 bg-gradient-dark1" id="img-quit-parent" style="max-height:100%;">
+                                    <div class="row">
+                                        <div class="col-1 p-0">
+                                            <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                            <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                            <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                        </div>
+                                        <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                            @{
+                                                estPdf = false;
+                                                url = ""; msgdoc = "Afficher le document"; msgstyle = "btn-outline-light";
+                                                try
+                                                {
+                                                    estPdf = Model.QuittancePay.EstPdf;
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                if (estPdf)
+                                                {
+                                                    idDoc = 0;
+                                                    try
+                                                    {
+                                                        idDoc = Model.QuittancePay.Id;
+                                                        url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+
+                                                }
+                                                affiche = true;
+                                                if (Model.Get_QuittancePay == "#")
+                                                {
+                                                    affiche = false;
+                                                    msgdoc = "Non renseigné";
+                                                    msgstyle = "text-warning";
+                                                }
+                                                <div style="text-align:center" class="">
+                                                    <button id="-iframe-img-quit" _id="quit" src="@url" _estpdf="@(estPdf?"True":"False")" class="btn @msgstyle file-show" type="button"><i class="uil @(affiche?"uil-cloud-upload":"uil-exclamation-triangle") fs-1"></i><br /> @msgdoc</button>
+                                                    <label id="-img-quit" style="display:none" src="@url"></label>
+                                                </div>
+                                                <iframe id="iframe-img-quit" class="pdf-view @(estPdf?"":"hidden1")" src="" style="max-width:221mm;@(!affiche?"display:none1":"")">
+                                                </iframe>
+                                                <img class="card-img img-fluid imf-taille @(!estPdf?"":"hidden1")" src="@(Model.Get_QuittancePay)" id="img-quit" alt="" style="@(!affiche?"display:none1":"")" />
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+                    <h3>Documents de transport</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0">
+                                <div class="col-7 hidden">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Documents de transport</h3>
+                                </div>
+                                <div class="col-5 btn-numerisation">
+                                    @{
+                                        if (edtionClient || editionApurement)
+                                        {
+                                            <button id="ajout-doc-transport" type="button" class="btn btn-primary waves-effect waves-light ajout-doc" doc-type="0" data-bs-toggle="modal" data-bs-target="#modal-ajout-document">
+                                                <i class="mdi mdi-file-document"></i>
+                                                Ajouter
+                                            </button>
+                                            <label>
+                                                &emsp;   Documents de transport
+                                            </label>
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                @{
+                                    //var docs = Model.DocumentAttaches;
+                                }
+                                @Html.Partial("~/Views/_Shared/PartialViews/DocumentsTransport.cshtml", Model.DocumentsTransport)
+                            </div>
+                            <input type="number" class="hidden" name="nbrDocTransp" id="nbrDocTransp" value="@(Model.DocumentsTransport!=null?Model.DocumentsTransport.Count:0)" />
+                        </div>
+                    </section>
+
+                    <!-- Bank Details -->
+                    <h3>Déclaration d'importation</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0">
+                                <div class="m-0 p-0 hidden11" style="display:inline-block;margin-top:-8px!important;float:right">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1 fs-1"></i> Déclaration d'importation</h3>
+                                </div>
+                                <div class="p-0 btn-numerisation  @(autorise?"":"hidden")" style="">
+                                    @if (edtionClient || editionApurement && Model.Get_DeclarImport == "#")
+                                    {
+                                        <a id="btn-down-de" class="btn btn-primary down-docs" href="#"><i class="fa fa-download"></i>  Télécharcher le fichier</a>
+                                        <button id="scanner-2" href="#" class="btn btn-info scan-bt">
+                                            <i class="mdi mdi-scanner"></i>
+                                            Scanner
+                                        </button>
+                                        <span class="btn btn-info" style="max-width:150px;max-height:40px;">
+                                            <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                            <input class="img-input" infoImage="img-dp-parent" imgid="img-dp" infoModal="Déclaration d'importation" id="upload-img-2" type="file" name="ImageDeclarImport" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                        </span>
+                                        <span class="text-muted pl-1" id="upload-img-2-file-size"></span>
+                                    }
+                                </div>
+                                <span class="@(!autorise?"fs-4 text-warning":"hidden")" id="douane-decla">Doit être numérisée par la banque</span>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-lg-12 bg-gradient-dark1" id="img-dp-parent" style="max-height:100%;">
+                                    <div class="row">
+                                        <div class="col-1 p-0">
+
+                                            <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                            <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                            <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                        </div>
+                                        <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                            @{
+                                                estPdf = false; url = ""; msgdoc = "Afficher le document"; msgstyle = "btn-outline-light";
+                                                try
+                                                {
+                                                    estPdf = Model.DeclarImport.EstPdf;
+                                                    <script>
+                                                        document.getElementById('douane-decla').style.display = 'none';
+                                                    </script>
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                if (estPdf)
+                                                {
+                                                    idDoc = 0;
+                                                    try
+                                                    {
+                                                        idDoc = Model.DeclarImport.Id;
+                                                        url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    url = Model.Get_DeclarImport;
+                                                }
+                                                affiche = true;
+                                                if (Model.Get_DeclarImport == "#")
+                                                {
+                                                    affiche = false;
+                                                    msgdoc = "Non renseigné";
+                                                    msgstyle = "text-warning";
+                                                }
+                                                <div style="text-align:center" class="">
+                                                    <button id="-iframe-img-dp" _id="dp" src="@url" _estpdf="@(estPdf?"True":"False")" class="btn @msgstyle file-show" type="button"><i class="uil @(affiche?"uil-cloud-upload":"uil-exclamation-triangle") fs-1"></i><br /> @msgdoc</button>
+                                                    <label id="-img-dp" style="display:none" src="@url"></label>
+                                                </div>
+                                                <iframe id="iframe-img-dp" class="pdf-view @(estPdf?"":"hidden1")" src="" style="max-width:221mm;@(!affiche?"display:none1":"")"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(!estPdf?"":"hidden1")" src="" id="img-dp" alt="" style="@(!affiche?"display:none1":"")" />
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <h3>Domiciliation d'importation</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0">
+                                <div class="m-0 p-0 hidden11" style="display:inline-block;margin-top:-8px!important;float:right">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Domiciliation d'importation</h3>
+                                </div>
+                                <div class="p-0 btn-numerisation @(autorise?"":"hidden")" style="">
+                                    @if (edtionClient || editionApurement && Model.Get_DomicilImport == "#")
+                                    {
+                                        <a id="btn-down-do" class="btn btn-primary down-docs" href="#"><i class="fa fa-download"></i>  Télécharcher le fichier</a>
+                                        <button id="scanner-3" href="#" class="btn btn-info scan-bt">
+                                            <i class="mdi mdi-scanner"></i>
+                                            Scanner
+                                        </button>
+                                        <span class="btn btn-info" style="max-width:150px;max-height:40px;">
+                                            <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                            <input class="img-input" infoImage="img-doImp-parent" imgid="img-doImp" infoModal="Domiciliation d'importation" id="upload-img-3" type="file" name="ImageDomicilImport" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                        </span>
+                                        <span class="text-muted pl-1" id="upload-img-3-file-size"></span>
+                                    }
+                                </div>
+                                <span class="@(!autorise?"fs-4 text-warning":"hidden")" id="douane-dom">Doit être numérisée par la banque</span>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="col-lg-12 bg-gradient-dark1" id="img-doImp-parent" style="max-height:100%;">
+                                    <div class="row">
+                                        <div class="col-1 p-0">
+                                            <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-agd" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Agrandir"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                            <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                            <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                        </div>
+                                        <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                            @{
+                                                estPdf = false; url = ""; msgdoc = "Afficher le document"; msgstyle = "btn-outline-light";
+                                                try
+                                                {
+                                                    estPdf = Model.DomicilImport.EstPdf;
+                                                    <script>
+                                                        document.getElementById('douane-dom').style.display = 'none';
+                                                    </script>
+                                                }
+                                                catch (Exception)
+                                                { }
+                                                if (estPdf)
+                                                {
+                                                    idDoc = 0;
+                                                    try
+                                                    {
+                                                        idDoc = Model.DomicilImport.Id;
+                                                        url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=" + Model.Dossier_Id);
+                                                    }
+                                                    catch (Exception)
+                                                    { }
+                                                }
+                                                else
+                                                {
+                                                    url = Model.Get_DomicilImport;
+                                                }
+                                                affiche = true;
+                                                if (Model.Get_DomicilImport == "#")
+                                                {
+                                                    affiche = false;
+                                                    msgdoc = "Non renseigné";
+                                                    msgstyle = "text-warning";
+                                                }
+                                                <div style="text-align:center" class="">
+                                                    <button id="-iframe-img-doImp" _id="doImp" src="@url" _estpdf="@(estPdf?"True":"False")" class="btn @msgstyle file-show" type="button"><i class="uil @(affiche?"uil-cloud-upload":"uil-exclamation-triangle") fs-1"></i><br /> @msgdoc</button>
+                                                    <label id="-img-doImp" style="display:none" src="@url"></label>
+                                                </div>
+                                                <iframe id="iframe-img-doImp" class="pdf-view @(estPdf?"":"hidden1")" src="" style="max-width:221mm;@(!affiche?"display:none1":"")"></iframe>
+                                                <img class="card-img img-fluid imf-taille @(!estPdf?"":"hidden1")" src="" id="img-doImp" alt="" style="@(!affiche?"display:none1":"")" />
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <h3>Autres documents</h3>
+                    <section>
+                        <div class="card border-info" style="height:100%!important">
+                            <div class="card-header pb-0">
+                                <div class="col-7 hidden">
+                                    <h3 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Autres documents</h3>
+                                </div>
+                                <div class="col-5 btn-numerisation">
+                                    @{
+                                        if (edtionClient || editionApurement)
+                                        {
+                                            <button id="ajout-doc-autre" type="button" class="btn btn-primary waves-effect waves-light ajout-doc" doc-type="1" data-bs-toggle="modal" data-bs-target="#modal-ajout-document">
+                                                <i class="mdi mdi-file-document"></i>
+                                                Ajouter
+                                            </button>
+                                            <label>
+                                                &emsp;   Autres documents
+                                            </label>
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                @{
+                                    var docs = Model.DocumentAttaches;
+                                }
+                                @Html.Partial("~/Views/_Shared/PartialViews/AutresDocuments.cshtml", docs)
+                            </div>
+                        </div>
+                    </section>
+
+                    <script src="~/assets/cfunctions.js"></script>
+                    <script>
+                            // Factures
+                            document.getElementById("NbreJustif").addEventListener("input", function (e) {
+                                if (this.value > 0) {
+                                    document.getElementById("btn_ajout_fact").disabled = false;
+                                    document.getElementById("CompteurFactures").value = this.value;
+                                } else {
+                                    document.getElementById("btn_ajout_fact").disabled = true;
+                                }
+                            });
+
+                            //agrandir image
+                            var elts = document.getElementsByClassName("img-agd");
+                            for (var i = 0; i < elts.length; i++) {
+                                try {
+                                    elts[i].addEventListener('click', function () {
+                                        document.getElementById('img-1-pdf').style.display = 'initial';
+                                        document.getElementById('img-2').src = "";
+                                        document.getElementById('img-2').src = document.getElementById(this.getAttribute("imgid")).getAttribute("src");
+                                        var aa = document.getElementById(this.getAttribute("imgid"));
+                                    });
+                                } catch (e) {
+
+                                }
+                            }
+                            elts = null;
+
+                            // get extension
+                            function get_url_extension(url) {
+                                return url.split(/[#?]/)[0].split('.').pop().trim();
+                            }
+
+                            function getExtension(url) {
+                                // Extension starts after the first dot after the last slash
+                                var extStart = url.indexOf('.', url.lastIndexOf('/') + 1);
+                                if (extStart == -1) return false;
+                                var ext = url.substr(extStart + 1),
+                                    // end of extension must be one of: end-of-string or question-mark or hash-mark
+                                    extEnd = ext.search(/$|[?#]/);
+                                return ext.substring(0, extEnd);
+                            }
+
+                            //obtenir image
+                            elts = document.getElementsByClassName("img-input");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].onchange = evt => {
+
+                                    const [file] = evt.target.files;
+                                    if (file) {
+                                        var frame = document.getElementById('iframe-' + evt.target.getAttribute("imgid"));
+                                        var image111 = document.getElementById('' + evt.target.getAttribute("imgid"));
+                                        //icone afficher le document
+                                        try {
+                                            document.getElementById('-iframe-' + evt.target.getAttribute("imgid")).parentElement.style.display = 'none';
+                                            if (evt.target.getAttribute("imgid") == 'img-1') {//instruction
+                                                document.getElementById('btn-valider-dossier').style.display = 'initial';
+                                            }
+
+                                            document.getElementById('-iframe-' + evt.target.getAttribute("imgid")).setAttribute('src', URL.createObjectURL(file));
+                                            document.getElementById('-img-' + evt.target.getAttribute("imgid")).setAttribute('src', URL.createObjectURL(file));
+                                        } catch (e) {
+
+                                        }
+                                        if (file.type == "application/pdf") {
+                                            frame.setAttribute('src', URL.createObjectURL(file));
+                                            frame.style.display = 'initial';
+                                            frame.classList.remove("hidden");
+                                            var pw = Number(frame.parentElement.offsetWidth);
+                                            frame.style = 'height:179mm;width:100%';
+                                            image111.style.display = 'none';
+                                            document.getElementById('img-2').setAttribute('src', "");
+                                            document.getElementById('img-2').setAttribute('src', URL.createObjectURL(file));
+
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                            document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                       }
+                                        else {
+                                            image111.src = URL.createObjectURL(file);
+                                            image111.style.display = 'initial';
+                                            image111.classList.remove("hidden");
+                                            frame.style.display = 'none';
+                                           document.getElementById('img-2').src = "";
+                                           document.getElementById('img-2').src = URL.createObjectURL(file);
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                           document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                        }
+                                        document.getElementById(evt.target.getAttribute('id') + "-file-size").textContent = "Taille du fichier: " + getFilesize(file.size);
+
+                                        //auto reflesh
+                                        try {
+                                            document.getElementById("refleshAfertModifie").textContent = URL.createObjectURL(file);
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                }
+                            }
+                            elts = null;
+                            elts = document.getElementsByClassName("img-sup");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('' + this.getAttribute("infoInputImg")).value = "";
+                                    document.getElementById('' + this.getAttribute("infoImage")).classList.add("hidden");
+                                });
+                            }
+                            elts = null;  //
+
+                            /// Impression
+                            elts = document.getElementsByClassName("img-print");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('printer-contenair').classList.remove("hidden");
+                                    // Clone the image
+                                    const image = document.getElementById('' + this.getAttribute("imgid")).cloneNode();
+                                    image.style.maxWidth = '100%';
+                                    image.style.maxHeight = '100%';
+                                    image.style.width = '100%';
+                                    image.style.height = 'auto';
+                                    document.getElementById('printer-contenair').contentDocument.body.appendChild(image);
+                                    document.getElementById("printer-contenair").contentWindow.print();
+                                    //location.reload();
+
+                                });
+                            }
+                            elts = null;
+                            var _url = "@(Url.Content("~/Content/con_ann/dynamic/Scan_ap.html"))";
+
+                            /// scanner
+                            elts = document.getElementsByClassName("scan-bt");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    openRequestedPopup(_url, "Numérisation des doscuments");
+                                    alert("cockie: ");// + getCookie("imgageData"));
+                                });
+                            }
+                            elts = null;
+
+
+                            //functions scanner
+                            var windowObjectReference = null; // global variable
+
+                            function openRequestedPopup(url, windowName) {
+                                if (windowObjectReference == null || windowObjectReference.closed) {
+                                    windowObjectReference = window.open(url, windowName,
+                                        "resizable,scrollbars,status");
+                                } else {
+                                    windowObjectReference.focus();
+                                };
+                            }
+
+                            /*coockie*/
+                            function getCookie(name) {
+                                var nameEQ = name + "=";
+                                var ca = document.cookie.split(';');
+                                for (var i = 0; i < ca.length; i++) {
+                                    var c = ca[i];
+                                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                                }
+                                return null;
+                            }
+
+
+                    </script>
+                    @Html.Partial("~/Views/_Shared/PartialViews/Parite_Databinding.cshtml")
+                </div>
+
+            </div>
+            <div class="card-footer">
+                @{
+                    bool soumettre = ViewBag.SoumettreDossier;
+                    if (edtionClient || editionApurement)
+                    {
+                        <button type="submit" _action_requied_loader="0" value="Enregistrer" id="btn-sauvegarde-tmp" class="btn btn-outline-primary" style="float:left;margin-right:10px!important">
+                            <i class="far fa-save me-2"></i>
+                            Sauvegarde temporaire
+                        </button>
+                        if (!ViewBag.ModeRestraint)
+                        {
+                            <button type="button" id="btn-terminer" class="btn btn-success @(editionApurement?"hidden":"")" style="">
+                                <i class="mdi mdi-check-outline me-2"></i>
+                                Terminer
+                            </button>
+                            <div class="btn-group me-1" style="margin-left:5px">
+                                @{
+                                    if (Model.EtapesDosier < 0 || Model.EtapePrecedenteDosier > Model.EtapesDosier)
+                                    {
+                                        <button type="button" value="Enregistrer" id="btn-envoie-maintenant" class="btn btn-info @(ViewBag.ModeRestraint ||!soumettre?"hidden":"")" style="float:left;margin-right:10px!important" data-bs-toggle="modal" data-bs-target="#modal-note-renvoi">
+                                            <i class="mdi mdi-send me-2"></i>
+                                            Envoyer
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" value="Enregistrer" id="btn-envoie-maintenant" onclick="modifTransmisVl()" class="btn btn-info @(ViewBag.ModeRestraint?"hidden":"")" style="float:left;margin-right:10px!important">
+                                            <i class="mdi mdi-send me-2"></i>
+                                            Envoyer
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <input type="text" id="EtapeValidationClient" name="EtapeValidationClient" class="hidden" value="0" />
+                            if (Model.EtapeValidationClient == 0 && ViewBag.CreerDossier)
+                            {
+                                <button type="submit" id="edit-EtapeValidationClient" _action_requied_loader="0" disabled value="1" class="btn btn-success soumValid">
+                                    <i class="mdi mdi-check-outline me-2"></i>
+                                    Terminer
+                                </button>
+                            }
+                            <div class="btn-group me-1 @(Model.EtapeValidationClient == 1 && ViewBag.SoumettreDossier?"":"hidden")" style="margin-left:5px">
+                                @{
+                                    if (Model.EtapesDosier < 0 || Model.EtapePrecedenteDosier > Model.EtapesDosier)
+                                    {
+                                        <button type="button" _action_requied_loader="0" value="2" id="btn-envoie-maintenant" class="btn btn-outline-info soumValid @(ViewBag.ModeRestraint ||!soumettre?"hidden":"")" style="float:left;margin-right:10px!important" data-bs-toggle="modal" data-bs-target="#modal-note-renvoi">
+                                            <i class="mdi mdi-send me-2"></i>
+                                            Envoyer à l'agence
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit" _action_requied_loader="0" value="2" id="btn-envoie-maintenant" onclick="modifTransmisVl()" class="btn btn-outline-info soumValid @(ViewBag.ModeRestraint?"hidden":"")" style="float:left;margin-right:10px!important">
+                                            <i class="mdi mdi-send me-2"></i>
+                                            Envoyer à l'agence
+                                        </button>
+                                    }
+                                }
+                            </div>
+                        }
+
+                        <script>
+                                    var reste = Number('@(ViewBag.MontantRestant)')
+                                    var Montant = Number('@(Model.Montant)')
+                                    function modifTransmisVl() {
+                                        if (confirm('Voullez-vous confirmer l\'envoi du dossier à la banque?')) {
+
+                                            if (Montant == reste) {
+                                                alert("Aucune facture n'a fait l'objet de paiement !");
+                                                return;
+                                            }
+                                            else if (reste < 0) {
+                                                alert("Le montant de l'instruction ne peut pas être supérieur au montant total de(s) facture(s) !");
+                                                return;
+                                            }
+                                            else if (reste > 0) {
+                                                if (!confirm("Cette opération fait l'objet d'un transfert partiel!")) {
+                                                    return;
+                                                }
+                                            }
+
+                                            //if (mt == 0) {
+                                            if (true) {
+                                                document.getElementById('link-preload').click();
+                                                document.getElementById('Transmis').value = '1';
+                                                setMontant();
+                                                document.getElementById('form-edit').submit();
+                                            } else {
+                                                //alert("Impossible d'envoyer le dossier à l'agence, le montant total du transfert doit être égal au cumul total des factures. Veuillez ajuster les montants des factures")
+                                                //document.getElementById('vertical-example-t-1').click();
+                                            }
+                                        }
+                                    }
+                                    function modifTransmisVlModal() {
+                                        if (confirm('Voullez-vous confirmer l\'envoi du dossier à la banque?')) {
+                                            if (!document.getElementById('note-renvoi').value) {
+                                                alert("Prière de bien vouloir préciser les amendements effectués !");
+                                                document.getElementById('note-renvoi').focus();
+                                                return;
+                                            }
+
+                                            if (Montant == reste) {
+                                                alert("Aucune facture n'a fait l'objet de paiement !");
+                                                return;
+                                            }
+                                            if (reste < 0) {
+                                                alert("Le montant de l'instruction ne peut pas être supérieur au montant total de(s) facture(s) !");
+                                                return;
+                                            }
+                                            if (reste > 0) {
+                                                if (!confirm("Cette opération fait l'objet d'un transfert partiel. Confirmez-vous l'opération ?")) {
+                                                    return;
+                                                }
+                                            }
+
+                                            if (true) {
+                                            //if (mt == 0) {
+                                                document.getElementById('link-preload').click();
+                                                document.getElementById('Transmis').value = '1';
+                                                document.getElementById('MessageTmp').value = document.getElementById('note-renvoi').value;
+                                                try {
+                                                    var elts = document.getElementsByClassName('check1');
+                                                    for (var i = 0; i < elts.length; i++) {
+                                                        if (elts[i].checked) {
+                                                            document.getElementById('ItemsRaison').value += elts[i].getAttribute('_id') + ';';
+                                                        }
+                                                    }
+                                                } catch (e) {
+
+                                                }
+                                                setMontant();
+                                                document.getElementById('form-edit').submit();
+                                                document.getElementById('ink-preload').click();
+
+                                            } else {
+                                                //alert("Impossible d'envoyer le dossier à l'agence, le montant total du transfert doit être égal au cumul total des factures. Veuillez ajuster les montants des factures")
+                                            }
+                                        }
+                                    }
+                                    function nondispo() { alert("Non disponible !") }
+                        </script>
+                    }
+                }
+                <p style="display:inline-block;">
+                    <a class="btn btn-outline-warning" href=@Url.Content("~/Dossiers/Details/"+Model.Dossier_Id)>
+                        <i class="mdi mdi-apps"></i>
+                        Details
+                    </a>
+                </p>
+                @*<p style="display:inline-block;float:right">
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>*@
+            </div>
+
+        }
+    </div>
+
+
+        <script>
+            try {
+
+                //enregistrement auto
+                var reflesh = false;
+                var elts = document.getElementsByClassName('img-input');
+                for (var i = 0; i < elts.length; i++) {
+                    elts[i].addEventListener("change", function () {
+                        true("ggg")
+                        reflesh = true;
+                    });
+                }
+                elts = null;
+            } catch (e) {
+
+            }
+
+            document.getElementById("btn-sauvegarde-tmp").addEventListener('click', function () {
+                setMontant();
+                document.getElementById('form-edit').submit();
+            });
+            document.getElementById("link-envoie-mt").addEventListener('click', function () {
+                document.getElementById("EtapesDosier").value = 1;
+                setMontant();
+                document.getElementById('form-edit').submit();
+            });
+        </script>
+
+        <script>
+            function setMontant() {
+                var _montant = document.getElementById("Montant").value + "";
+                var _cv = document.getElementById("ContreValeurXAF").value + "";
+                document.getElementById("Montant").value = _montant.replace(/\s/g, "");
+                document.getElementById("ContreValeurXAF").value = _cv.replace(/\s/g, "");
+            }
+        </script>
+
+        <script>
+
+            if (document.getElementById("EtapesDosier").value == 0) {
+                document.getElementById("btn-envoie-maintenant").style.display='none';
+                document.getElementById("btn-terminer").disabled = true;
+            }
+
+            document.getElementById("btn-terminer").addEventListener("click", function () {
+                document.getElementById("EtapesDosier").value = 0;
+                document.getElementById("btn-envoie-maintenant").style.display = 'initial';
+                //document.getElementById("btn-envoie-maintenant").click();
+            });
+
+            document.addEventListener(`click`, e => {
+                const origin = e.target.closest("a");
+
+                if (origin) {
+                    if (origin.textContent == "Suivant") {
+                        var dones = document.getElementsByClassName("done");
+                        if (dones.length > 7) {
+                            document.getElementById("btn-sauvegarde-tmp").disabled = false;
+                            document.getElementById("btn-terminer").disabled = false;
+                            document.getElementById("btn-terminer").classList.remove("btn-outline-info");
+                            document.getElementById("btn-terminer").classList.add("btn-info");
+                            document.getElementById("btn-terminer").setAttribute("title", "Vous pouvez terminer l'enregistrement et envoyer le dossier à la banque");
+                        }
+                    }
+                }
+            });
+        </script>
+        <!-- end card -->
+    </div>
+
+</div>
+
+<input type="number" class="hidden" id="reste-montant12" value="@Model.MontantTpmp" />
+
+@* Modal detail image *@
+@Html.Partial("~/Views/_Shared/PartialViews/Detail_image.cshtml")
+@* <fin modal detail image *@
+
+@* Modal ajout justificatif *@
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_justificatif.cshtml", Model)
+@* Fin modal *@
+
+@* Modal ajout justificatif *@
+@*@Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Document.cshtml", Model)*@
+@* Fin modal *@
+
+
+@* Modal detail image *@
+@*@Html.Partial("~/Views/_Shared/PartialViews/Detail_image.cshtml")*@
+@* <fin modal detail image *@
+
+@* Print modal *@
+@Html.Partial("~/Views/_Shared/PartialViews/Printer_contenair.cshtml")
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Note_Renvoi_Client.cshtml")
+@{
+    if (!editionApurement && edtionClient)
+    {
+        @Html.Partial("~/Views/Dossiers/Modal_Instruct.cshtml")
+    }
+}
+
+@* finprintmodal *@
+
+<div class="modal fade" id="modal-ajout-document" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Ajout d'un document</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    DocumentAttache documentAttache = new DocumentAttache()
+                    {
+                        DossierId = Model.Dossier_Id,
+                        Dossier = Model,
+                        DateCreation = DateTime.Now
+                    };
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/AutreDocuments_DetailView .cshtml", documentAttache)
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<a id="ouvre-mondal-fact" class="hidden" href="#" data-bs-toggle="modal" data-bs-target="#modal-ajout-facture"></a>
+<script>
+    var reste = Number('@Model.MontantTpmp');
+    if (reste == 0) {
+        document.getElementById('btn_ajout_fact').disabled = false;
+        document.getElementById('NbreJustif').readOnly = true;
+    }
+
+    function OuvreModaleFact() {
+        //resctriction d'ajout facture
+        if (reste == 0) {
+            document.getElementById('NbreJustif').readOnly = true;
+            alert("Impossible d'ajouter une facture, le montant total du transfert est déjà atteint! Veuillez vérifier vos précédentes factures.")
+        } else {
+            document.getElementById('ouvre-mondal-fact').click();
+        }
+    }
+</script>
+
+<div class="modal fade bs-example-modal-lg" id="modal-ajout-facture" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen" style="text-align:center!important;">
+        <div class="modal-content badge p-0" style="text-align: left !important; position: center; border: 3px solid #2689a6">
+            <div class="modal-header modal-header card-header1 m-0 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Détail de la facture n°@(Model.Justificatifs.Count+1)</h5>
+                <button type="button" id="modal-ajout-facture-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: rgb(163, 232, 237, 0.14);">
+                @{
+                    Justificatif justificatif = new Justificatif();
+
+                    try
+                    {
+                        justificatif.DossierId = Model.Dossier_Id;
+                        //justificatif.Dossier = Model;
+                        justificatif.FournisseurJustif = Model.GetFournisseur;
+                        justificatif.DeviseJustif = Model.DeviseToString;
+                        justificatif.MontantTotalDossier = Model.MontantTpmp;
+                        justificatif.IdDevise = (int)Model.DeviseMonetaireId;
+                    }
+                    catch (Exception)
+                    { }
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/Justificatif_DetailView.cshtml", justificatif)
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    document.getElementById('staticBackdropLabel').addEventListener("click", function () {
+        document.getElementById('modal-ajout-facture-close').click();
+    });
+</script>
+@Scripts.Render("~/Content/js")
+@Scripts.Render("~/Content/wizard")
+
+<script>
+    $('.img-fluid').css({ "max-height": "300px", "max-width": "50%", "height": "300px", "width": "auto" });
+    $('.img-fluid').parent({ "height": "auto", "width": "auto" });
+</script>
+<script type="text/javascript" src="http://github.com/malsup/media/raw/master/jquery.media.js?v0.92"></script>
+<script type="text/javascript" src="jquery.metadata.js"></script>
+<script src="~/assets/nombre_en_lettre.js"></script>
+
+@*<script>
+        $('a.media').media({ width: 500, height: 400 });
+    </script>*@
+<a class="hidden" id="agrandir-img" data-bs-toggle="modal" data-bs-target="#detailImage"></a>
+<a class="hidden" id="detailview-just" data-bs-toggle="modal" data-bs-target="#detailview"></a>
+<a class="hidden" id="instruct-gen" data-bs-toggle="modal" data-bs-target="#modal-instruct-gen"></a>
+<a class="hidden" id="instruct-gen-down"></a>
+<script>
+    var mois = 0, annee = 0, jour = 0;
+</script>
+@{
+    if (Model.DateSignInst != null && Model.DateSignInst != default)
+    {
+        <script>
+            mois='@(Model.DateSignInst.Value.Month)'
+            annee='@(Model.DateSignInst.Value.Year)'
+            jour='@(Model.DateSignInst.Value.Day+1)'
+        </script>
+    }
+}
+<script>
+    try {
+        var date = new Date();
+        document.getElementById('DateSignInst').valueAsDate = new Date(date.getFullYear(), date.getMonth(), Number(date.getDate() + 1));
+    } catch (e) {
+
+    }
+    try {
+        //agrandir img
+        $(".img-fluid").click(function () {
+            try {
+                document.getElementById('img-2').src = this.getAttribute("src");
+                document.getElementById('agrandir-img').click();
+            } catch (e) {
+
+            }
+        });
+    } catch (e) {
+
+    }
+
+    $(document).ready(function () {
+        try {//Telechargements
+            $('.down-docs').click(function () {
+                var a = document.createElement('a');
+                var _url = '@Url.Content("~/Dossiers/DownloadDocuments?id=" + Model.Dossier_Id)' +'&i_l_de_do=';
+                switch (this.id) {
+                    case "btn-down-lettre":
+                        if (confirm("Voulez-vous générer la lettre d'engagement pour ce transfert?")) {
+                            _url += "l";
+                        }
+                        break;
+                    case "btn-down-de":
+                        if (confirm("Voulez-vous générer la déclaration pour ce transfert?")) {
+                            _url += "de";
+                        }
+                        break;
+                    case "btn-down-do":
+                        if (confirm("Voulez-vous générer la domiciliation pour ce transfert?")) {
+                            _url += "do";
+                        }
+                        break;
+                    case "btn-down-instruc":
+                        if (confirm("Voulez-vous générer l'instruction pour ce transfert?")) {
+                            _url += "i";
+                        }
+                        break;
+                    default:
+                }
+                $(a).attr('href', _url);
+                a.click();
+            });
+
+        } catch (e) {
+
+        }
+        try {//affiche docs
+            $('.file-show').click(function () {
+                if (this.classList.contains('btn-outline-light')) {
+                    $(this.parentElement).hide(300);
+                    if (this.getAttribute('_estpdf') == "True") {
+                        document.getElementById('iframe-img-' + this.getAttribute('_id')).src = this.getAttribute('src');
+                    } else {
+                        document.getElementById('img-' + this.getAttribute('_id')).src = this.getAttribute('_src');
+                    }
+                }
+            });
+        } catch (e) {
+
+        }
+        try {
+            $("a[href='#finish']").hide();
+        } catch (e) {
+
+        }
+        try {
+            $('.soumValid').on('click', function () {
+                $('#EtapeValidationClient').val(this.getAttribute('value'));
+            });
+        } catch (e) {
+
+        }
+        try {
+            $('frame').addClass('lecture-direct');
+        } catch (e) {
+
+        }
+
+        try {
+            $('#Montant,#DeviseMonetaireId').on('change', function () {
+                SetMontantLet(this);
+            })
+        } catch (e) {
+
+        }
+        var tab = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',','.'];
+        function SetMontantLet(elt) {
+            var devise = "";
+            try {
+                devise = document.getElementById('DeviseMonetaireId').options[document.getElementById('DeviseMonetaireId').selectedIndex].textContent;
+                //    devise = devise.toLowerCase();
+            } catch (e) {
+
+            }
+            var mt = "";
+            for (var i in $('#Montant').val()) {
+                if (tab.includes($('#Montant').val()[i])) {
+                    mt += $('#Montant').val()[i];
+                }
+            }
+            var intPart = 0, nombre=0;
+            if (mt.includes('.')) {
+                nombre = Number(mt.split('.')[0]);
+                intPart = Number(Number("0." + mt.split('.')[1]) * 100);
+            } else {
+                nombre = Number(mt);
+            }
+            if (intPart > 0) {
+                var centime = "centime";
+                if (intPart.toString().includes('.')) {
+                    intPart = Number(intPart.toString().split('.')[0]);
+                }
+                if (intPart >= 2) {
+                    centime = "centimes";
+                }
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise + " et " + intPart + " " + centime);
+            } else {
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise);
+            }
+        }
+
+        try {
+            document.getElementById("p-motif").addEventListener('mouseenter', function () {
+                $('#motifs').show(200);
+            });
+            document.addEventListener('click', function (e) {
+                document.addEventListener(`click`, e => {
+                    const origin = e.target;
+                    if (!origin.classList.contains('motif')) {
+                        $('#motifs').hide(200);
+                    }
+                });
+            });
+        } catch (e) {
+
+        }
+        try {
+            document.getElementById('iframe-instruct-gen').onload = function () {
+                this.style = "height:100%;width:100%";
+                document.getElementById('instruct-gen').click();
+                document.getElementById('Preloader_partiel').style.display = 'none';
+            };
+            $('.down-instruc').click(function () {
+                if (confirm('Voulez-vous générer la fiche de l\'instruction?')) {
+                    var _url = "";
+                    if (this.id == 'btn-down-inst') {
+                        document.getElementById('instruct-gen-down').setAttribute('href','@Url.Content("~/Dossiers/DownloadInstruction?id=" + Model.Dossier_Id)');
+                        document.getElementById('instruct-gen-down').click();
+                    } else {
+                        $('#iframe-instruct-gen').attr('src', '');
+                        document.getElementById('Preloader_partiel').style.display = 'initial';
+                        $('#iframe-instruct-gen').attr('src', '@Url.Content("~/Dossiers/InstructionGen?id=" + Model.Dossier_Id)');
+                    }
+                    var date = new Date();
+                    document.getElementById('DateSignInst').valueAsDate = new Date(date.getFullYear(), date.getMonth(), Number(date.getDate()+1));
+                } else {
+                }
+            });
+
+        } catch (e) {
+
+        }
+
+        try {
+            //$(".steps").css({ "background-color": "#ffffff" });
+        $(".steps").css({ "background-color": "#d0d8f8" });
+        var etp = Number('@(Model.EtapesDosier)');
+        var client = '@(Session["Profile"].ToString())';
+
+        if (etp > 0 && client=="client") {
+            //$('body').find('input,buttom ,textarea, button, select').attr('disabled', 'disabled');
+            //$('.btn-close').removeAttr('disabled');
+            $('.img-sup').hide();
+            //$('.btn-numerisation').hide();
+        }
+
+        window.addEventListener('resize', function () {
+            tt();
+        });
+
+        tt();
+
+        function tt() {
+            //if ($(window).width() < 1184) {
+            //    $("#btn-terminer").css("margin-top", "-65px");
+            //} else {
+            //    $("#btn-terminer").css("margin-top", "-55px");
+            //}
+        }
+        } catch (e) {
+
+        }
+
+        //btn marchandise arrivée
+        try {
+            $('#pan-customSwitchsizelg').click(function () {
+                //document.getElementById('btn-sauvegarde-tmp').click();
+                document.getElementById('customSwitchsizelg').checked;
+                if (document.getElementById('customSwitchsizelg').value == 'false') {
+                    document.getElementById('link-preload').click();
+                    document.getElementById('customSwitchsizelg').value = true;
+                } else {
+                    document.getElementById('customSwitchsizelg').value = false;
+                }
+                setMontant();
+                document.getElementById('form-edit').submit();
+            });
+        } catch (e) {
+
+        }
+
+        try {
+            //afffiche detailsview justificatif
+        $(".detail-view-just").click(function () {
+            $('#detailview-just-content').attr("src", "@Url.Content("~/Justificatifs/GetDetailJS?id=")" + this.getAttribute("data-just"));
+            document.getElementById("detailview-just").click();
+        });
+
+         //afffiche detailsview autre document
+        $(".detail-view-doc").click(function () {
+            document.getElementById('detailview-just-content').style.display = 'initial';
+            $('#detailview-just-content').attr("src", "@Url.Content("~/DocumentAttaches/GetDetailJS?id=")" + this.getAttribute("data-just"));
+            document.getElementById("detailview-just").click();
+        });
+
+        //ajout document: autre et transport
+        $('.ajout-doc').click(function () {
+            var typedoc = this.getAttribute('doc-type');
+            if (typedoc==0) {//document de transport
+                $('#type-doc').val("0");
+            } else {
+                $('#type-doc').val("1");
+            }
+        });
+        } catch (e) {
+
+        }
+
+        compteClient()
+
+         try {
+             $('#NumCompteClient').change(function () {
+                 compteClient()
+             });
+
+            $('#NumCompteBenef').change(function () {
+                var selectedCountry = $(this).children("option:selected").val();
+                 try {
+                     $.ajax({
+                         url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + $('#FournisseurId').val() + '&numCmpt=' + selectedCountry,
+                         success: function (responce) {
+                             try {
+                                 $('#AdresseBanqueBenf').val(responce.Adresse);
+                                 $('#NomBanqueBenf').val(responce.NomBanque);
+                                 $('#CodeAgenceBenf').val(responce.CodeAgence);
+                                 $('#CleCompteBenf').val(responce.Cle);
+                                 $('#CodeSwiftBic').val(responce.CodeSwift);
+                             } catch (e) {
+
+                             }
+                        },
+                        error: function (responce) { alert("eee: "+responce.error) }
+                    });
+                } catch (e) {
+
+                }
+            });
+
+            $("#FournisseurId").change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+            $('#FournisseurId0').val(selectedCountry);
+                 try {
+                     $.ajax({
+                         url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + selectedCountry,
+                         success: function (responce) {
+                             var daySelect = document.getElementById('NumCompteBenef');
+                            var length = daySelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                daySelect.options[i] = null;
+                            }
+
+                             $.each(responce, function (index, item) {
+                                 try {
+                                     $('#CodeEtsBenf').val(item.CodeEts);
+                                     $('#AdresseBanqueBenf').val(item.Adresse);
+                                     $('#NomBanqueBenf').val(item.NomBanque);
+                                     $('#AdresseFournisseur').val(item.AdresseBenf);
+                                     //$('#Cle').val(item.Cle);
+                                     $('#CodeAgenceBenf').val(item.CodeAgence);
+                                     $('#CleCompteBenf').val(item.Cle);
+                                     $('#CodeSwiftBic').val(item.CodeSwift);
+                                 } catch (e) {
+
+                                 }
+                                 daySelect.options[daySelect.options.length] = new Option('' + item.Numero, item.Numero);
+                             });
+                             daySelect.options[daySelect.options.length] = new Option('', '');
+                        },
+                        error: function (responce) { alert(responce.error) }
+                    });
+                } catch (e) {
+
+                }
+            });
+        } catch (e) {
+
+        }
+
+        function compteClient() {
+            var aa = $($('#NumCompteClient')).children("option:selected").attr("cle");
+            var code = $($('#NumCompteClient')).children("option:selected").attr("CodeAgence");
+            if (aa) {
+                $('#Cle').val(aa);
+            }
+            if (code) {
+                $('#CodeAgence').val(code);
+            }
+        }
+
+
+        //show instruction
+        try {
+            $('#instruction-show0').click(function () {
+                if (!this.classList.contains('vue')) {
+                    $('#instruction-body0').show(100);
+                    this.classList.add('vue');
+                } else {
+                    $('#instruction-body0').hide(100);
+                    this.classList.remove('vue');
+                }
+            })
+        } catch (e) {
+
+        }
+        //Get suivant and precedent links
+    try {
+            var nb_factures = document.getElementById("nb_factures").value;
+            var lettre_url = document.getElementById("img-lettre").getAttribute('src');
+            var lettre_url2 = document.getElementById("iframe-img-lettre").getAttribute('src');
+            var quit_url = document.getElementById("img-quit").getAttribute('src');
+            var quit_url2 = document.getElementById("iframe-img-quit").getAttribute('src');
+
+            var declar_url = document.getElementById("img-dp").getAttribute('src');
+            var declar_url2 = document.getElementById("iframe-img-dp").getAttribute('src');
+            var doImp_url = document.getElementById("img-doImp").getAttribute('src');
+            var doImp_url2 = document.getElementById("iframe-img-doImp").getAttribute('src');
+
+            var nbrDoctrans = 0;var nbrAutresDocs = 0;
+            try {
+                nbrDoctrans = '@(Model.DocumentsTransportCount)';
+            } catch (e) {
+
+            }
+            try {
+                nbrAutresDocs = '@(Model.DocumentAttachesCount)';
+            } catch (e) {
+
+            }
+            var dones = $('.done');
+            var suiv = $("a[href='#next']")[0];
+            //var prev = $("a[href='#previous']")[0];
+        if ("@ViewBag.afficheInstruct" == "True") {
+            if (nb_factures == 0) {
+                   suiv.click();
+            }
+            if ("@Model.Apurement" == "True") {
+                if (!lettre_url && !lettre_url2 || lettre_url == "#" && lettre_url2 == "") {
+                    suiv.click(); suiv.click();
+                }
+                else if (!quit_url && !quit_url2 || quit_url == "#" && quit_url2 == "") {
+                    for (var i = 0; i < 3; i++) {
+                        suiv.click();
+                    }
+                }
+                else if (nbrDoctrans == 0) {
+                    for (var i = 0; i < 4; i++) {
+                        suiv.click();
+                    }
+                }
+                else if (nbrAutresDocs == 0) {
+                    for (var i = 0; i < 5; i++) {
+                        suiv.click();
+                    }
+                }
+                else if (!declar_url && !declar_url2 || declar_url == "#" && declar_url2 == "") {
+                    for (var i = 0; i < 6; i++) {
+                        suiv.click();
+                    }
+                }
+                else if (!doImp_url && !doImp_url2 || doImp_url == "#" && doImp_url2 == "") {
+                    for (var i = 0; i <= 7; i++) {
+                        suiv.click();
+                    }
+                }
+
+            } else {
+                var _br = '@Model.EditeAuto';
+                var j = _br == 1 ? 1 : 0;
+                for (var i = j; i < _br; i++) {
+                    suiv.click();
+                    if (i >= 6) {
+                        document.getElementById("btn-sauvegarde-tmp").disabled = false;
+                        document.getElementById("btn-terminer").disabled = false;
+                        document.getElementById("btn-terminer").classList.remove("btn-outline-info");
+                        document.getElementById("btn-terminer").classList.add("btn-info");
+                        document.getElementById("btn-terminer").setAttribute("title", "Vous pouvez terminer l'enregistrement et envoyer le dossier à la banque");
+                    }
+                }
+                _br = null;
+            }
+        }
+            nb_factures = null;
+            lettre_url = null;
+            lettre_url2 = null;
+            quit_url = null;
+            quit_url2 = null;
+
+        } catch (e) {
+
+        }
+
+        //Contrôle date edit instruction
+        try {
+            $(function () {
+                var dtToday = new Date();
+                var month = dtToday.getMonth() + 1;
+                var day = dtToday.getDate();
+                var year = dtToday.getFullYear();
+                if (month < 10)
+                    month = '0' + month.toString();
+                if (day < 10)
+                    day = '0' + day.toString();
+
+                var maxDate = year + '-' + month + '-' + day;
+                $('#DateSignInst').attr('max', maxDate);
+            });
+            document.getElementById('DateSignInst').valueAsDate = new Date(annee, Number(mois - 1), Number(jour));
+        } catch (e) {
+
+        }
+    })
+</script>
+<label id="refleshAfertModifie" class="hidden"></label>
+
+@Html.Partial("~/Views/_Shared/PartialViews/ButtonManger.cshtml")

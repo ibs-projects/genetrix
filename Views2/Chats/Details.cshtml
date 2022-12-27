@@ -1,0 +1,556 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.Chat
+
+@{
+    ViewBag.Title = "Chat";
+    ViewBag.pTitle = "Chat";
+    ViewBag.pageTitle = "Apps";
+    ViewBag.pageImage = "~/assets/images/IU/bank.png";
+    var userName = (string)Session["userName"];
+    var userId = (string)Session["userId"];
+    int? userChatId = null;
+    ApplicationUser user = null;
+    var db = new ApplicationDbContext();
+    try
+    {
+        user = db.Users.Find(userId);
+        userChatId = user.ChatId;
+        user = null;
+    }
+    catch (Exception)
+    { }
+    string entreprise = "", emetteur = "";
+    //var statutClass = Model.Statut == StatutChat.Attente ? "bg-danger" : Model.Statut == StatutChat.Encours ? "bg-info" : "bg-danger";
+    try
+    {
+        emetteur = Model.Emetteur.NomComplet;
+        if (Model.Emetteur is CompteClient)
+        {
+            entreprise = (Model.Emetteur as CompteClient).ClientName;
+        }
+        else if (Model.Emetteur is CompteBanqueCommerciale)
+        {
+            entreprise = (Model.Emetteur as CompteBanqueCommerciale).StructureName;
+        }
+
+    }
+    catch (Exception)
+    { }
+    string statutClass = "", statutName = "", situationClass = "", situationName = "";
+    statutClass = Model.GetStatutColor[1];
+    statutName = Model.GetStatutColor[0];
+    situationName = Model.GetSituationColor[0];
+    situationClass = Model.GetSituationColor[1];
+}
+@{
+    <span class="text-white bg-@situationClass" style="padding: 12px; border-radius: 3px;"><i class="mdi mdi-egg"></i> @situationName</span>
+    if ((userChatId == null || userChatId != Model.ChatId) && Model.Statut != StatutChat.Fermé)
+    {
+        <a href="~/chats/suivre?suivrepxk=@Model.ChatId" class="btn btn-outline-info"><i class="mdi mdi-chat"></i> Participer au chat</a>
+    }
+    else if (Model.Statut != StatutChat.Fermé)
+    {
+        <button type="button" class="p-2 btn btn-outline-danger" id="ferme-chat" href="#" style="border-radius:3px" data-bs-toggle="modal" data-bs-target="#modal-choix"><i class="mdi mdi-chat-remove"></i> Fermer le chat</button>
+    }
+    else
+    {
+        <span class="bg-@statutClass text-white bg-@statutClass" style="padding: 12px; border-radius: 3px; margin-top:8px"><i class="mdi mdi-chat"></i> @Model.Statut</span>
+    }
+
+
+}
+<hr style="margin-bottom:2px" />
+<div class="d-lg-flex mb-4" style="margin-top:-5px">
+    <div class="chat-leftsidebar card">
+        <div class="p-3 px-4">
+            <div class="media">
+                <div class="align-self-center me-3">
+                    <img src="~/assets/images/IU/user.png" class="avatar-xs rounded-circle" alt="">
+                </div>
+                <div class="media-body">
+                    <h5 class="font-size-16 mt-0 mb-1"><a href="#" class="text-dark">@Model.Emetteur.NomComplet <i class="mdi mdi-circle text-success align-middle font-size-10 ms-1"></i></a></h5>
+                    <p class="text-muted mb-0">@entreprise</p>
+                </div>
+
+                <div>
+                    <div class="dropdown chat-noti-dropdown hidden">
+                        <button class="btn dropdown-toggle py-0" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="uil uil-ellipsis-h"></i>
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="#">Profile</a>
+                            <a class="dropdown-item" href="#">Edit</a>
+                            <a class="dropdown-item" href="#">Add Contact</a>
+                            <a class="dropdown-item" href="#">Setting</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-3">
+            <div class="search-box chat-search-box">
+                <div class="position-relative">
+                    <input type="text" class="form-control bg-light border-light rounded" placeholder="Search...">
+                    <i class="uil uil-search search-icon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="pb-3">
+            <div data-simplebar style="max-height: 470px;overflow-y:scroll">
+                <div class="p-4 border-top">
+                    <div>
+
+                        <h5 class="font-size-16 mb-3"><i class="mdi mdi-time me-1"></i> Historique du client</h5>
+
+                        <ul class="list-unstyled chat-list group-list">
+                            @{
+                                if (ViewBag.histClient != null)
+                                {
+                                    string icon = "";
+                                    foreach (var item in ViewBag.histClient)
+                                    {
+                                        try
+                                        {
+                                            try
+                                            {
+                                                statutName = item.StatutName;
+                                                statutClass = item.StatutClass;
+                                                situationName = item.SituationName;
+                                                situationClass = item.SituationClass;
+                                                switch (item.StatutChat)
+                                                {
+                                                    case StatutChat.Fermé:
+                                                        icon = "mdi-chat-remove";
+                                                        break;
+                                                    case StatutChat.Attente:
+                                                        icon = "mdi-chat-sleep";
+                                                        break;
+                                                    case StatutChat.Encours:
+                                                        icon = "mdi-chat-processing";
+                                                        break;
+                                                    default:
+                                                        break;
+                                                }
+                                            }
+                                            catch (Exception e)
+                                            { }
+                                            <li>
+                                                <a href="@Url.Content("~/chats/details?id="+item.Id)" class="chat-hist">
+                                                    <div class="media align-items-center">
+                                                        @*<div class="avatar-xs me-3">
+                                                                <span class="avatar-title rounded-circle bg-soft-primary text-primary">
+                                                                    F
+                                                                </span>
+                                                            </div>*@
+                                                        <div class="media-body">
+                                                            <h5 class="font-size-14 mb-0"><i class="mdi @icon text-@statutClass" title="@statutName"></i> <i class="mdi mdi-egg text-@situationClass" title="@situationName"></i> @(item.Sujet)</h5>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                        catch (Exception e)
+                                        { }
+                                    }
+                                }
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="p-4 border-top hidden">
+                    <div>
+                        <div class="float-end">
+                            <a href="" class="text-primary"><i class="mdi mdi-plus"></i> Nouveau Contact</a>
+                        </div>
+                        <h5 class="font-size-16 mb-3"><i class="uil uil-user me-1"></i> Contacts</h5>
+
+                        <ul class="list-unstyled chat-list">
+                            @*<li>
+                                   <a href="#">
+                                       <div class="media">
+                                           <div class="user-img online align-self-center me-3">
+                                               <img src="~/assets/images/users/avatar-2.jpg" class="rounded-circle avatar-xs" alt="">
+                                               <span class="user-status"></span>
+                                           </div>
+                                           <div class="media-body overflow-hidden">
+                                               <h5 class="text-truncate font-size-14 mb-1">John Howard</h5>
+                                               <p class="text-truncate mb-0">Hey! there I'm available</p>
+                                           </div>
+                                           <div class="font-size-11">02 min</div>
+                                       </div>
+                                   </a>
+                                </li>*@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end chat-leftsidebar -->
+    <div class="w-100 user-chat mt-4 mt-sm-0 ms-lg-1">
+        <div class="card">
+            <div class="p-3 px-lg-4 border-bottom">
+                <div class="row">
+                    <div class="col-md-4 col-6">
+                        <h5 class="font-size-16 mb-1 text-truncate"><a href="#" class="text-dark"><i class="uil uil-users-alt me-1"></i> Participants</a></h5>
+                        @*<p class="text-muted text-truncate mb-0"><i class="uil uil-users-alt me-1"></i> <span id="nbr-membres"></span> Membres</p>*@
+                        <ul class="list-inline user-chat-nav mb-0" style="text-align:left!important">
+                            <li class="list-inline-item">
+                                <div class="dropdown">
+                                    <button class="btn nav-btn dropdown-toggle float-left" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="uil uil-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        @{
+                                            foreach (var item in Model.Destinataires)
+                                            {
+                                                <a class="dropdown-item" href="#"><i class="mdi mdi-account"></i> @item.NomComplet</a>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div class="col-md-8 col-6" style="border-left:1px solid #dedada">
+                        <h5>Objet: <span class="text-success" style="">@Model.Sujet</span></h5>
+                        <label class="text-muted"><span>Date: </span>@Model.DateHeure</label>
+                        <ul class="list-inline user-chat-nav text-end mb-0 hidden">
+                            <li class="list-inline-item">
+                                <div class="dropdown">
+                                    <button class="btn nav-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="uil uil-search"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-md">
+                                        <form class="p-2">
+                                            <div>
+                                                <input type="text" class="form-control rounded" placeholder="Search...">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-inline-item">
+                                <div class="dropdown">
+                                    <button class="btn nav-btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <i class="uil uil-ellipsis-h"></i>
+                                    </button>
+                                    <div class="dropdown-menu dropdown-menu-end hidden">
+                                        <a class="dropdown-item" href="#">Profile</a>
+                                        <a class="dropdown-item" href="#">Archive</a>
+                                        <a class="dropdown-item" href="#">Muted</a>
+                                        <a class="dropdown-item" href="#">Delete</a>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="px-lg-2">
+                <div class="chat-conversation p-3" style="height: 475px;max-height: 475px;overflow-y:scroll">
+                    <ul class="list-unstyled mb-0" id="discussion" data-simplebar style="height: 455px;max-height: 455px;overflow-y:scroll">
+                        <li class="chat-day-title">
+                            <div class="title">@((DateTime.Now-Model.DateHeure).Value.Days<1?"Aujourd'hui": Model.DateHeure.Value.ToString("dd/MM/yyyy"))</div>
+                        </li>
+                        <li class="">
+                            <div class="conversation-list">
+                                <div class="ctext-wrap">
+                                    <div class="ctext-wrap-content">
+                                        <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">@Model.Emetteur.NomComplet</a> <span class="d-inline-block font-size-12 text-muted ms-2">@Model.DateHeure.Value.Hour:@Model.DateHeure.Value.Minute:@Model.DateHeure.Value.Second </span></h5>
+                                        <p class="mb-0" style="font-weight:bold;color:green">
+                                            @Model.Sujet
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        @{
+                            string right = "";
+                            foreach (var item in Model.Contenu)
+                            {
+                                right = "";
+                                if (item.EmetteurName == userName)
+                                {
+                                    right = "right";
+                                }
+                                <li class="@right">
+                                    <div class="conversation-list">
+                                        <div class="ctext-wrap">
+                                            <div class="ctext-wrap-content">
+                                                <h5 class="font-size-14 conversation-name"><a href="#" class="text-dark">@item.EmetteurName</a> <span class="d-inline-block font-size-12 text-muted ms-2">@item.Date.Hour:@item.Date.Minute:@item.Date.Second </span></h5>
+                                                <p class="mb-0">
+                                                    @item.Text <br />
+                                                    @Html.Raw(item.LienImage)
+                                                </p>
+                                            </div>
+                                            <div class="dropdown align-self-start hidden">
+                                                <a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="uil uil-ellipsis-v"></i>
+                                                </a>
+                                                <div class="dropdown-menu">
+                                                    <a class="dropdown-item" href="#">Copier</a>
+                                                    <a class="dropdown-item" href="#">Editer</a>
+                                                    <a class="dropdown-item" href="#">Delete</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </li>
+                            }
+                        }
+                        <li style="text-align:left;background-color:red;display:none" id="typing-text">
+                            <img src="~/assets/images/IU/typing-text2.gif" alt="" style="width:70px;" />
+                        </li>
+                        <li class="hidden">
+                            <a href="#" id="link-bottom"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="p-3 chat-input-section">
+                <div class="row">
+                    <div class="col">
+                        <div class="position-relative">
+                            <input type="text" id="message" class="form-control chat-input rounded chat-act" placeholder="Entrer votre Message...">
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" id="sendmessage" class="btn btn-primary chat-send w-md waves-effect waves-light chat-act"><span class="d-none d-sm-inline-block me-2">Envoyer</span> <i class="mdi mdi-send float-end"></i></button>
+                        <button type="submit" class="btn btn-primary m-0 chat-act" id="fichier-btn"> <i class="mdi mdi-link-variant float-right chat-act"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="form-actions no-color">
+    @Html.ActionLink("Liste", "Index")
+</div>
+@*@Html.Partial("~/Views/Chats/script.cshtml")*@
+<a href="#" class="hidden" id="close-chat"></a>
+<a href="#" class="hidden" id="show-modal-choix" data-bs-toggle="modal" data-bs-target="#modal-choix"></a>
+@Html.Partial("~/Views/Chats/Modal_ChoixStatut.cshtml")
+<input type="file" id="ficher-inp" value="" accept="image/png, image/gif, image/jpeg" class="hidden" />
+<a href="#footer-pan" class="hidden" id="link-footer"></a>
+
+@section scripts {
+    <!--Script references. -->
+    <!--The jQuery library is required and is referenced by default in _Layout.cshtml. -->
+    <!--Reference the SignalR library. -->
+    <script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+    @*<script src="~/Scripts/jquery.signalR-2.1.0.min.js"></script>*@
+    <!--Reference the autogenerated SignalR hub script. -->
+    @*<script src="~/Scripts/realTime.js"></script>*@
+    <script src="~/signalr/hubs"></script>
+    <!--SignalR script to update the chat page and send messages.-->
+    <script>
+        var userName = '@(Session["userName"])';
+        var userId = '@(Session["userId"])';
+        $(function () {
+            // Reference the auto-generated proxy for the hub.
+            var chat = $.connection.chatHub;
+            // Create a function that the hub can call back to display messages.
+            var typingText = document.getElementById('typing-text');
+            chat.client.addNewMessageToPage = function (name, message, statut, rk4, Contenu, loading, imagePath) {
+                // Add the message to the page.
+                $('#nbr-membres').text(rk4.length);
+                if (rk4.includes(userId)) {
+                    var right = "";
+                    var bgr = "";
+                    if (name == userName) {
+                        right = "right";
+                    } else {
+                        bgr = "left-bg";
+                    }
+                    if (!loading || name == userName) {
+                        typingText.style.display = 'none';
+                    } else {
+                        typingText.style.display = 'initial';
+                    }
+                    if (message || imagePath) {
+                        let hour = getHour();
+                        var li = //"<li class=\"" + right + "\">"
+                            "<div class=\"conversation-list\">"
+                            + "<div class=\"ctext-wrap\">"
+                            + "<div class=\"ctext-wrap-content\">"
+                            + "<h5 class=\"font-size-14 conversation-name\">" + "<a href=\"#\" class=\"text-dark\">" + name + "</a>" + "<span class=\"d-inline-block font-size-12 text-muted ms-2\">" + hour + "</span ></h5 > "
+                            + "<p class=\"mb-0\">"
+                            + message + "<br/>"
+                            + imagePath
+                            + "</p>"
+                            + "</div>"
+                            + "<div class=\"dropdown align-self-start\">"
+                            + "<a class=\"dropdown-toggle\" href=\"#\" role=\"button\" data-bs-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">"
+                            + "<i class=\"uil uil-ellipsis-v\"></i>"
+                            + "</a>"
+                            + "<div class=\"dropdown-menu\">"
+                            + "<a class=\"dropdown-item\" href=\"#\">Copier</a>"
+                            + "<a class=\"dropdown-item\" href=\"#\">Editer</a>"
+                            + "<a class=\"dropdown-item\" href=\"#\">Supprimer</a>"
+                            + "</div>"
+                            + "</div>"
+                            + "</div>"
+                            + "</div>";
+                        //+ "</li>";
+                        var _li = document.createElement('li');
+                        _li.setAttribute('class',right);
+                        _li.innerHTML = li;
+                        typingText.parentNode.insertBefore(_li, typingText);
+                        $('#link-bottom').click();
+                    }
+                } else {
+                    alert("echec de reception des messages")
+                }
+            };
+            // Get the user name and store it to prepend to messages.
+            //$('#displayname').val(prompt('Enter your name:', ''));
+            $('#displayname').val("ddd");
+            // Set initial focus to message input box.
+            $('#message').focus();
+            // Start the connection.
+            let scroly = 0;
+            $.connection.hub.start().done(function () {
+                $('#sendmessage').click(function () {
+                    // Call the Send method on the hub.
+                    chat.server.send(userName, $('#message').val(), '@Model.ChatId', userId, '', false, "agent",0);
+                    // Clear text box and reset focus for next comment.
+                    document.getElementById('link-footer').click();
+                    $('#message').val('').focus();
+                    var bc = document.getElementById('body-content');
+                    scroly += document.body.offsetHeight + 100;
+                    bc.scrollTo(0, scroly);
+                });
+
+                //entrain d'ecrire
+                var messageVal = $('#message').val();
+                $.connection.hub.start().done(function () {
+                    document.getElementById('message').addEventListener('input', function () {
+                        if (messageVal != this.value) {
+                            // Call the Send method on the hub.
+                            chat.server.send(userName, "", '@Model.ChatId', userId, "", true, "agent",0);
+                        } else {
+                            // Call the Send method on the hub.
+                            chat.server.send(userName, "", '@Model.ChatId', userId, "", false, "agent",0);
+                        }
+                    });
+                });
+
+                //Envoi d'un fichier
+                try {
+                    document.getElementById("ficher-inp").onchange = evt => {
+                        const [file] = evt.target.files;
+                        if (file) {
+                            var formData = new FormData();
+                            formData.append("image", file);
+                            formData.append("idchat", '@Model.ChatId');
+
+                            $.ajax({
+                                url: '@Url.Content("~/chats/TelechargeFichierClient/")',
+                                type: "POST",
+                                contentType: false,
+                                processData: false,
+                                data: formData,
+                                success: function (response) {
+                                    try {
+                                        chat.server.send(userName, response.url, '@Model.ChatId', userId, "", false, "client", response.imageId);
+                                        // Clear text box and reset focus for next comment.
+                                        document.getElementById('link-footer').click();
+                                        $('#message').val('').focus();
+                                        var bc = document.getElementById('body-content');
+                                        scroly += document.body.offsetHeight + 100;
+                                        bc.scrollTo(0, scroly);
+                                    } catch (e) {
+
+                                    }
+                                }, error: function (er) {
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {
+
+                }
+
+            });
+
+
+        });
+        // This optional function html-encodes messages for display in the page.
+        function htmlEncode(value) {
+            var encodedValue = $('<div />').text(value).html();
+            return encodedValue;
+        }
+
+        function getHour() {
+            function addZero(i) {
+                if (i < 10) { i = "0" + i }
+                return i;
+            }
+
+            const d = new Date();
+            let h = addZero(d.getHours());
+            let m = addZero(d.getMinutes());
+            let s = addZero(d.getSeconds());
+            return h + ":" + m + ":" + s;
+        }
+    </script>
+}
+@*@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")*@
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+<script>
+     try {
+        var estFerme = '@(Model.Statut==StatutChat.Fermé)';
+         if (estFerme == 'True' || '@ViewBag.estSuivi'=='False') {
+            $('.chat-act').attr("disabled", "disabled");
+        }
+
+    } catch (e) {
+
+    }
+    try {
+
+        $('#bt-termier').click(function () {
+            if (confirm('Vous êtes sur le point de fermer cette discussion. Voulez-vous confirmer l\'action?')) {
+                var radios = document.getElementsByName('radioSituation');
+                var situation = "";
+                for (var i = 0; i < radios.length; i++) {
+                    if (radios[i].checked) {
+                        situation = radios[i].getAttribute('id');
+                    }
+                }
+                var _url = '@Url.Content("~/Chats/Ferme?id="+Model.ChatId)' + '&situation=' + situation +'&vueLarge=1';
+                $('#close-chat').attr('href', _url);
+                document.getElementById('close-chat').click();
+            }
+        });
+
+    } catch (e) {
+
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#fichier-btn').click(function () {
+            document.getElementById('ficher-inp').click();
+        });
+    });
+</script>

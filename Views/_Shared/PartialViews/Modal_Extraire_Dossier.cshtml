@@ -1,0 +1,67 @@
+﻿@using genetrix.Models
+@{ 
+    string email = "";
+    try
+    {
+        email =User.Identity.Name;
+    }
+    catch
+    {}
+}
+<div class="modal fade" id="modal-extraire-dossier" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="extract" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="extract" style="font:bold"><i class="mdi mdi-clock"></i> Parametre d'extraction</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row" style="padding-left:10px" id="user-info">
+                    <div class="form-check mb-1 col-6 pl-1">
+                        <input type="checkbox" name="client" id="include-client" checked class="form-check-input">
+                        <label class="form-check-label text-dark fs-6" for="client" style="margin-left:5px;">Inclure les données du client</label>
+                    </div>
+                    <div class="form-check mb-1 col-6">
+                        <input type="checkbox" name="fournisseur" id="include-fournisseur" checked class="form-check-input">
+                        <label class="form-check-label text-dark fs-6" for="fournisseur" style="margin-left:5px;">Inclure les données du fournisseur</label>
+                    </div>
+                </div>
+                <input type="text" name="agent-emails0" id="agentemails0" readonly="readonly" autocomplete="off" class="form-control" value="Emails: @email" placeholder="Email: @email" style="margin-bottom:10px" />
+                <input type="text" name="agent-emails" id="agentemails" readonly="readonly" autocomplete="off" class="form-control hidden" value="@email" placeholder="@email" style="margin-bottom:10px" />
+                <label class="text-muted" id="lab-info">Le dossier avec tous ces éléments seront envoyés via cette adresse</label>
+                <div class="row hidden1" style="margin: 10px;">
+                    <div class="col-5">
+                        <button id="btn-add-email" class="btn add-email"><i class="mdi mdi-plus"></i> Ajouter une adresse</button>
+                    </div>
+                    <div class="col-7">
+                        <input type="text" class="form-control" autocomplete="off" id="add-email" style="display:none;" value="" />
+                    </div>
+
+                </div>
+                <hr />
+                <button type="button" id="btn-modal-extraction-doss" class="btn btn-primary" data-bs-dismiss="modal"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    document.getElementById('btn-add-email').addEventListener('click', function () {
+        if (!this.classList.contains('add')) {
+            this.classList.add('add');
+            this.innerHTML = '<i class="mdi mdi-content-save-edit"></i> Valider';
+            document.getElementById('add-email').style.display = 'initial';
+        } else {
+            this.classList.remove('add');
+            this.innerHTML = '<i class="mdi mdi-plus"></i> Ajouter une adresse';
+            document.getElementById('add-email').style.display = 'none';
+            document.getElementById('agentemails').value += ";" + document.getElementById('add-email').value;
+            document.getElementById('agentemails0').value += ";" + document.getElementById('add-email').value;
+            document.getElementById('add-email').value = '';
+            document.getElementById('lab-info').textContent = 'Le dossier avec tous ces éléments seront envoyés via ces adresses';
+        }
+    });
+
+
+</script>

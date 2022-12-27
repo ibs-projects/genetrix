@@ -1,0 +1,27 @@
+﻿@model IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>
+@{
+    string id = "";
+    if (ViewBag.navigation == "fournisseurs")
+    {
+        id = "fou-dos";
+    }
+    try
+    {
+        foreach (var item in Model)
+        {
+            <p>
+                <span class="float-left">@item.Key</span>
+                <hr style="display:inline;width:3px;" />
+            </p>
+            foreach (var dos in item)
+            {
+                <button id="@ViewBag.navigation" iddossier="@dos.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                    @dos.Name
+                </button>
+            }
+        }
+    }
+    catch (Exception)
+    { }
+}

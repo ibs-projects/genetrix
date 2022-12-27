@@ -1,0 +1,75 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.BanqueClient>
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+
+    if (Session["Profile"].ToString() == "banque")
+    {
+        <p>
+            @Html.ActionLink("Ajouter", "Create", "BanqueClients")
+        </p>
+    }
+}
+
+
+<div class="table-responsive">
+    <table class="table table-centered table-nowrap mb-0">
+        <thead class="table-bordered">
+            <tr>
+                <th>
+                    @Html.DisplayName("Banque")
+                </th>
+                <th>
+                    @Html.DisplayName("Agence")
+                </th>
+                <th>
+                    @Html.DisplayName("Gestionnaire")
+                </th>
+                <th>
+                    @Html.DisplayName("Téléphone")
+                </th>
+                <th>
+                    @Html.DisplayName("Email")
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Site.BanqueName(db);
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Site.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gestionnaire.NomComplet)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gestionnaire.AllPhone)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gestionnaire.Email)
+                    </td>
+                    <td>
+                        @{
+                            <a href="@Url.Content("~/banqueClients/edit?id="+item.Id)">Détails</a>
+                            if ((string)Session["Profile"] == "banque")
+                            {
+                                <span> | </span>
+                                <a href="@Url.Content("~/banqueClients/edit?id="+item.Id)">Editer</a>
+                                <span> | </span>
+                                <a href="@Url.Content("~/banqueClients/delete?id="+item.Id)">Supprimer</a>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+
+
+        </tbody>
+    </table>
+</div>
+

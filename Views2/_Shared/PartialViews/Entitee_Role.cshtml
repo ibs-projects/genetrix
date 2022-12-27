@@ -1,0 +1,55 @@
+﻿@model IEnumerable<genetrix.Models.Entitee_Role>
+
+<p>
+    <a href="#" class="btn btn-soft-light" data-bs-toggle="modal" data-bs-target="#ajout-entitee">Ajouter</a>
+</p>
+<table id="datatable-buttons0" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Entiée")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Lire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Ecrire)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Supprimer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Créer)
+            </th>
+            <th></th>
+        </tr>
+        </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Entitee.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Lire)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Ecrire)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supprimer)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Créer)
+                </td>
+                <td>
+                    <a href="@Url.Content("~/entitee_role/edit?id="+item.IdXRole + "_"+item.IdEntitee)">Edition</a>|
+                    <a href="@Url.Content("~/entitee_role/delete?id="+item.IdXRole + "_"+item.IdEntitee)">Suppression</a>|
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+@Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Entitee_Role.cshtml")

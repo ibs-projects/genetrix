@@ -1,0 +1,70 @@
+﻿@model genetrix.Models.Signataire
+
+@{
+    ViewBag.Title = " Suppression correspondant";
+    ViewBag.pTitle = "Suppression correspondant";
+    ViewBag.pageTitle = "Suppression correspondant";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="card">
+    <div class="card-header card-header1"><h3 class="text-danger">Êtes-vous sûr de vouloir supprimer cet utilisateur?</h3></div>
+    <div class="card-body">
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.NomComplet)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.NomComplet)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Telephone)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Telephone)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Email)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Email)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Rang)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Rang)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Fonction)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Fonction)
+            </dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-actions no-color">
+                <input type="submit" value="Supprimer" class="btn btn-default" /> |
+                @Html.ActionLink("Voir la liste", "Index")
+            </div>
+        }
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

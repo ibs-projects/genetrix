@@ -1,0 +1,56 @@
+﻿@model IEnumerable<genetrix.Models.CompteBanqueCommerciale>
+
+<p>
+    <a href="#" class="btn btn-soft-light" data-bs-toggle="modal" data-bs-target="#ajout-users">Ajouter</a>
+</p>
+<div class="table-responsive">
+    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Prenom)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.NomUtilisateur)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Email)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EstAdmin)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Where(u => u.IdXRole == ViewBag.RoleId))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Prenom)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NomUtilisateur)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EstAdmin)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Delete", "Delete", new { id = item.IdXRole })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    </div>
+    @Html.Partial("~/Views/_Shared/PartialViews/Modal_Ajout_Utilisateur.cshtml", Model)

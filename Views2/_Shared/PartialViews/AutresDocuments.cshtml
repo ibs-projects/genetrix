@@ -1,0 +1,36 @@
+﻿@model IEnumerable<genetrix.Models.DocumentAttache>
+
+<div class="table-responsive">
+    <table class="table" id="autresdoc_table">
+        <thead>
+            <tr>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Nom)
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+
+        <tbody id="autresdoc_table_body">
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nom)
+                    </td>
+                    <td>
+                        @*<a href="#" data-just="@item.Id" class="detail-view-doc" title="Visualiser"><i class="mdi mdi-eye-circle"></i>Lien du document</a> |*@
+                        <a href="@Url.Content("~/DocumentAttaches/Details/"+item.Id)">Details</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+        </tfoot>
+    </table>
+    
+</div>
+

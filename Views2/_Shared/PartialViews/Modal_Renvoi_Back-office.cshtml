@@ -1,0 +1,66 @@
+﻿<style>
+    .form-check1 {
+        padding-left: 35px;
+    }
+
+    .form-check2 {
+        padding-left: 10px;
+    }
+</style>
+<div class="modal fade" id="modal-renvoi-back-office" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="modal_renvoi_back_office" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align: left !important; position: center; border-bottom: 13px solid #2689a6">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="modal_renvoi_back_office" style="font:bold">Motif du renvoi du dossier</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <h6 style="font:bold;" class="text-primary">Veuillez saisir le motif du renvoi</h6>
+                <textarea rows="5" class="form-control" id="raison-renvoie" placeholder="Entrez le motif ici.."></textarea>
+                <p></p>
+                <h6 style="font: bold;" class="text-primary">Indiquer les éléments concernés</h6>
+                <div class="row border border-1 pb-3" style="padding-left:0px!important">
+                    <div class="text-dark col-6 m-0">
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="facturePartielle" type="checkbox" _id="Declaration d'importation" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="facturePartielle">
+                            <label class="form-check-label" for="facturePartielle">Declaration d'importation</label>
+                        </div>
+
+                    </div>
+                    <div class="text-dark col-6 m-0">
+                        <div class="form-check form-check2 form-switch form-switch-lg fs-6" style="margin-top:20px" dir="ltr">
+                            <input name="facturePartielle" type="checkbox" _id="Domiciliation d'importation" class="form-check-input check1" style="margin-left:0px;cursor:pointer" id="facturePartielle">
+                            <label class="form-check-label" for="facturePartielle">Domiciliation d'importation</label>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <button type="button" id="btn-renvoi-back-office" class="btn btn-primary change-etat" value="4"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<input type="text" id="items-rejet" class="hidden" name="items-rejet" value="" />
+<button type="button" id="btn-valid-raison-rejet" value="-2" class="hidden change-etat" onclick="document.getElementById('ajout-raison-loader').style.display='initial'" @*data-bs-dismiss="modal"*@><i class="mdi mdi-check"></i> Valider</button>
+<script>
+    document.getElementById('btn-renvoi-back-office').addEventListener('click', function () {
+        if (!document.getElementById('raison-renvoie').value) {
+            alert('Le champ motif ne peut pas être nul !');
+            document.getElementById('raison-renvoie').focus();
+            return;
+        }
+        try {
+            var elts = document.getElementsByClassName('check1');
+            for (var i = 0; i < elts.length; i++) {
+                if (elts[i].checked) {
+                    document.getElementById('items-rejet').value += elts[i].getAttribute('_id') + ';';
+                }
+            }
+        } catch (e) {
+
+        }
+        document.getElementById('btn-valid-raison-rejet').click();
+
+    });
+</script>

@@ -1,0 +1,144 @@
+﻿@model IEnumerable<genetrix.Models.Dossier>
+@{ 
+    var action = false;
+    var labcolor = @ViewBag.labcolor == "Tout" ? true : false;
+}
+
+<div class="card">
+    <div class="card-header bg-gradient-primary text-white"></div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>
+                            <input type="checkbox" id="check-all" name="name" class="form-check-input" value="" style="left:0" />
+                        </th>
+                        <th class="hidden">
+                            Actions
+                        </th>
+                        <th>
+                            Référence
+                        </th>
+                        <th>
+                            @Html.DisplayName("Client")
+                        </th>
+
+                        <th>
+                            Fournisseur
+                        </th>
+
+                        <th>
+                            Montant
+                        </th>
+                        <th>
+                            @Html.DisplayName("Devise")
+                        </th>
+                        <th>
+                            @Html.DisplayName("Statut")
+                        </th>
+                        <th class="partage">Responsable</th>
+                        @*<th id="tb-action" style="display:none;padding-top:10px">Action</th>*@
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+                    @{ 
+                        int i = 0;
+                        string color = "";
+                    }
+                    @foreach (var item in Model)//.Where(d => d.EtapesDosier <= 5))
+                    {
+                        color = "";
+                        //if (labcolor)
+                        //{
+                        //    if ((item.DFX6FP6BEAC==1))
+                        //    {
+                        //        color = "border-bottom:2px solid gold!important";
+                        //    }
+                        //    else if((item.DFX6FP6BEAC==2))
+                        //    {
+                        //        color = "border-bottom:2px solid forestgreen!important";
+                        //    }
+                        //    else if(item.EtapesDosier<0)
+                        //    {
+                        //        color = "border-bottom:2px solid deeppink!important";
+                        //    }
+                        //}
+                        i++;
+                        <tr data*-id="@item.Dossier_Id" style="cursor:pointer;" id="id-@item.Dossier_Id" idd="link-@item.Dossier_Id" class="ligne">
+                            <td class="att" style="@color">
+                                @{
+                                    if (string.IsNullOrEmpty(item.GetReference) && item.DFX6FP6BEAC == 1 && item.EtapesDosier < 15)
+                                    {
+                                        <input type="checkbox" ref="@item.GetReference" id="@item.Dossier_Id" montant="@item.Montant" name="name" class="form-check-input check-one float-left" value="" />
+                                    }
+                                    else
+                                    {
+                                        <script>
+                                            document.getElementById('id-@item.Dossier_Id').classList.add('row-nondfx');
+                                        </script>
+                                    }
+                                }
+                            </td>
+                            <td class="att hidden">
+                                <i class="fa fas fa-ellipsis-v fs-5 icon-action" estBeac="@item.DFX6FP6BEAC" doss-id="@item.Dossier_Id"></i>
+                            </td>
+                            <td>
+                                @{
+                                    if (!string.IsNullOrEmpty(item.GetReference))
+                                    {
+                                        try
+                                        {
+                                            <label>@item.GetReference</label>
+                                        }
+                                        catch (Exception)
+                                        { }
+                                    }
+                                    else
+                                    {
+                                        <label>Non attribuée</label>
+                                    }
+                                }
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GetClient)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.GetFournisseur)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MontantString)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.DeviseMonetaire.Nom)
+                            </td>
+
+                            <td>
+                                @Html.Partial("~/Views/_Shared/PartialViews/StatusDossiers.cshtml", item)
+                            </td>
+                            <td class="att">
+                                @Html.Partial("~/Views/_Shared/PartialViews/Attribute.cshtml", item)
+                            </td>
+                            
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        @{
+            if (action)
+            {
+                <style>
+                    #tb-action {
+                        display: initial;
+                    }
+                </style>
+
+            }
+        }
+    </div>
+</div>

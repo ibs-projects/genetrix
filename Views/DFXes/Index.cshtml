@@ -1,0 +1,169 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.DFX>
+@{
+    var db = new genetrix.Models.ApplicationDbContext();
+    ViewBag.Title = "Dossiers groupés DFX";
+    ViewBag.pTitle = "Dossiers groupés DFX" + ViewBag.info;
+    ViewBag.pageTitle = "Dossiers groupés DFX";
+    ViewBag.pageImage = "~/assets/images/IU/ref.png";
+    // Layout = "~/Views/_Shared/_Layout.cshtml";
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<style>
+    .ligne:hover {
+        background-color: #0094ff;
+        color: white;
+    }
+
+    th {
+        text-transform: uppercase;
+        background-color: violet;
+    }
+
+    thead {
+        background-color: #f8f9fa
+    }
+</style>
+<p class="hidden">
+    <a class="btn btn-outline-primary hidden" style="" href="@Url.Action("Create","referencebanques")">
+        <i class="dripicons-plus me-2"></i>
+        Ajouter
+    </a>
+    <a class="btn btn-outline-dark" href="@Url.Content("~/referencebanques/Reflesh")">
+        <i class="mdi mdi-refresh me-2"></i>
+        Actualiser
+    </a>
+</p>
+
+<div class="row" style="display:inline-block;width:100%">
+    <div class="col-12">
+        <div class="card">
+            @*<div class="card-header fs-4 bg-gradient-primary text-white"></div>*@
+            <div class="card-body">
+                <div class="table-responsive" style="padding-bottom:40px">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap table-responsive" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayName("N°")
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NumeroRef)
+                                </th>
+                                <th>
+                                    Période
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Montant)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Devise)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Pays)
+                                </th>
+                                <th>
+                                    Nbre dossiers
+                                </th>
+                                <th>Statut</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @{ int i = 0;}
+                            @foreach (var item in Model)
+                            {
+                                i++;
+                                <tr data-id="@item.Id" style="" idd="link-@item.Id" class="ligne1 card-item1">
+                                    <td data-field="@item.Numero">
+                                        @item.Numero
+                                    </td>
+                                    <td data-field="@item.NumeroRef">
+                                        @Html.DisplayFor(modelItem => item.NumeroRef)
+                                    </td>
+                                    <td data-field="@item.DateDebut-@item.DateFin">
+                                        @item.DateDebut.ToString("dd/MM/yyyy") AU @item.DateFin.ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td data-field="@item.MontantString">
+                                        @Html.DisplayFor(modelItem => item.MontantString)
+                                    </td>
+                                    <td data-field="@item.DeviseToString">
+                                        @Html.DisplayFor(modelItem => item.DeviseToString)
+                                    </td>
+                                    <td data-field="@item.Pays">
+                                        @Html.DisplayFor(modelItem => item.Pays)
+                                    </td>
+                                    <td data-field="@item.NbrDossiers">
+                                        @Html.DisplayFor(modelItem => item.NbrDossiers)
+                                    </td>
+                                    <td>
+                                        @{
+                                            StatutDossier statut = item.GetStatusString();
+                                            <a id="link-@item.Id" class="card-item21" href="@Url.Content("~/dfxes/Details/"+item.Id)" title="@Html.Raw(statut.Motif)">
+                                                <span class="progress-bar" style="width: auto;background-color:@statut.Couleur;color:white">@statut.Statut1</span>
+                                            </a>
+                                        }
+                                    </td>
+                                    <td class="hidden1">
+                                        @*<a href="@Url.Content("~/dfxes/edit/"+item.Id)"><i class="mdi mdi-pen"></i> Editer</a>*@
+                                        <a id="link-@item.Id" href="@Url.Content("~/dfxes/details/"+item.Id)"><i class="mdi mdi-details"></i> Détails</a>
+                                        @*<a href="@Url.Content("~/dfxes/delete/"+item.Id)"><i class="mdi mdi-delete"></i> Supprimer</a>*@
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<!-- Required datatable js -->
+<script src="~/assets/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+<!-- Buttons examples -->
+<script src="~/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js"></script>
+<script src="~/assets/libs/jszip/jszip.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/pdfmake.min.js"></script>
+<script src="~/assets/libs/pdfmake/build/vfs_fonts.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="~/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+
+<!-- Responsive examples -->
+<script src="~/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="~/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+<!-- Datatable init js -->
+<script src="~/assets/js/pages/datatables.init.js"></script>
+
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $(document).ready(function () {
+        //$('.ligne').click(function () {
+        //    document.getElementById('' + this.getAttribute('idd')).click();
+        //});
+    });
+</script>

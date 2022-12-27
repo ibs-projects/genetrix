@@ -1,0 +1,66 @@
+﻿@{
+    ViewBag.Title = "Chat";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string userName = User.Identity.Name;
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<div class="d-lg-flex mb-4">
+    <div class="w-100 user-chat mt-4 mt-sm-0 ms-lg-1">
+        <div class="px-lg-2">
+            <div class="chat-conversation p-0 pt-3" style="height:100%;">
+                <p class="mb-4">
+                    Bonjour, bienvenue sur le chat en direct de GENETRIX!<br />
+                    La protection de vos données personnelles est la priorité absolue de GENETRIX.
+                </p>
+                <p>
+                    Vous pouvez communiquer directement avec un agent en cliquant sur demarrer un nouveau chat.
+                </p>
+                <div style="text-align:left;margin-top:10px">
+                    @*<span class="mdi mdi-minus text-white fs-2 p-2 icon-10 float-end" id="reduire-pan-chat" style="cursor:pointer" height="32px"></span>*@
+                    <a href="#" onclick="document.getElementById('topic-pan').style.display='initial'" class="mdi mdi-chat-plus" id="new-chat" style="cursor:pointer;display:inline-block" height="32px"> Demarrer un nouveau chat</a>
+                    <br />
+                    <div class="form-group" style="display:none;" id="topic-pan">
+                        @Html.Label("Renseigner l'objet de la discussion")
+                        <a href="#" class="mdi mdi-check bg-info btn text-white" onclick="fchat()" style="padding:5px;border-radius:5px" height="32px"> Valider</a>
+                        <div class="col-md-10">
+                            <textarea class="form-control" id="topic" rows="3" cols="25"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<a href="#" id="demarrer-chat" class="hidden"></a>
+
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+<script>
+    function fchat() {
+        var _url = '@Url.Content("~/chats/Nouveau")';
+        var topic = document.getElementById('topic');
+        if (!topic.value) {
+            alert("Veuillez renseigner l'objet de la discussion avant de valider!");
+            topic.focus();
+        } else {
+            document.getElementById('demarrer-chat').setAttribute('href', _url + '?topic=' + topic.value);
+            document.getElementById('demarrer-chat').click();
+
+        }
+    }
+
+    $(document).ready(function () {
+        $('#chat-action-pan').hide();
+        document.getElementById('reduire-pan-chat').style.display = 'none';
+        $('#close-pan-chat').click(function () {
+            window.parent.document.getElementById('ifram-livechat').parentElement.style.display = 'none';
+        })
+    });
+</script>

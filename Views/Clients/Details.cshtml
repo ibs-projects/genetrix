@@ -1,0 +1,701 @@
+﻿@using genetrix.Models;
+@model genetrix.Models.Client
+@{
+    ViewBag.NonDossier = "client";
+    ViewBag.clientId = Model.Id;
+    ViewBag.Title = "Entreprise";
+    ViewBag.pTitle = "Détail de l'entreprise";
+    ViewBag.pageTitle = "Entreprise";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+    string estClient = "hidden";
+    try
+    {
+        if (Session["Profile"].ToString() == "client")
+        {
+            estClient = "";
+        }
+    }
+    catch
+    { }
+    string _default = "";
+    if (Model.Get_FicheKYC != "#")
+    {
+        _default = Model.Get_FicheKYC;
+    }
+    else if (Model.Get_PlanLSS != "#")
+    {
+        _default = Model.Get_PlanLSS;
+    }
+    else if (Model.Get_RCCM != "#")
+    {
+        _default = Model.Get_RCCM;
+    }
+    else if (Model.Get_Statut != "#")
+    {
+        _default = Model.Get_Statut;
+    }
+    else if (Model.Get_ProcesVerbal != "#")
+    {
+        _default = Model.Get_ProcesVerbal;
+    }
+    else if (Model.Get_EtatFinanciers != "#")
+    {
+        _default = Model.Get_EtatFinanciers;
+    }
+    else if (Model.Get_AtestationHinneur != "#")
+    {
+        _default = Model.Get_AtestationHinneur;
+    }
+}
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+<style>
+    .accordion-body {
+        background-color: whitesmoke;
+    }
+
+    .docs {
+        cursor: pointer;
+    }
+    details > summary {
+        padding: 4px;
+        width: 300px;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1em;
+        color: #2689a6;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <p class="text-danger">
+            @ViewBag.info
+        </p>
+        <table style="width:100%;margin-bottom:15px">
+            <tr>
+                <th>
+                    <a href="@Url.Content("~/Analyses/RecapTransfert?id="+Model.Id+"&pdf=True")" type="button" class="btn btn-outline-info mr-2" id="btn-show-recap-transfert" _action_requied_loader="0">
+                        <i class="mdi mdi-chart-tree"></i>
+                        Rapport des transferts
+                    </a>
+                </th>
+            </tr>
+        </table>
+        <div class="card">
+            <div class="card-header card-header1">
+                Configuration de l'entreprise
+            </div>
+            <div class="card-body row">
+                <div class="col-8">
+                    <dl class="dl-horizontal">
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Nom)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Nom)
+                        </dd>
+                        <dt>
+                            Mode restraint
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.ModeRestraint)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.CodeEtablissement)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.CodeEtablissement)
+                        </dd>
+
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Telephone)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Telephone)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Email)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Email)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Pays)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Pays)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Ville)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Ville)
+                        </dd>
+                        <dt>
+                            @Html.DisplayNameFor(model => model.Adresse)
+                        </dt>
+
+                        <dd>
+                            @Html.DisplayFor(model => model.Adresse)
+                        </dd>
+                    </dl>
+                </div>
+                <div class="col-4 border border-1 p-2 text-center">
+                    <p class="text-muted">Logo</p>
+                    @{
+                        if (string.IsNullOrEmpty(Model.Logo))
+                        {
+                            Model.Logo = "null";
+                        }
+                    }
+                    <img src="@Url.Content(Model.Logo)" style="width:150px" alt="" />
+                </div>
+                <a href="@Url.Content("~/Clients/Edit?id="+Model.Id)" _action_requied_loader="0"><i class="mdi mdi-pen"></i> Editer</a>
+            </div>
+        </div>
+
+        <div class="card">
+
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+                @{
+                    <li class="nav-item ">
+                        <a class="nav-link active" data-bs-toggle="tab" href="#navtabs2-adresse" role="tab">
+                            <span class="d-none d-sm-block"><i class="mdi mdi-bank fs-5"></i>&emsp; Banques tierces</span>
+                        </a>
+                    </li>
+
+                    //if (Session["Profile"].ToString() == "client")
+                    {
+                        <li class="nav-item ">
+                            <a class="nav-link" data-bs-toggle="tab" href="#navtabs2-profile" role="tab">
+                                <span class="d-none d-sm-block"><i class="far fa-user"></i> &emsp; Gestionnaie</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" data-bs-toggle="tab" href="#navtabs2-settings" role="tab">
+                                <span class="d-none d-sm-block"><i class="mdi mdi-view-list-outline fs-5"></i> &emsp; Comptes bancaires</span>
+                            </a>
+                        </li>
+                    }
+                }
+
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content p-3 text-muted">
+                <div class="tab-pane active" id="navtabs2-adresse" role="tabpanel">
+                    @Html.Partial("~/Views/BanqueTierClients/Index.cshtml", Model.BanqueTierClients)
+                    @*@Html.Partial("~/Views/_Shared/PartialViews/Adresse_Client.cshtml", Model.Adresses)*@
+                </div>
+
+                @*<div class="tab-pane" id="navtabs2-messages" role="tabpanel">
+                    @Html.Partial("~/Views/_Shared/PartialViews/Dossiers_Client.cshtml", Model.Dossiers)
+                </div>*@
+                @{
+                    //if (Session["Profile"].ToString() == "client")
+                    {
+                        <div class="tab-pane" id="navtabs2-profile" role="tabpanel">
+                            @Html.Partial("~/Views/_Shared/PartialViews/Banques_Client.cshtml", Model.Banques)
+
+                        </div>
+                        <div class="tab-pane" id="navtabs2-settings" role="tabpanel">
+                            @Html.Partial("~/Views/_Shared/PartialViews/NumComptes.cshtml", Model.GetNumComptes())
+                        </div>
+                    }
+                }
+
+            </div>
+
+        </div>
+        @{
+            if (Session["Profile"].ToString() == "banque")
+            {
+                <duv class="card">
+
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs nav-justified" role="tablist">
+                        <li class="nav-item ">
+                            <a class="nav-link active" data-bs-toggle="tab" href="#fournisseurs" role="tab">
+                                <span class="d-none d-sm-block"><i class="mdi mdi-nature-people fs-5"></i>&emsp; Bénéficiaires</span>
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a class="nav-link" data-bs-toggle="tab" href="#gestionclient" role="tab">
+                                <span class="d-none d-sm-block"><i class="far fa-user"></i> &emsp; Gestionnaires</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- Tab panes -->
+                    <div class="tab-content p-3 text-muted">
+                        <div class="tab-pane active" id="fournisseurs" role="tabpanel">
+                            @{ 
+                                var fours = new List<Fournisseurs>();
+                                try
+                                {
+                                    fours.AddRange(Model.Fournisseurs);
+                                }
+                                catch (Exception)
+                                {}
+                                if (fours==null)
+                                {
+                                    fours = new List<Fournisseurs>();
+                                }
+                                
+                                var banks = new List<BanqueClient>();
+                                try
+                                {
+                                    banks.AddRange(Model.Banques);
+                                }
+                                catch (Exception)
+                                {}
+                                if (fours==null)
+                                {
+                                    banks = new List<BanqueClient>();
+                                }
+                            }
+                            @Html.Partial("~/Views/_Shared/PartialViews/Liste_Fournisseurs.cshtml", fours)
+                        </div>
+                        <div class="tab-pane" id="gestionclient" role="tabpanel">
+                            @Html.Partial("~/Views/_Shared/PartialViews/Banques_Client.cshtml", banks)
+                        </div>
+                    </div>
+
+
+                </duv>
+            }
+        }
+
+        <hr />
+        <div class="card bg-light">
+            <div class="card-header card-header1 text-white">Attestations sur l'honneur</div>
+            <div class="card-body">
+                <div class="row">
+                    <details class="mb-4">
+                        <summary class="accordion-button" _id="@Model.Get_AttestationSurHonneurId" _fram="iframe-attest">Version valide</summary>
+                        <div class="col-md-12 border border-1">
+                            @if (Session["Profile"].ToString() == "client")
+                            {
+                                <p class="p-3 pb-0">
+                                    <a href="#" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#modal-ajout-attest" id="Inserer_document"><i class="mdi mdi-plus"></i> Inserer un document</a>
+                                    <a href="@Url.Content("~/Clients/document-client?idBanque="+Model.Get_AttestationSurHonneurId)" class="btn btn-danger @(Model.Get_AttestationSurHonneurId==null?"hidden":"")"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                </p>
+                                <hr />
+                            }
+                            @if (Model.Get_AttestationSurHonneurId != null)
+                            {
+                                <iframe id="iframe-attest" class="pdf-view" src="" style="max-width:221mm;height:143mm"></iframe>
+                            }
+                        </div>
+                    </details>
+                    <hr />
+                    <details class="mt-2">
+                        <summary class="accordion-button">Anciennes attestations</summary>
+                        <div class="col-md-12 border border-1">
+                            @{ var docs = new List<DocumentAttache>();
+                                try
+                                {
+                                    docs.AddRange(Model.DocumentAttaches.Where(d => d.EstAttestation));
+                                }
+                                catch (Exception)
+                                {}
+                                if (docs==null)
+                                {
+                                    docs = new List<DocumentAttache>();
+                                }
+                            }
+                            @Html.Partial("~/Views/CLients/HistoriqueAttestations.cshtml", docs)
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </div>
+
+        <hr />
+        <div class="card bg-light">
+            <div class="card-header card-header1">
+                Documents juridiques de l'entreprise (Personne(morale))
+            </div>
+            <div class="card-body">
+                <form action="~/clients/addfiles" method="post" enctype="multipart/form-data">
+                    <div>
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_FicheKYCId" _fram="iframe-FicheKYC">
+                                #1 Fiche KYC <i class="mdi @(Model.FicheKYC !=null?"mdi-file-check-outline":" mdi-upload") fs-5"></i>
+                            </summary>
+                            <div id="collapseOne">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px;" type="file" id="FicheKYC" name="FicheKYC" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_FicheKYCId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-FicheKYC" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_PlanLSSId" _fram="iframe-PlanLSS">
+                                #2 Plan de localisation du siège social
+                            </summary>
+                            <div id="collapseTwo">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="PlanLSS" name="PlanLSS" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_PlanLSSId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-PlanLSS" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="Model.Get_RCCMId" _fram="iframe-RCCM">
+                                #3 Extrait RCCM ou autre document tenant lieu
+                            </summary>
+                            <div id="collapse3">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="RCCM" name="RCCM" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_RCCMId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-RCCM" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_StatutId" _fram="iframe-Statut">
+                                #4 Copie des statuts
+                            </summary>
+                            <div id="collapse4">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="Statut" name="Statut" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_StatutId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-Statut" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_ProcesVerbalId" _fram="iframe-ProcesVerbal">
+                                #5 Procès-verbal nommant les dirigeants
+                            </summary>
+                            <div id="collapse5">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="ProcesVerbal" name="ProcesVerbal" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_ProcesVerbalId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-ProcesVerbal" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_EtatFinanciersId" _fram="iframe-EtatFinanciers">
+                                #6 Etats financiers des deux derniers exercices
+                            </summary>
+                            <div id="collapse6">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="EtatFinanciers" name="EtatFinanciers" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_EtatFinanciersId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-EtatFinanciers" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_AtestationHinneurId" _fram="iframe-AtestationHinneur">
+                                #7 Attestation sur l'honneur
+                            </summary>
+                            <div id="collapse7">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="AtestationHinneur" name="AtestationHinneur" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_AtestationHinneurId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-AtestationHinneur" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_PlanLOcalisationDomiId" _ifram="iframe-PlanLOcalisationDomi">
+                                #8 Plan de localisation du domicile
+                            </summary>
+                            <div id="collapse8">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="PlanLOcalisationDomi" name="PlanLOcalisationDomi" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_PlanLOcalisationDomiId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-PlanLOcalisationDomi" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_JustifDomicileId" _fram="iframe-JustifDomicile">
+                                #9 Justificatifsn de domicile (facture d'eau ou d'électricité)
+                            </summary>
+                            <div id="collapse9">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="JustifDomicile" name="JustifDomicile" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_JustifDomicileId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-JustifDomicile" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button" _id="@Model.Get_CarteIdentieId" _ifram="iframe-CarteIdentie">
+                                #10 Copie de la carte d'identité ou du passeport
+                            </summary>
+                            <div id="collapse10">
+                                <input class="ml-1 input-file00 estClient" style="margin-left: 20px" type="file" id="CarteIdentie" name="CarteIdentie" accept=".jpg, .jpeg, .png, .pdf" value="" />
+                                <a href="@Url.Content("~/clients/document-client?clid="+Model.Id+"&id="+Model.Get_CarteIdentieId)" class="estClient"><i class="mdi mdi-delete"></i>Supprimer</a>
+                                <div class="accordion-body">
+                                    <iframe id="iframe-CarteIdentie" class="pdf-view" src="" style="width:100%;height:146mm;"></iframe>
+                                </div>
+                            </div>
+                        </details>
+                        <hr />
+                        <details>
+                            <summary class="accordion-button">
+                                #11 Autres documents
+                            </summary>
+                            <div id="collapse11">
+                                <div class="accordion-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <button id="ajout-autredoc" type="button" class="btn btn-primary waves-effect waves-light estClient" doc-type="0" data-bs-toggle="modal" data-bs-target="#modal-ajout-document">
+                                                <i class="mdi mdi-file-document"></i>
+                                                Ajouter
+                                            </button>
+                                            <hr />
+                                            <div class="table-responsive">
+                                                <table class="table" id="">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th>
+                                                                @Html.DisplayNameFor(model => model.Nom)
+                                                            </th>
+                                                            <th>
+                                                                Actions
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody id="transportdoc_table_body">
+                                                        @foreach (var item in Model.AutresDocuments)
+                                                        {
+                                                            <tr class="docs" _id="@item.Id">
+
+                                                                <td>
+                                                                    @Html.DisplayFor(modelItem => item.Nom)
+                                                                </td>
+                                                                <td>
+                                                                    @*<a href="#" data-just="@item.Id" class="detail-view-doc" title="Visualiser"><i class="mdi mdi-eye-circle"></i>Lien du document</a> |*@
+                                                                    <a href="@Url.Content("~/DocumentAttaches/Details?id="+item.Id)">Details</a>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                    <tfoot>
+                                                    </tfoot>
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </details>
+
+                    </div>
+                    <div class="card-footer">
+                        <input type="submit" name="name" value="Enregistrer" _action_requied_loader="0" class="btn btn-primary" /> |
+                        <a href="@Url.Content("~/Clients/Edit?id="+Model.Id)" _action_requied_loader="0"><i class="mdi mdi-pen"></i> Editer</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div id="modal-view-attest" class="modal fade" tabindex="-1" aria-labelledby="#view-attest" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-light" style="border-bottom: 13px solid #2689a6">
+            <div class="modal-header">
+                <h5 class="modal-title mt-0 text-white" id="view-attest">Attestation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="">
+                <iframe id="fram-modal-attest" src="" style="height:100%;width:100%"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<a class="hidden" id="ouvre-modal-view-attest" data-bs-toggle="modal" data-bs-target="#modal-view-attest"></a>
+
+<div class="modal fade" id="modal-ajout-attest" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Ajout de l'attestation sur honneur</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    DocumentAttache documentAttache = new DocumentAttache()
+                    {
+                        DateCreation = DateTime.Now,
+                        IdClient= Model.Id,
+                        AttestSurHonneur=true
+                    };
+                }
+                @Html.Partial("~/Views/Clients/NewAttestation.cshtml", documentAttache)
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="modal-ajout-document" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Ajout d'un document</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @{
+                    DocumentAttache documentAttache1 = new DocumentAttache()
+                    {
+                        DateCreation = DateTime.Now
+                    };
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/AutreDocuments_DetailView .cshtml", documentAttache1)
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (Session["Profile"].ToString() == "banque")
+{
+    <script>
+        $('input').attr('readonly', 'readonly');
+        $('#Inserer_document').on('click', function () {
+            $('.modif').removeAttr('readonly');
+        });
+    </script>
+}
+
+<script>
+    var elts = document.getElementsByClassName('input-file00');
+    for (var i = 0; i < elts.length; i++) {
+        elts[i].onchange = evt => {
+            const [file] = evt.target.files;
+            if (file) {
+                var iframe21 = document.getElementById('iframe-' + evt.target.getAttribute("id"));
+                var img21 = document.getElementById('img-' + evt.target.getAttribute("id"));
+                if (file.type == "application/pdf") {
+                    try {
+                        img21.style.display = 'none';
+                        iframe21.setAttribute('src', URL.createObjectURL(file));
+                        iframe21.style.display = 'initial';
+                        $(iframe21).show();
+                        iframe21.classList.remove("hidden");
+                    } catch (e) {
+
+                    }
+                } else {
+                    try {
+                        iframe21.style.display = 'none';
+                        img21.setAttribute('src', URL.createObjectURL(file));
+                        img21.style.display = 'initial';
+                        $(img21).show();
+                        img21.classList.remove("hidden");
+                    } catch (e) {
+
+                    }
+                }
+            }
+        }
+    }
+
+</script>
+<a class="hidden" id="ouvre-modal-recap-transfert" data-bs-toggle="modal" data-bs-target="#modal-recap-transfert"></a>
+@Html.Partial("~/Views/Analyses/Modal_Recap.cshtml")
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+@*@Html.Partial("~/Views/_Shared/PartialViews/AfficheImageDocument.cshtml")*@
+<script>
+    $('.docs').click(function () {
+        $('.autredocs').hide();
+        var _url = '@Url.Content("~/clients/GetPDF?idDoc=")' + this.getAttribute('_id') + '&idClient=' + '@Model.Id';
+        $('#iframe-viewAutreDoc').attr('src', '');
+        $('#iframe-viewAutreDoc').attr('src', _url);
+    });
+    $(document).ready(function () {
+        try {
+            $('.accordion-button').click(function () {
+                if (!this.classList.contains('ajour')) {
+                    var _url = '@Url.Content("~/clients/GetPDF?idDoc=")' + this.getAttribute('_id') + '&idClient=' + '@Model.Id';
+                    $('#' + this.getAttribute('_fram')).attr('src', '');
+                    $('#' + this.getAttribute('_fram')).attr('src', _url);
+                    this.classList.add('ajour');
+                }
+            })
+        } catch (e) {
+
+        }
+        try {
+            $('.doc-attest').click(function () {
+                $('#fram-modal-attest').attr('src', '');
+               var _url = '@Url.Content("~/clients/GetPDF?idDoc=")' + this.getAttribute('_id') + '&idClient=' + '@Model.Id';
+                $('#fram-modal-attest').attr('src', _url);
+            });
+            document.getElementById('fram-modal-attest').onload = function () {
+                this.style = "height:100%;width:100%";
+                document.getElementById('ouvre-modal-view-attest').click();
+                document.getElementById('Preloader_partiel').style.display = 'none';
+            };
+        } catch (e) {
+
+        }
+
+        try {
+            $('#bt-valider-autre-document').click(function () {
+               document.getElementById('cp-form-doc').setAttribute('action', '@Url.Content("~/Clients/AddAutresDocs")');
+               document.getElementById('cp-form-doc').submit();
+            });
+        } catch (e) {
+
+        }
+         try {
+            //Resume du dossier
+            @*document.getElementById('iframe-recap-transfert').onload = function () {
+            this.style = "height:100%;width:100%";
+            document.getElementById('ouvre-modal-recap-transfert').click();
+                document.getElementById('Preloader_partiel').style.display = 'none';
+             };
+            $("#btn-show-recap-transfert").click(function () {
+                $('#iframe-recap-transfert').attr('src', '');
+                $('#iframe-recap-transfert').attr('src', '@Url.Content("~/Analyses/RecapTransfert?id="+Model.Id+"&pdf=True")');
+            });*@
+        } catch (e) {
+
+        }
+    });
+</script>

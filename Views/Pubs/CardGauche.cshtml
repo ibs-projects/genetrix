@@ -1,0 +1,83 @@
+﻿
+@model genetrix.Models.ePub
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script>
+    var _data2 = [];
+    var _durees2 = {};
+    var _index2 = {};
+    @{
+        int pubcount2 = 0;
+        try
+        {
+            foreach (var d in Model.PubItems.Where(p=>p.Acive && p.ePubItemType==genetrix.Models.ePubItemType.CarteGauche))
+            {
+                @:_data2.push(@(d.Id));
+                @:_durees2[@(d.Id)] =@(d.GetDureeAtt((int)Model.DelaitAttCD));
+                @:_index2[@(pubcount2)] =@(d.Id);
+                @:[]
+                pubcount2++;
+            }
+        }
+        catch
+        {}
+    }
+</script>
+<script>
+    var overCG = false;
+    const nbrpost2 = Number('@Model.NbrPosteAffCG');
+    var compteur2 = 0;
+    const pubcount2 = Number('@pubcount2');
+    var _count2 = 0;
+    var _url2 = '@Url.Content("~/Pubs/GetPubCard?id=")';
+    var dd = 0;
+    for (var i = 0; i < _data2.length; i++) {
+        if (i > nbrpost2) {
+            break;
+        }
+        dd += _durees2[_data2[i]];
+        tt3(i, dd);
+    }
+    if (nbrpost2 <= _data2.length) {
+        setInterval(function () {
+            if (!overCG) {
+                _count2 = $('#cardgche').find('.btn-ferme').length;
+                if (compteur2 >= pubcount2) {
+                    compteur2 = 0;
+                }
+                try {
+                    tt3(_index2[compteur2], 20000);
+                    compteur2++;
+                } catch (e) {
+
+                }
+            }
+        }, '@Model.DelaitAttCG');
+    }
+
+    function tt3(id, duree) {
+        $('#test2').load(_url2 + "" + id + '&predur=' + duree, function (e) {
+            $('#cardgche').append(e);
+            //alert(($('#cardgche').find('.btn-ferme').length > nbrpost2))
+            //alert(e)
+            if ($('#cardgche').find('.btn-ferme').length > nbrpost2 && nbrpost2 < pubcount2) {
+                document.getElementById($('#cardgche').find('.btn-ferme').first().attr('id')).remove();
+            //    remove($('#carddte').find('.btn-ferme').first().attr('id'));
+            }
+        });
+    }
+
+    function remove(_id) {
+        setTimeout(function () {
+            $('#' + _id).hide(1000);
+            if (document.getElementById(_id)) {
+                document.getElementById(_id).remove();
+            }
+        }, 1000);
+    }
+    document.getElementById('cardgche').addEventListener('mouseover', function () {
+        overCG = true;
+    });
+    document.getElementById('cardgche').addEventListener('mouseleave', function () {
+        overCG = false;
+    });
+</script>

@@ -1,0 +1,25 @@
+﻿@{ 
+    Layout = "~/Views/_Shared/_BlankLayout.cshtml";
+}
+
+<div class="row">
+    <div style="position:fixed;top:5px;padding:10px;padding-left:20px;z-index:800">
+        <button class="btn btn-light" id="zoomp">+</button>
+        <button class="btn btn-light" id="zoomm">-</button>
+    </div>
+    <div class="pt-5">
+        <div class="text-center">
+            <img src="@ViewBag.imagePath" id="img-chat" style="height:100%" class="img-fluid" alt="">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('zoomp').addEventListener('click', function () {
+        var imgw = document.getElementById('img-chat').offsetWidth;
+        document.getElementById('img-chat').style.width = Number(imgw + 80) + 'px';;
+    });document.getElementById('zoomm').addEventListener('click', function () {
+        var imgw = document.getElementById('img-chat').offsetWidth;
+        document.getElementById('img-chat').style.width = Number(imgw - 80) + 'px';;
+    });
+</script>

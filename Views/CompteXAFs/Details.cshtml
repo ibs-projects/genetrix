@@ -1,0 +1,48 @@
+﻿@model genetrix.Models.CompteXAF
+
+@{
+    ViewBag.Title = " Détails Compte XAF";
+    ViewBag.pTitle = "Détails opérateurs Swift";
+    ViewBag.pageTitle = "Détails Compte XAF";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header card-header1">
+                Détails du compte XAF
+            </div>
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.NumCompte)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.NumCompte)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Libellé)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Libellé)
+                    </dd>
+
+                </dl>
+            </div>
+
+            <div class="card-footer">
+                <p>
+                    @Html.ActionLink("Editer", "Edit", new { id = Model.Id }) |
+                    @Html.ActionLink("Voir la liste", "Index")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

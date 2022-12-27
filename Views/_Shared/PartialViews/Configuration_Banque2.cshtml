@@ -1,0 +1,197 @@
+﻿@model genetrix.Models.Banque
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div>
+                            <h4 class="card-title"><i class="mdi mdi-account-box-multiple fs-1 text-info"></i> Utilisateurs</h4>
+                            <p class="card-title-desc">Ce module vous permet de gérer les utilisateurs de la plateforme.</p>
+                            <div>
+                                <span class=" fs-1" style="margin-right:8px">10</span>
+                                <a href="@Url.Action("Create", "comptebanquecommerciales")" class="badge bg-gradient-pink p-2"><i class="mdi mdi-plus"></i> Ajouter</a>
+                                <a class="badge bg-gradient-info p-2" href=@Url.Action("Index", "comptebanquecommerciales")> <i class="mdi mdi-list-status"></i> Liste</a>
+                                <a class="badge bg-gradient-dark p-2" href="#"> <i class="mdi mdi-text-search"></i> Chercher</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="mt-4 mt-xl-0">
+                            <h4 class="card-title"><i class="mdi mdi-account-supervisor-circle-outline fs-1 text-info"></i> Rôles et Permissions</h4>
+                            <p class="card-title-desc">
+                                Dans ce module, vous pouvez créer des rôles et permissions puis les attribuer aux utilisateurs.
+                            </p>
+
+                            <div>
+                                <span class=" fs-1" style="margin-right:8px">10</span>
+                                <a href=@Url.Action("index", "XtraRoles") class="badge bg-gradient-pink p-2"><i class="mdi mdi-list-status"></i> Roles</a>
+                                <a class="badge bg-gradient-info p-2" href="#"> <i class="mdi mdi-list-status"></i> Entités</a>
+                                <a class="badge bg-gradient-dark p-2" href=@Url.Action("index", "Composants")> <i class="mdi mdi-format-list-bulleted"></i> Composants IHM</a>
+                                <a class="badge bg-gradient-purple p-2" href="#"> <i class="mdi mdi-account-network-outline"></i> Attribution</a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- end row -->
+            </div>
+        </div>
+        <!-- end card -->
+    </div>
+</div>
+<!-- end row -->
+
+<div class="row">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="card-title"><i class="mdi mdi-gender-transgender fs-1 text-info"></i> Structure de la banque</h4>
+                <div class="button-items" id="popover-container">
+                    <a href="@Url.Content("~/agences/Index")" class="btn btn-soft-primary waves-effect"
+                       data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="bottom"
+                       data-bs-content=".">
+                        Agences
+                    </a>
+                    <a href="@Url.Content("~/directionmetiers/Index")" class="btn btn-soft-primary waves-effect"
+                       data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="bottom"
+                       data-bs-content=".">
+                        Directions métiers
+                    </a>
+                    <a href="@Url.Content("~/banques/orga")" class="btn btn-soft-primary waves-effect"
+                       data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="bottom"
+                       data-bs-content=".">
+                        <i class="mdi mdi-chemical-weapon"></i>
+                        Organigramme
+                    </a>
+                </div>
+                <hr />
+                <p class="card-title-desc">
+                    <a href=@Url.Action("Create", "structures") class="btn btn-outline-info waves-effect" data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Gérer les agences ici.">
+                        Ajouter une structure
+                    </a>
+                    <a href=@Url.Action("Index", "typestructures") class="btn btn-outline-warning waves-effect" data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Gérer les agences ici.">
+                        Types structure
+                    </a>
+                </p>
+                <hr />
+                <div class="button-items" id="popover-container">
+                    @{
+                        foreach (var item in ViewBag.IdTypeStructure)
+                        {
+                            if (item.Text !="Agence" && item.Text != "Banque" && item.Text != "DirectionMetier"
+                                && item.Text != "agence" && item.Text != "banque" && item.Text != "directionmetier")
+                            {
+                                <a href="@Url.Content("~/structures/Index?tp="+item.Text)" class="btn btn-soft-primary waves-effect"
+                                   data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="bottom"
+                                   data-bs-content=".">
+                                    @(item.Text)s
+                                </a>
+                            }
+                        }
+                    }
+                    <a href="@Url.Content("~/structures/Index")" class="btn btn-soft-primary waves-effect"
+                       data-bs-container="#popover-container" data-bs-toggle="popover" data-bs-placement="bottom"
+                       data-bs-content=".">
+                        Toutes
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+
+                <h4 class="card-title"><i class="mdi mdi-format-font fs-1 text-info"></i> Parametre d'affichage</h4>
+                <p class="card-title-desc">Police, couleur des caracteres...</p>
+
+                <div class="button-items" id="tooltip-container">
+                    <button type="button" class="btn btn-outline-primary" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="Définir la police et la taille de caractere de l'application">
+                        Définir la police
+                    </button>
+
+                    <button type="button" class="btn btn-outline-info" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="right" title="Changer le thème de l'application">
+                        Changer de thème
+                    </button>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<!-- end row -->
+
+<div class="row hidden">
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Border spinner</h4>
+                <p class="card-title-desc">Use the border spinners for a lightweight loading indicator.</p>
+                <div>
+                    <div class="spinner-border text-primary m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-secondary m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-success m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-info m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-warning m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-danger m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-border text-dark m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Growing spinner</h4>
+                <p class="card-title-desc">If you don’t fancy a border spinner, switch to the grow spinner. While it doesn’t technically spin, it does repeatedly grow!</p>
+                <div>
+                    <div class="spinner-grow text-primary m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-secondary m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-success m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-info m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-warning m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-danger m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <div class="spinner-grow text-dark m-1" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

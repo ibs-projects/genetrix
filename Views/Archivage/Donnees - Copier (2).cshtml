@@ -1,0 +1,675 @@
+﻿@model IEnumerable<genetrix.Models.Fonctions.FileItemModel>
+<!DOCTYPE html>
+<html lang="en">
+@{ 
+    ViewBag.model = ViewData["sidebar"];
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> fournisseursModels = null;
+    IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>> datesModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> devisesModels = null;
+    Dictionary<string, string> fname = new Dictionary<string, string>();
+
+    try
+    {
+        fournisseursModels = ViewData["fournisseur"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        datesModels = ViewData["date"] as IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        devisesModels = ViewData["devise"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        fname = ViewData["fname"] as Dictionary<string, string>;
+    }
+    catch (Exception)
+    { }
+    if (fname == null)
+    {
+        fname = new Dictionary<string, string>();
+    }
+
+    string navigation = "aa";
+    navigation = ""+ViewBag.navigation;
+}
+<head>
+
+    @Html.Partial("~/Views/_Shared/_head_css.cshtml")
+    <style>
+        #sidebar-menu .has-arrow:after {
+            content: "\F0142";
+            font-family: 'Material Design Icons';
+            display: block;
+            float: left;
+            -webkit-transition: -webkit-transform .2s;
+            transition: -webkit-transform .2s;
+            transition: transform .2s;
+            transition: transform .2s,-webkit-transform .2s;
+            font-size: 1rem;
+        }
+        #sidebar-menu .mm-active > .has-arrow:after {
+            -webkit-transform: rotate( 90deg );
+            transform: rotate(90deg);
+        }
+        #body-arch {
+            @*background-image: url('@Url.Content("~/assets/images/IU/bg.jpeg")');*@
+        }
+
+        .folder{
+            cursor:pointer;
+        }
+        .folder:hover {
+            box-shadow: 10px 10px 5px #aaaaaa;
+/*                border: 1px solid #5fcbcb;
+*/       }
+        .icon-10:hover{
+            background-color:orangered;
+            color:white;
+        }
+        .icon-10 > i:hover{
+            color:white;
+        }
+        .icon-up-down:hover {
+            cursor: pointer;
+            color: white;
+            background-color: #50a5f1
+        }
+
+        .entete:hover {
+            cursor: pointer;
+        }
+        .entete {
+            background-color: white;
+            box-shadow: 1px 1px 12px #555;
+            padding:5px;
+            margin-bottom:15px;
+        }
+        .icon-donnee1{
+            -webkit-box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+            box-shadow: 0px 10px 13px -7px #000000, 5px 5px 15px 5px rgba(0,0,0,0);
+        }
+
+    </style>
+</head>
+
+<body data-topbar="dark1" id="body-arch" class="p-0 bg-white1" style="padding-bottom: 0px; background-color: whitesmoke">
+    <!-- Begin page -->
+    <div id="layout-wrapper" class="mb-0">
+        @Html.Partial("~/Views/_Shared/File_Manager/_topbar_client.cshtml")
+        @Html.Partial("~/Views/_Shared/File_Manager/_sidebar_client.cshtml")
+
+        <!-- ============================================================== -->
+        <!-- Start right Content here -->
+        <!-- ============================================================== -->
+   
+        <div class="main-content bg-white1" id="main-content-arch" style="width: auto; height: 560px; background-color: whitesmoke">
+            <div class="page-content" style="opacity:initial">
+                <div class="container-fluid">
+                    <div id="Preloader_partiel" style="display:none1">
+                        @Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")
+                        @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel.cshtml")
+                    </div>
+                    <div class="row1">
+                        <div class=" entete hidden">
+                            <h6 class="text-dark">Type d'éléments (3)</h6>
+                            <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            @*<hr class="" />*@
+                        </div>
+                       <div id="chemin"></div>
+                        <div class="row corp hidden">
+                            <div class="col-md-3 col-xl-2 corp">
+                                <div class="card bg-gradient-warning">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-folder-open fs-1"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">120</h4>
+                                            <p class="text-muted mb-0">Total repertoires</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-xl-2">
+                                <div class="card bg-gradient-warning">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-file-pdf fs-1 text-danger"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">120</h4>
+                                            <p class="text-muted mb-0">Total fichiers pdf</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 col-xl-2">
+                                <div class="card bg-gradient-warning">
+                                    <div class="card-body">
+                                        <div class="float-end mt-2">
+                                            <div class="mdi mdi-file-image fs-1 text-success"></div>
+                                        </div>
+                                        <div>
+                                            <h4 class="mb-1 mt-1">
+                                                120
+                                                @*<i class="fas fa-ellipsis-h float-end"></i>*@
+                                            </h4>
+                                            <p class="text-muted mb-0">Total fichiers image</p>
+                                        </div>
+                                        <p class="text-muted mt-3 mb-0">
+                                            <span class="text-success me-1">taille 89 MB</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <hr />
+                    @{ int nbr = 0;}
+                    @* Dossiers *@
+                <div class="row1">
+                    <div id="nbr-dos" style="display:none" class="entete1 hidden">
+                        <h6 class="text-dark" id="nbr-docs">Dossiers (6)</h6>
+                        <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                        <hr class="" />
+                    </div>
+                    <div class="corp">
+                        @{
+                            bool rentre = true;
+                            if (ViewBag.idFournisseur != 0)
+                            {
+                                @Html.Partial("~/Views/Archivage/DossiersWiew.cshtml", fournisseursModels)
+                            }
+                            else if (ViewBag.navigation == "archives")
+                            {
+                                <button id="fournisseurs" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="">
+                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                    Fournisseurs
+                                </button>
+                                <button id="date" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="">
+                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                    Date
+                                </button>
+                                <button id="devises" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="">
+                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                    Devises
+                                </button>
+                            }
+                            else if (ViewBag.navigation == "fournisseurs")
+                            {
+                                foreach (var ff in fournisseursModels)
+                                {
+                                    try
+                                    {
+                                        <button id="ff-@ff.Key" idFournisseur="" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@ff.ToString()">
+                                            <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                            @ff.Key
+                                        </button>
+                                        foreach (var dos in ff)
+                                        {
+                                            <script>
+                                                document.getElementById('ff-@(ff.Key)').setAttribute('idFournisseur', '@dos.FournisseurId')
+                                                document.getElementById('ff-@(ff.Key)').setAttribute('id', 'fou-@ff.Key')
+                                            </script>
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception)
+                                    { }
+                                }
+                            }
+                            if (ViewBag.idDevise != 0)
+                            {
+                                try
+                                {
+                                    foreach (var item in devisesModels)
+                                    {
+                                        try
+                                        {
+
+                                            if (ViewBag.DeviseName != null)
+                                            {
+                                                if (item.Key != ViewBag.DeviseName)
+                                                {
+                                                    continue;
+                                                }
+                                            }
+                                        }
+                                        catch (Exception)
+                                        { }
+
+                                        foreach (var f in item.GroupBy(d=>d.FournisseurName))
+                                        {
+                                            <p>
+                                                <span class="float-left">@f.Key</span>
+                                                <hr style="display:inline;width:3px;" />
+                                            </p>
+                                            foreach (var dos in f)
+                                            {
+                                                <button id="@ViewBag.navigation" iddossier="@dos.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                    <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                    @dos.Name
+                                                </button>
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                { }
+                            }
+                            else if (navigation.Contains("dev"))
+                            {
+                                foreach (var ff in devisesModels)
+                                {
+                                    try
+                                    {
+                                        if (ViewBag.DeviseName != null)
+                                        {
+                                            if (ff.Key != ViewBag.DeviseName)
+                                            {
+                                                continue;
+                                            }
+                                        }
+                                        var _ff = ff.Key.Replace(" ", "");
+                                        <button id="ff-@_ff" idDevise="" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@ff.ToString()">
+                                            <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                            @ff.Key
+                                        </button>
+                                        foreach (var dos in ff)
+                                        {
+                                            <script>
+                                                document.getElementById('ff-@(_ff)').setAttribute('idDevise', '@dos.Devise')
+                                            </script>
+                                            break;
+                                        }
+                                    }
+                                    catch (Exception)
+                                    { }
+                                }
+                            }
+                            else if (navigation.Contains("annee") && ViewBag.idDossier == null)
+                            {
+                                try
+                                {
+                                    foreach (var item in datesModels)
+                                    {
+                                        <p>
+                                            <span class="float-left">@item.Key</span>
+                                            <hr style="display:inline;width:3px;" />
+                                        </p>
+                                        foreach (var dos in item)
+                                        {
+                                            <button id="@ViewBag.navigation" iddossier="@dos.Id" class="btn btn-outline-secondary p-1 m-2 border border-0 _folder _folder-btn" title="@item.ToString()">
+                                                <i class="mdi mdi-folder-open" style="font-size:3em;display:block"></i>
+                                                @dos.Name
+                                            </button>
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                { }
+                            }
+                        }
+                        <script>
+                            document.getElementById('nbr-docs').textContent="Repertoires (@(nbr))"
+                        </script>
+                    </div>
+                </div>
+
+                    @* Fichiers *@
+                    <div class="row">
+                        <div style="display:none" id="nbr-file" class="hidden">
+                            <h6 class="text-dark" id="nbr-files">Fichiers (46)</h6>
+                            <i class="float-end mdi mdi-chevron-up fs-1 icon-up-down" _src="000" style="margin-top:-40px"></i>
+                            <hr class="" />
+                        </div>
+                        <div class="corp">
+                            @{
+                                string typefile = "";
+                                if (Model != null)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        typefile = "mdi-file-image-outline text-success";
+                                        if (item.MimeType == ".pdf")
+                                        {
+                                            typefile = "mdi-file-pdf text-danger";
+                                        }
+                                        <button class="btn btn-outline-secondary p-0 border border-0 btn-file icon-donnee" style="width:120px;height:120px;overflow:hidden;padding:3px;" extension="@item.MimeType" path="@item.Path" title="@item.ToString()">
+                                            <i class="mdi @(typefile)" style="font-size:3em;display:block;"></i>
+                                            @{
+                                                @item.Name
+                                            }
+                                        </button>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+
+
+
+                </div> <!-- container-fluid -->
+            </div>
+            <!-- End Page-content -->
+
+        </div>
+        <!-- end main content-->
+
+    </div>
+    <!-- END layout-wrapper -->
+    <a href="#" id="link-modal-recherche" class="hidden" data-bs-toggle="modal" data-bs-target="#model-recherche" ></a>
+    <a href="#" id="link-preload" class="hidden"></a>
+    <a href="#" id="link-puch" class="hidden"></a>
+    <a href="#" id="link-puch2" class="hidden"></a>
+    <a href="#" id="link-archive-open-file" class="hidden" data-bs-toggle="modal" data-bs-target="#archive-open-file"></a>
+    @Html.Partial("~/Views/_Shared/File_Manager/AffichageFichier.cshtml")
+    @Html.Partial("~/Views/_Shared/File_Manager/Modal_Recherche.cshtml")
+
+    @*<button class="" don="">
+        </button>*@
+    <i id="view-btn" class="mdi mdi-drag fs-4"></i>
+    <script src="~/assets/custom.js"></script>
+
+    <script src="~/assets/libs/jquery/jquery.min.js"></script>
+    <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="~/assets/libs/node-waves/waves.min.js"></script>
+    <script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+    <script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+    <script src="~/assets/js/app.js"></script>
+    <script>
+        $(document).ready(function () {
+            try {
+                document.getElementById('input-recherche').addEventListener('click', function () {
+                    document.getElementById('link-modal-recherche').click();
+                });
+            } catch (e) {
+
+            }
+            try {
+                //preload
+                $('#link-preload').click('click', function () {
+                    $('#Preloader_partiel').css("display", "initial");
+                });
+                $('#Preloader_partiel').css("display","none");
+            } catch (e) {
+
+            }
+            $("body").on("contextmenu", function (e) {
+               // return false;
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            try {
+                var w = document.getElementById('page-topbar').clientWidth;
+                document.getElementById('main-content-arch').style.width =w+ 'px';
+                //var wt = document.getElementById('navbar-header-archive').clientWidth;
+                //$('#vertical-menu-archive').css('width', Number(w + 100) + 'px');
+                //$('.sidbar').click(function () {
+                //    $('#vertical-menu-archive').css('width', Number(250 + this.textContent.length) + 'px');
+                ////    $('#navbar-header-archive').css('width', Number(wt - this.textContent.length-80) + 'px');
+                //});
+
+                document.getElementById('vertical-menu-archive').addEventListener('mouseenter', function () {
+                    $('#vertical-menu-archive').css('width','350px');
+                });
+                document.getElementById('vertical-menu-archive').addEventListener('mouseleave', function () {
+                    $('#vertical-menu-archive').css('width', '250px');
+                });
+
+            } catch (e) {
+
+            }
+            //view file loder
+            try {
+                var iff = document.getElementById('iframe-archive-open-file');
+                var img = document.getElementById('img-pre-iframe0');
+                img.style.top = document.body.clientHeight / 3 + 'px';
+                iff.setAttribute("img-previ-id", img.getAttribute('id'));
+                iff.onload = function () {
+                    var img = document.getElementById('img-pre-iframe0');
+                    img.style.display = 'none';
+                };
+            } catch (e) {
+
+            }
+            //file btn action
+            try {
+                $('.btn-file').on('dblclick', function () {
+                    document.getElementById('iframe-archive-open-file').setAttribute('src', "");
+                    var _url = "";
+                    if (this.getAttribute('extension')=='.pdf') {
+                        _url = "@Url.Content("~/archivage/OpenView?path=")" + this.getAttribute('path');
+                    } else {
+                        _url = "@Url.Content("~/archivage/ImageViewer?path=")" + this.getAttribute('path');
+                    }
+                    document.getElementById('iframe-archive-open-file').setAttribute('src', _url);
+                    document.getElementById('link-archive-open-file').click();
+                })
+            } catch (e) {
+
+            }
+            //folder btn action
+            try {
+                $('._folder').on('click', function () {
+                    getDossiers(this);
+                })
+            } catch (e) {
+
+            }
+
+            $('#view-btn').click(function () {
+                alert('ffff')
+                if (this.getAttribute("don")) {
+                    //preload
+                    document.getElementById('link-preload').click();
+                var _url = '@Url.Content("~/archivage/Donnees?adx=")' + this.getAttribute("don");
+                var link = document.getElementById('link-puch');
+                link.setAttribute('href', _url);
+                    link.click();
+                }
+            });
+
+            var donnees = $('.has-arrow');
+            for (var i = 0; i < donnees.length; i++) {
+                try {
+                    if (donnees[i].getAttribute('id') && !donnees[i].classList.contains('non')) {
+                           var btn = document.getElementById('view-btn').cloneNode();
+                            btn.style.display = 'none';
+                            btn.setAttribute('don', donnees[i].id);
+                            btn.setAttribute('title', 'Voir le contenu');
+                            btn.setAttribute('id', "btn-view-" + donnees[i].id);
+                            btn.setAttribute('_id', "" + donnees[i].id);
+                            btn.setAttribute('annee', "" + donnees[i].getAttribute('annee'));
+                            btn.setAttribute('annee-mois', "" + donnees[i].getAttribute('annee-mois'));
+                            btn.setAttribute('idDossier', "" + donnees[i].getAttribute('idDossier'));
+                            btn.setAttribute('idFournisseur', "" + donnees[i].getAttribute('idFournisseur'));
+                            btn.setAttribute('iddevise', "" + donnees[i].getAttribute('iddevise'));
+                            donnees[i].appendChild(btn);
+                            donnees[i].addEventListener('mouseenter', function () {
+                                document.getElementById("btn-view-" + this.id).style.display = 'initial';
+                            });
+                            donnees[i].addEventListener('mouseleave', function () {
+                                document.getElementById("btn-view-" + this.id).style.display = 'none';
+                            });
+                            btn.addEventListener('click', function () {
+                                if (this.getAttribute("don")) {
+                                    getDossiers(document.getElementById(this.getAttribute('don')));
+                            }
+                        });
+                   }
+                } catch (e) {
+
+                }
+            }
+            donnes = null;
+
+            function getDossiers(moi) {
+                //preload
+                document.getElementById('link-preload').click();
+                var annee = 0; var mois = 0; var idDossier = 0; var idFournisseur = 0; var idDevise = 0;
+                if (moi.getAttribute('annee')) {
+                    annee = moi.getAttribute('annee');
+                }
+                if (moi.getAttribute('annee-mois')) {
+                    annee = moi.getAttribute('annee').split('-')[0];
+                    mois = moi.getAttribute('annee').split('-')[1];
+                }
+                if (moi.getAttribute('iddossier')) {
+                    idDossier = moi.getAttribute('iddossier');
+                }
+                if (moi.getAttribute('idFournisseur')) {
+                    idFournisseur = moi.getAttribute('idFournisseur');
+                }
+                if (moi.getAttribute('iddevise')) {
+                    idDevise = moi.getAttribute('iddevise');
+                }
+                //preload
+                document.getElementById('link-preload').click();
+                var _url = '@Url.Content("~/archivage2/index?idDossier=")' + idDossier + '&idFournisseur=' + idFournisseur + '&annee=' + annee + '&mois=' + mois + '&_id=' + moi.getAttribute('id') + '&idDevise=' + idDevise;
+                    var link = document.getElementById('link-puch');
+                    link.setAttribute('href', _url);
+                    link.click();
+            }
+        });
+    </script>
+
+    <script>
+    //
+        var nv = "@(ViewBag.navigation)";
+        document.getElementById("" + nv).classList.add("active");
+        document.getElementById("" + nv).parentElement.classList.add("mm-active");
+        $(document).ready(function () {
+            var active = $('.active')[0];
+            var link = "";
+            var tab = [];
+            var mm = $('.mm-active');
+            for (var i = 0; i < mm.length; i++) {
+                try {
+                    link += generateLink(mm[i].children[1].id, mm[i].getAttribute('intitule'));
+                    tab.push(mm[i].getAttribute('intitule'));
+                } catch (e) {
+
+                }
+            }
+
+            if (!tab.includes(active.getAttribute('intitule'))) {
+                link += generateLink(active.children[1].id, active.getAttribute('intitule'));
+            }
+            document.getElementById('chemin').innerHTML = link;
+        });
+
+        function generateLink(id,text) {
+            return '<a href="#" id="'+id+'">'+text+'</a> /';
+        }
+    </script>
+    <script>
+        //affichage par appel des documents
+        try {
+            $(".icon-up-down").click(function (e) {
+                e.preventDefault();
+                var next = this.parentElement.nextSibling;
+                while (next) {
+                    if (next.tagName == 'DIV') {
+                        if (this.classList.contains('mdi-chevron-up')) {
+                            try {
+                                $(next).show(500);
+                                if (!this.classList.contains('ouvert')) {
+                                    this.classList.add("ouvert");
+                                    var actions = $('.' + this.getAttribute('_src'));
+                                    for (var i = 0; i < actions.length; i++) {
+                                        try {
+                                            var action = actions[i];
+                                            var ifram = document.getElementById(action.getAttribute('target'));
+                                            ifram.style.display = 'none';
+                                            duplicateChildNodes(ifram.parentNode, ifram);
+                                            ifram.setAttribute('src', action.getAttribute('_src'));
+                                            ifram.onload = function () {
+                                                this.style = "width:100%;height:" + window.innerHeight + 'px';
+                                                this.style.display = 'initial';
+                                                document.getElementById('lf-' + this.id).style.display = "none";
+                                                document.getElementById('lf-' + this.id).remove();
+                                            };
+                                        } catch (e) {
+
+                                        }
+                                    }
+                                }
+                            } catch (e) {
+                            }
+                            this.classList.remove('mdi-chevron-up');
+                            this.classList.add('mdi-chevron-down');
+                        } else {
+                            this.classList.add('mdi-chevron-up');
+                            this.classList.remove('mdi-chevron-down');
+                            $(next).hide(300);
+                        }
+                    }
+                    next = next.nextSibling;
+                }
+            });
+
+            function duplicateChildNodes(parent, oldChild) {
+                var parent0 = document.getElementById('timeline-wrapper-id');
+                NodeList.prototype.forEach = Array.prototype.forEach;
+                var children = parent0.childNodes;
+                children.forEach(function (item) {
+                    try {
+                        var cln = item.cloneNode(true);
+                        //parent.appendChild(cln);
+                        cln.setAttribute('id', 'lf-' + oldChild.getAttribute('id'));
+                        parent.insertBefore(cln, oldChild);
+                    } catch (e) {
+
+                    }
+                });
+            };
+
+            //parent icon click access
+            var pps = $('.entete');
+            for (var i = 0; i < pps.length; i++) {
+                $(pps[i]).click(function () {
+                    var ffs = this.childNodes;
+                    for (var j = 0; j < ffs.length; j++) {
+                        if (ffs[j].tagName == 'I') {
+                            ffs[j].click();
+                            break;
+                        }
+                    }
+                    ffs = null;
+                })
+            }
+            pps = null;
+
+        } catch (e) {
+
+        }
+    </script>
+
+    <script>
+        
+    </script>
+</body>
+
+</html>
+

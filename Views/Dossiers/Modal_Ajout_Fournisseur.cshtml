@@ -1,0 +1,124 @@
+﻿@using genetrix.Models
+
+@model genetrix.Models.Fournisseurs
+<style>
+    .fs{
+        font-size:1.5em;
+    }
+</style>
+
+<div class="modal fade" id="modal-ajout-fournisseur" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">
+                    Ajout d'un bénéficiaire
+                </h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+
+                @using (Html.BeginForm(actionName: "CreateWithDossier", controllerName: "Fournisseurs", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+                <input type="number" class="hidden" name="IdDossier" value="@Model.IdDossier" />
+                    <div class="card1">
+                        <div class="card-body1">
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                <div class="form-group mb-3">
+                                    <div class="col-12">
+                                        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                        <div class="input-group">
+                                            <div class="input-group-text"><i class="icon-dos mdi mdi-information"></i></div>
+                                            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.Tel1, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-phone"></i></div>
+                                                @Html.EditorFor(model => model.Tel1, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Tel2, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-email"></i></div>
+                                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-flag"></i></div>
+                                                @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-city"></i></div>
+                                                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.Adresse, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-home"></i></div>
+                                                @Html.EditorFor(model => model.Adresse, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Adresse, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-3 col-6">
+                                        <div class="col-12">
+                                            @Html.LabelFor(model => model.CodeEts, htmlAttributes: new { @class = "control-label text-muted fs" })
+                                            <div class="input-group">
+                                                <div class="input-group-text"><i class="icon-dos mdi mdi-information"></i></div>
+                                                @Html.EditorFor(model => model.CodeEts, new { htmlAttributes = new { @class = "form-control" } })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.CodeEts, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+                        <div class="card-footer1">
+                            <button type="submit" value="Enregistrer" class="btn btn-outline-info" style="float:right!important;padding-right:10px!important">
+                                <i class="far fa-save me-2"></i>
+                                Enrégistrer
+                            </button>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

@@ -1,0 +1,1141 @@
+﻿@using genetrix.Models
+@model genetrix.Models.Dossier
+
+@{
+    ViewBag.Title = "Dossier";
+    ViewBag.pTitle = "Nouveau Dossiers";
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    ViewBag.dossierId = Model.Dossier_Id;
+}
+@*<link href="~/assets/libs/magnific-popup/magnific-popup.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/con_ann/css/imgview.css" rel="stylesheet" />*@
+@*@section scan{*@
+
+@*}*@
+<style>
+    input[type='file'] {
+        opacity: 0
+    }
+
+    @@media only screen and (max-width: 1184px) {
+        #btn-terminer {
+            margin-top: -120px;
+            /*            background-color: red;
+    */
+        }
+    }
+
+    .col-1 {
+        display: none
+    }
+</style>
+<style>
+    .detail {
+        border: 1px solid #eef1fd;
+        border-radius: 5px 3px;
+        margin-bottom: 10px
+    }
+
+    .detail0 {
+        padding: 5px
+    }
+
+    legend {
+        background-color: #eef1fd;
+        padding: 5px;
+        font-size: large;
+        font: bold
+    }
+
+    .imf-taille {
+        max-height: 240px;
+        max-width: 220px;
+    }
+
+    .icon-dos {
+        font-size: 1.5em;
+        color: #2689a6;
+    }
+
+    .separation {
+        margin: 5px;
+    }
+</style>
+<style>
+    details > summary {
+        padding: 4px;
+        width: 300px;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.1em;
+        color: #2689a6;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 4px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+</style>
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        @{
+            if (ViewBag.msg != null)
+            {
+                string msg = "" + ViewBag.msg;
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    <div class="alert alert-border alert-border-danger alert-dismissible fade show" role="alert">
+                        <i class="uil uil-exclamation-triangle font-size-16 text-danger me-2"></i>
+                        @Html.Raw(ViewBag.msg)
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                    <hr />
+                }
+            }
+        }
+        @using (Html.BeginForm("Create", "Dossiers", FormMethod.Post, new { enctype = "multipart/form-data", id = "dossier-form-create" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="hidden">
+                <input type="number" id="id_dossier" value="0" />
+                @Html.HiddenFor(model => model.ClientId)
+            </div>
+            <div class="card">
+                <div class="form-group mb-3 card-header">
+                    <div class="col-md-12">
+                        <h4 class="card-title mb-4 mdi mdi-folder-plus" style="display:inline!important">  Nouveau transfert</h4>
+                    </div>
+                </div>
+                <div class="btn m-0 p-0" title="Dossier à @(Model.Percentage)%" style="">
+                    <div class="progress bg-danger">
+                        <div class="progress-bar bg-gradient-success" role="progressbar" style="width: @(Model.Percentage)%;" aria-valuenow="@(Model.Percentage)" aria-valuemin="0" aria-valuemax="100">@(Model.Percentage)%</div>
+                    </div>
+                </div>
+                <input type="number" class="hidden" name="EtapesDosier" id="EtapesDosier" value="" />
+
+                <div class="card-body bg-transparent">
+                    <div id="vertical-example" class="vertical-wizard button-items">
+                        <!-- Seller Details -->
+                        <h3>Instruction</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+
+                                <fieldset class="detail">
+                                    <legend class="p-2">Détails de l'instruction</legend>
+                                    <details style="" class="card">
+                                        <summary id="detail-donneur">Informations donneur d'ordre</summary>
+                                        <div class="row p-2">
+                                            <div class="form-group mb-3 col-lg-6" style="padding-left:15px">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.NumCompteClient, htmlAttributes: new { @class = "control-label" })
+                                                    &emsp;&emsp;&emsp; <label class="control-label">Code agence </label>
+                                                    <label class="control-label float-end">Clé &emsp;</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <select class="form-control input-sel" name="NumCompteClient" id="NumCompteClient">
+                                                            @{
+                                                                try
+                                                                {
+                                                                    foreach (var item in ViewBag.NumCompteClient)
+                                                                    {
+                                                                        <option title="RIB: @item.RIB" cle="@item.Cle" CodeAgence="@item.CodeAgence" value="@item.Numero">@item.Numero</option>
+                                                                    }
+                                                                }
+                                                                catch
+                                                                { }
+                                                            }
+                                                            <option value="0"></option>
+                                                        </select>
+                                                        <input type="text" class="input-group-text input-sel" style="width:100px!important;background-color:white" name="CodeAgence" id="CodeAgence" value="" />
+                                                        <input type="text" class="input-group-text input-sel" style="width:60px!important;background-color:white" name="Cle" id="Cle" value="" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.NumCompteClient, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6" style="padding-left:15px">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.PaysClient, htmlAttributes: new { @class = "control-label pl-2" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-flag"></i></div>
+                                                        <input type="@Model.PaysClient" class="form-control input-sel" name="PaysClient" value="@ViewBag.pays" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.PaysClient, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                    <hr class="separation" />
+                                    <details class="card">
+                                        <summary id="detail-beneficiaire">Informations du bénéficiaire</summary>
+                                        <div class="row p-2">
+                                            <div class="col-lg-6 hidden">
+                                                <div class="mb-3">
+                                                    <input type="number" class="hidden" name="IdSite" value="@ViewBag.IdBank" />
+                                                    <select class="form-control hidden" disabled id="BanqueId" name="IdSite00">
+                                                        @{
+                                                            var nomB = "";
+                                                            try
+                                                            {
+                                                                genetrix.Models.ApplicationDbContext db = new ApplicationDbContext();
+                                                                foreach (genetrix.Models.Agence item in ViewBag.BanqueId)
+                                                                {
+                                                                    try
+                                                                    {
+                                                                        nomB = item.BanqueName(db);
+                                                                        <option value="@item.Id">@nomB</option>
+                                                                        break;
+                                                                    }
+                                                                    catch (Exception)
+                                                                    { }
+                                                                }
+                                                            }
+                                                            catch (Exception)
+                                                            { }
+                                                        }
+                                                    </select>
+                                                    <label>Agence</label>
+                                                    <select class="form-control input-sel" disabled id="IdSite" name="Agence">
+                                                        <option value="">@(nomB+ " : "+ ViewBag.agence)</option>
+                                                    </select>
+                                                    @Html.ValidationMessageFor(model => model.IdSite, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.FournisseurId, "Bénéficiaire/Nom, Raison sociale", htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <input type="number" class="hidden" name="FournisseurId" id="FournisseurId0" value="" />
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <select class="form-control input-sel" id="FournisseurId">
+                                                            <option value="0"></option>
+                                                            @{
+                                                                foreach (var item in ViewBag.FournisseurId)
+                                                                {
+                                                                    <option value="@item.Id">@item.Nom</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.FournisseurId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.AdresseFournisseur, htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <input type="text" class="form-control input-sel" name="AdresseFournisseur" id="AdresseFournisseur" value="" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.AdresseFournisseur, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group mb-3 mt-3 col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.Label("Numéro du compte", htmlAttributes: new { @class = "control-label" })
+                                                    <label class="control-label float-end">Clé &emsp;&emsp;</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <select class="form-control input-sel" name="NumCompteBenef" id="NumCompteBenef">
+                                                            <option value="0"></option>
+                                                        </select>
+                                                        <input type="text" class="input-group-text input-sel" style="width:60px!important;background-color:white" name="CleCompteBenf" id="CleCompteBenf" value="@Model.CleCompteBenf" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.NumCompteBenef, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 mt-3 col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.CodeAgenceBenf, htmlAttributes: new { @class = "control-label" })
+                                                    <label class="control-label float-end">Code établissement &emsp;</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <input type="text" class="form-control input-sel" style="width:40%!important;" min="5" max="5" maxlength="5" name="CodeAgenceBenf" id="CodeAgenceBenf" value="" />
+                                                        <input type="text" class="input-group-text input-sel" maxlength="5" style="width:45%!important;background-color:white" name="CodeEtablissement" id="CodeEtablissement" value="@Model.CodeEtablissement" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.NumCompteBenef, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.NomBanqueBenf, htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-bank"></i></div>
+                                                        <input class="form-control input-sel" name="NomBanqueBenf" id="NomBanqueBenf" value="@Model.NomBanqueBenf" />
+                                                        @Html.ValidationMessageFor(model => model.NomBanqueBenf, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.AdresseBanqueBenf, htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-information-outline"></i></div>
+                                                        <input type="text" name="AdresseBanqueBenf" id="AdresseBanqueBenf" class="form-control input-sel" value="" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.AdresseBanqueBenf, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                    <hr class="separation" />
+                                    <details>
+                                        <summary id="detail-transfert">Informations du transfert</summary>
+                                        <div class="row p-2">
+                                            <div class="form-group mb-3 col-lg-6" id="p-motif">
+                                                <div class="col-12">
+                                                    <label class="visually-hidden1" for="Motif">Motif du transfert</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-text motif"><i class="icon-dos mdi mdi-book-settings-outline motif"></i></div>
+                                                        <input type="text" name="Motif" class="form-control motif input-sel" id="Motif" autocomplete="off" value="" />
+                                                    </div>
+                                                    <div class="input-group motif" id="motifs" style="display:none" title="Selectionner le modifi de l'opération">
+                                                        <div class="input-group-text bg-info motif" for="_motif" style="background-color:transparent;height:5px;">Motifs: </div>
+                                                        <select class="form-control motif input-sel" style="height:5px" id="_motif" name="_motif" onchange="document.getElementById('Motif').value=this.value">
+                                                            <option value=""></option>
+                                                            @{
+                                                                foreach (var item in ViewBag.motifs)
+                                                                {
+                                                                    <option value="@item">@item</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.Motif, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.LabelFor(model => model.NatureOperation, htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-nintendo-wiiu"></i></div>
+                                                        @Html.EnumDropDownListFor(model => model.NatureOperation, "", htmlAttributes: new { @class = "form-control input-sel", requied = "reduied" })
+                                                        @Html.ValidationMessageFor(model => model.NatureOperation, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="col-12">
+                                                    @Html.Label("Montant en Devise", htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-clock-digital"></i></div>
+                                                        @Html.EditorFor(model => model.Montant, new { htmlAttributes = new { @class = "form-control parite valided input-sel", @autocomplete = "off", @id = "Montant", @max = "100000000000.0000", @step = "any" } })
+                                                    </div>
+                                                    <label class="text-muted" style="padding-left:12px;display:inline-block" id="montantToString"> </label>
+                                                    @Html.ValidationMessageFor(model => model.Montant, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6 row pr-0" style="padding-right:0px">
+                                                <div class="col-lg-5">
+                                                    <div class="col-12">
+                                                        @Html.LabelFor(model => model.DeviseMonetaireId, "Devise", htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <div class="input-group-text"><i class="icon-dos mdi mdi-currency-eur"></i></div>
+                                                            <select class="form-control parite input-sel" id="DeviseMonetaireId" name="DeviseMonetaireId">
+                                                                <option value="0"></option>
+                                                                @{
+                                                                    foreach (var item in ViewBag.DeviseMonetaireId)
+                                                                    {
+                                                                        <option value="@item.Id">@item.Nom</option>
+                                                                    }
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.DeviseMonetaireId, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-7" style="padding-right:0px">
+                                                    <div class="col-12" style="margin-right:0px;padding-right:0px">
+                                                        @Html.LabelFor(model => model.ContreValeurXAF, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            @*<div class="input-group-text"><i class="icon-dos mdi mdi-current-dc"></i></div>*@
+                                                            <input type="text" name="ContreValeurXAF" class="form-control input-sel icon-dos" style="font-size:1.1em;height:50px" id="ContreValeurXAF" value="" readonly="readonly" />
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.ContreValeurXAF, "", new { @class = "text-danger" })
+                                                        <label class="text-muted" style="padding-left:12px" id="ContreValeurToString"></label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-lg-12 mb-3" style="padding-right:0px">
+                                                <div class="col-12" style="margin-right:0px;padding-right:0px">
+                                                    @Html.LabelFor(model => model.MontantEnLettre, "Montant en lettre", htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <input type="text" name="MontantEnLettre" class="form-control input-sel" multiple id="MontantEnLettre" value="" readonly="readonly" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6 ">
+                                                <div style="padding-left:10px!important">
+                                                    <p></p>
+                                                    <div class="form-check form-switch form-switch-lg mb-1" id="pan-customSwitchsizelg" dir="ltr" style="display:inline-block;margin-top:10px">
+                                                        @Html.Label("Marchandise déjà arrivée?", htmlAttributes: new { @class = "control-label" })
+                                                        <input type="checkbox" name="MarchandiseArrivee" class="form-check-input input-sel" id="customSwitchsizelg">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group mb-3 col-lg-6 ">
+                                                <div style="padding-left:10px!important">
+                                                    @Html.LabelFor(model => model.DateSignInst, htmlAttributes: new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <div class="input-group-text"><i class="icon-dos mdi mdi-calendar-edit"></i></div>
+                                                        <input type="date" name="DateSignInst" disabled required class="form-control input-sel" id="DateSignInst" />
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.DateSignInst, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </details>
+                                </fieldset>
+                                <fieldset class="detail hidden">
+                                    <legend class="p-2">Fichier associé</legend>
+                                    <div class=" detail0">
+                                        <div class="col-lg-12 p-0 " id="instruction-parent">
+                                            <button id="scanner-1" infoImage="img1-parent" type="button" class="btn btn-outline-info scan-bt input-instruct">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-1" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input input-instruct" infoImage="img1-parent" imgid="img-1" infoModal="Instruction (ordre de transfert)" id="upload-img-1" type="file" name="ImageInstruction" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                            <span class="text-muted pl-1" id="instruction-file-size"></span>
+                                        </div>
+                                        <div class="col-lg-12 bg-gradient-dark1 hidden" id="img1-parent" style="max-height:10%;">
+                                            <div class="row">
+                                                <div class="col-1 p-0 hidden">
+
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                    <a infoImage="img1-parent" imgid="img-1" infoInputImg="upload-img-1" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                                </div>
+                                                <div class="text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                    @{
+                                                        var estPdf = false; bool affiche = true;
+                                                        var _url = "";
+                                                        if (Model.EstPdf)
+                                                        {
+                                                            estPdf = true;
+                                                            _url = Url.Content("~/dossiers/GetPDF?idDossier=" + Model.Dossier_Id);
+                                                        }
+                                                        if (Model.GetImageInstruction() == "#")
+                                                        {
+                                                            affiche = false;
+                                                            _url = Model.GetImageInstruction();
+                                                        }
+                                                        <iframe id="iframe-img-1" class="pdf-view @(estPdf?"":"hidden")" src="" style="width:100%;height:143mm;@(!affiche?"display:none":"")"></iframe>
+
+                                                        <img class="card-img img-fluid @(!estPdf?"":"hidden")" src="#" id="img-1" alt="" style="@(!affiche?"display:none":"")" />
+                                                    }
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </section>
+
+                        <!-- Company Document -->
+                        <h3>Factures</h3>
+                        <section>
+                            <div class="card border1 border-info" style="height:100%!important">
+                                <div class="card-header border-info">
+                                    <h5 class="my-0 text-primary"><i class="uil-invoice me-3 fs-1"></i>Factures</h5>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="row">
+                                        <div class="col-4 form-group mb-3">
+                                            <input id="NbreJustif" class="form-control fact-btn" type="number" min="@Model.NbreJustif" name="NbreJustif" placeholder="Nombre de factures" value="0" />
+                                        </div>
+                                        <div class="col-3">
+                                            <button id="btn_ajout_fact" type="button" disabled class="btn btn-primary waves-effect waves-light  fact-btn" data-bs-toggle="modal" data-bs-target=".bs-example-modal-lg">
+                                                <i class="mdi mdi-plus"></i>
+                                                Ajouter
+                                            </button>
+                                        </div>
+                                    </div>
+                                    @Html.Partial("~/Views/_Shared/PartialViews/Justificatifs.cshtml", Model.Justificatifs)
+                                </div>
+                            </div>
+
+                        </section>
+
+                        <h3>Lettre d'engagement</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Lettre d'engament</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-4" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-4" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-lettre-parent" imgid="img-lettre" infoModal="Lettre d'engament" id="upload-img-4" type="file" name="ImageLettreEngage" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-lettre-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-lettre-parent" imgid="img-lettre" infoInputImg="upload-img-4" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-lettre" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Bank Details -->
+                        <h3>Déclaration d'importation</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                        <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1 fs-1"></i> Déclaration d'importation</h5>
+                                    </div>
+                                    <div class="p-0 " style="">
+                                        <button id="scanner-2" type="button" class="btn btn-outline-info scan-bt">
+                                            <i class="mdi mdi-scanner"></i>
+                                            Scanner
+                                        </button>
+                                        <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                            <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                            <input class="img-input" infoImage="img-dp-parent" imgid="img-dp" infoModal="Déclaration d'importation" id="upload-img-2" type="file" name="ImageDeclarImport" accept=".jpg, .jpeg, .png, .pdf" />
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-dp-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-dp-parent" imgid="img-dp" infoInputImg="upload-img-2" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-dp" style="" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Domiciliation d'importation</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Domiciliation d'importation</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-3" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-doImp-parent" imgid="img-doImp" infoModal="Domiciliation d'importation" id="upload-img-3" type="file" name="ImageDomicilImport" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-doImp-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-doImp-parent" imgid="img-doImp" infoInputImg="upload-img-3" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-doImp" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Quittance de paiement</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Quittance de paiement</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-5" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-5" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-quit-parent" imgid="img-quit" infoModal="Quittance de paiement" id="upload-img-5" type="file" name="ImageQuittancePay" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-quit-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-lquit-parent" imgid="img-quit" infoInputImg="upload-img-5" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-quit" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Documents de transport</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="m-0 p-0 " style="display:inline-block;margin-top:-8px!important;float:right">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Documents de transport</h5>
+                                        </div>
+                                        <div class="p-0 " style="">
+                                            <button id="scanner-5" type="button" class="btn btn-outline-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <span class="btn btn-outline-info" style="max-width:150px;max-height:40px;">
+                                                <label for="upload-img-6" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                                <input class="img-input" infoImage="img-docTrans-parent" imgid="img-docTrans" infoModal="Documents de transport" id="upload-img-6" type="file" name="ImageDocumentTransport" accept=".jpg, .jpeg, .png, .pdf" />
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="col-lg-12 bg-gradient-dark hidden" id="img-docTrans-parent" style="max-height:100%;">
+                                        <div class="row">
+                                            <div class="col-1 p-0">
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white" data-bs-toggle="modal" data-bs-target="#detailImage" style="font-size:x-large;margin-block:0px!important" title="Voir plus"><i class="mdi mdi-arrow-expand-all"></i></a>
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white img-print" style="font-size:x-large ;margin-block:0px!important" title="Imprimer"><i class="mdi mdi-printer"></i></a>
+                                                <a infoImage="img-docTrans-parent" imgid="img-docTrans" infoInputImg="upload-img-6" class="btn text-white img-sup" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                            </div>
+                                            <div class="col-12 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                                                <img class="card-img mg-fluid imf-taille" src="#" id="img-docTrans" alt="Erreur lecture du fichier" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <h3>Autres documents</h3>
+                        <section>
+                            <div class="card border-info" style="height:100%!important">
+                                <div class="card-header pb-0">
+                                    <div class="row">
+                                        <div class="col-7 hidden">
+                                            <h5 class="btn my-0 text-primary"><i class="mdi mdi-file-document-outline fs-1"></i>  Autres documents</h5>
+                                        </div>
+                                        <div class="col-5">
+                                            <button type="button" class="btn btn-info scan-bt">
+                                                <i class="mdi mdi-scanner"></i>
+                                                Scanner
+                                            </button>
+                                            <a href="#" class="btn btn-pink">
+                                                <i class="mdi mdi-upload"></i>
+                                                Télécharger
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+
+                                </div>
+                            </div>
+                        </section>
+                        <script src="~/assets/cfunctions.js"></script>
+                        <script>
+                            // Factures
+                            document.getElementById("NbreJustif").addEventListener("input", function (e) {
+                                if (this.value > 0) {
+                                    document.getElementById("btn_ajout_fact").disabled = false;
+                                    document.getElementById("CompteurFactures").value = this.value;
+                                } else {
+                                    document.getElementById("btn_ajout_fact").disabled = true;
+                                }
+                            });
+
+                            //obtenir image
+                            var elts = document.getElementsByClassName("img-input");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].onchange = evt => {
+                                    const [file] = evt.target.files;
+                                    //ajout 05/08/2021
+                                    if (file) {
+                                        var frame = document.getElementById('iframe-' + evt.target.getAttribute("imgid"));
+                                        var image111 = document.getElementById('' + evt.target.getAttribute("imgid"));
+
+                                        if (file.type == "application/pdf") {
+                                            frame.setAttribute('src', URL.createObjectURL(file));
+                                            frame.style.display = 'initial';
+                                            frame.classList.remove("hidden");
+                                            var pw = Number(frame.parentElement.offsetWidth);
+                                            var ph = Number(window.height);
+
+                                            frame.style = 'height:179mm;width:100%';
+                                            image111.style.display = 'none';
+                                            document.getElementById('img-2').setAttribute('src', "");
+                                            document.getElementById('img-2').setAttribute('src', URL.createObjectURL(file));
+
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                            document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                        }
+                                        else {
+                                            image111.src = URL.createObjectURL(file);
+                                            image111.style.display = 'initial';
+                                            frame.style.display = 'none';
+                                            document.getElementById('img-2').src = URL.createObjectURL(file);
+                                            document.getElementById('' + evt.target.getAttribute("infoImage")).classList.remove("hidden");
+                                            document.getElementById('modal-typedocument').textContent = evt.target.getAttribute("infoModal");
+                                        }
+                                        document.getElementById("instruction-file-size").textContent = "Taille du fichier: " + getFilesize(file.size);
+                                    }
+                                }
+                            }
+                            elts = null;
+
+                            ///supression image
+                            elts = document.getElementsByClassName("img-sup");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('' + this.getAttribute("infoInputImg")).value = "";
+                                    document.getElementById('' + this.getAttribute("infoImage")).classList.add("hidden");
+                                });
+                            }
+                            elts = null;
+
+                            /// Impression
+                            elts = document.getElementsByClassName("img-print");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    document.getElementById('printer-contenair').classList.remove("hidden");
+                                    // Clone the image
+                                    const image = document.getElementById('' + this.getAttribute("imgid")).cloneNode();
+                                    image.style.maxWidth = '100%';
+                                    image.style.maxHeight = '100%';
+                                    image.style.width = '100%';
+                                    image.style.height = 'auto';
+                                    //document.getElementById('printer-contenair').setAttribute('srcdoc', '<html><body></body></html>');
+                                    //document.getElementById('printer-contenair').contentDocument.style.textAlign = 'center';
+                                    //alert(document.getElementById('printer-contenair').contentDocument.body);
+                                    document.getElementById('printer-contenair').contentDocument.body.appendChild(image);
+                                    document.getElementById("printer-contenair").contentWindow.print();
+                                    location.reload();
+
+                                });
+                            }
+                            elts = null;
+                            var _url = "@(Url.Content("~/Content/con_ann/dynamic/Scan_ap.html"))";
+
+                            /// scanner
+                            elts = document.getElementsByClassName("scan-bt");
+                            for (var i = 0; i < elts.length; i++) {
+                                elts[i].addEventListener('click', function () {
+                                    openRequestedPopup(_url, "Numérisation des doscuments");
+                                    alert("cockie: ");// + getCookie("imgageData"));
+                                });
+                            }
+                            elts = null;
+
+
+                            //functions scanner
+                            var windowObjectReference = null; // global variable
+
+                            function openRequestedPopup(url, windowName) {
+                                if (windowObjectReference == null || windowObjectReference.closed) {
+                                    windowObjectReference = window.open(url, windowName,
+                                        "resizable,scrollbars,status");
+                                } else {
+                                    windowObjectReference.focus();
+                                };
+                            }
+
+                            /*coockie*/
+                            function getCookie(name) {
+                                var nameEQ = name + "=";
+                                var ca = document.cookie.split(';');
+                                for (var i = 0; i < ca.length; i++) {
+                                    var c = ca[i];
+                                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                                }
+                                return null;
+                            }
+
+
+                        </script>
+                        @* Convertion montant CV *@
+                        @Html.Partial("~/Views/_Shared/PartialViews/Parite_Databinding.cshtml")
+                    </div>
+
+                </div>
+
+                <div class="card-footer">
+                    <button type="submit" id="btn-terminer" disabled value="Enregistrer" class="btn btn-outline-warning hidden" style="float:left;margin-right:10px!important;margin-top:-55px;z-index:400;position:relative">
+                        <i class="mdi mdi-check-outline me-2"></i>
+                        Terminer
+                    </button>
+                    <p style="display:inline-block;float:right">
+                        @Html.ActionLink("Voir la liste", "Index")
+                    </p>
+                    <button type="submit" title="" id="btn-sauvgarde-tmp" value="Enregistrer" class="btn btn-outline-primary" style="float:left;margin-right:10px!important">
+                        <i class="far fa-save me-2 hidden"></i>
+                        Sauvegarde temporaire
+                    </button>
+
+                    <div class="btn-group me-1  hidden" style="margin-left:5px">
+                        <button type="button" disabled class="btn btn-outline-info dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="mdi mdi-send"></i> Envoyer <i class="mdi mdi-chevron-down"></i></button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-send-circle"></i>  Envoyer maintenant</a>
+                            <a class="dropdown-item" href="#"><i class="mdi mdi-history"></i>  Envoyer plutard</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        }
+        <!-- end card -->
+    </div>
+
+</div>
+
+
+@* Modal ajout justificatif *@
+
+<div class="modal fade bs-example-modal-lg" id="bs-example-modal-lg" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Détail de la facture n°@(Model.NbreJustif+1)</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                @*@Html.Partial("~/Views/_Shared/PartialViews/Facture_Detail.cshtml", new genetrix.Models.JustificatifVM());*@
+                @{
+                    Justificatif justificatif = new Justificatif()
+                    {
+                        DossierId = Model.Dossier_Id,
+                        Dossier = Model,
+                    };
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/Justificatif_DetailView.cshtml", justificatif)
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@* Fin modal *@
+
+@* Modal detail image *@
+<div id="detailImage" class="modal fade" tabindex="-1" aria-labelledby="#detailImage" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent">
+            <div class="modal-header text-danger bg-gradient-light">
+                <h5 class="modal-title mt-0" id="modal-typedocument"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-gradient-dark text-center">
+                <iframe class="card-img mg-fluid" src="#" id="img-2" style="height:100%;width:100%" frameborder="0" allowfullscreen="allowfullscreen" />
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@* <fin modal detail image *@
+
+@* Print modal *@
+<div id="printpreview" class="modal fade" tabindex="-1" aria-labelledby="#printpreview" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent">
+            <div class="modal-header text-danger bg-gradient-light">
+                <h5 class="modal-title mt-0" id="modal-typedocument"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-gradient-dark">
+                <iframe class="hidden1" id="printer-contenair">
+                </iframe>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+@* finprintmodal *@
+
+<input type="number" class="hidden" id="reste-montant12" value="@Model.MontantTpmp" />
+
+
+@*<script src="~/assets/custom.js"></script>*@
+
+@Scripts.Render("~/Content/js")
+@Scripts.Render("~/Content/wizard")
+<script src="~/assets/nombre_en_lettre.js"></script>
+
+@Html.Partial("~/Views/_Shared/PartialViews/ButtonManger.cshtml")
+<script>
+    $('#bs-example-modal-lg').modal({
+        backdrop: 'static',
+        keyboard: false
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        try {
+            $('#Montant,#DeviseMonetaireId').on('change', function () {
+                SetMontantLet(this);
+            })
+        } catch (e) {
+
+        }
+
+        function SetMontantLet(elt) {
+            var devise = "";
+            try {
+                devise = document.getElementById('DeviseMonetaireId').options[document.getElementById('DeviseMonetaireId').selectedIndex].textContent;
+            //    devise = devise.toLowerCase();
+            } catch (e) {
+
+            }
+            var mt = $('#Montant').val().replace('.', ',') + "";
+            var intPart = 0;
+            if (mt.includes(',')) {
+                nombre = Number(mt.split(',')[0]);
+                intPart = Number(Number("0." + mt.split(',')[1]) * 100);
+            } else {
+                nombre = Number(mt);
+            }
+            if (intPart > 0) {
+                var centime = "centime";
+                if (intPart.toString().includes('.')) {
+                    intPart = Number(intPart.toString().split('.')[0]);
+                }
+                if (intPart >= 2) {
+                    centime = "centimes";
+                }
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise + " et " + intPart + " " + centime);
+            } else
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise);
+        }
+
+        try {
+            document.getElementById("p-motif").addEventListener('mouseenter', function () {
+               $('#motifs').show(200);
+            });
+            document.addEventListener('click', function (e) {
+                document.addEventListener(`click`, e => {
+                    const origin = e.target;
+                    if (!origin.classList.contains('motif')) {
+                        $('#motifs').hide(200);
+                    }
+                });
+            });
+        } catch (e) {
+
+        }
+        try {
+            window.addEventListener('resize', function () {
+                tt();
+            });
+
+            tt();
+
+            function tt() {
+                if ($(window).width() < 1184) {
+                    $("#btn-terminer").css("margin-top", "-65px");
+                } else {
+                    $("#btn-terminer").css("margin-top", "-55px");
+                }
+            }
+        } catch (e) {
+
+        }
+
+        compteClient()
+        try {
+            $('#NumCompteClient').change(function () {
+                compteClient()
+             });
+
+        $('#NumCompteBenef').change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+             try {
+                 $.ajax({
+                     url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + $('#FournisseurId').val() + '&numCmpt=' + selectedCountry,
+                     success: function (responce) {
+                         try {
+                             $('#AdresseBanqueBenf').val(responce.Adresse);
+                             $('#NomBanqueBenf').val(responce.NomBanque);
+                             $('#CodeAgenceBenf').val(responce.CodeAgence);
+                             $('#CleCompteBenf').val(responce.Cle);
+                         } catch (e) {
+
+                         }
+                    },
+                    error: function (responce) { alert("eee: "+responce.error) }
+                });
+            } catch (e) {
+
+            }
+        });
+
+        $("#FournisseurId").change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+            $('#FournisseurId0').val(selectedCountry);
+             try {
+                 $.ajax({
+                     url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + selectedCountry,
+                     success: function (responce) {
+                         var daySelect = document.getElementById('NumCompteBenef');
+                        var length = daySelect.options.length;
+                        for (i = length - 1; i >= 0; i--) {
+                            daySelect.options[i] = null;
+                        }
+
+                         $.each(responce, function (index, item) {
+                             try {
+                                 $('#CodeEtablissement').val(item.CodeEts);
+                                 $('#AdresseBanqueBenf').val(item.Adresse);
+                                 $('#NomBanqueBenf').val(item.NomBanque);
+                                 $('#AdresseFournisseur').val(item.AdresseBenf);
+                                 //$('#Cle').val(item.Cle);
+                                 $('#CodeAgenceBenf').val(item.CodeAgence);
+                                 $('#CleCompteBenf').val(item.Cle);
+                             } catch (e) {
+
+                             }
+                             daySelect.options[daySelect.options.length] = new Option('' + item.Numero, item.Numero);
+                         });
+                         daySelect.options[daySelect.options.length] = new Option('', '');
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            } catch (e) {
+
+            }
+        });
+        } catch (e) {
+
+        }
+
+        function compteClient() {
+            var aa = $($('#NumCompteClient')).children("option:selected").attr("cle");
+            var code = $($('#NumCompteClient')).children("option:selected").attr("CodeAgence");
+            $('#Cle').val(aa);
+            $('#CodeAgence').val(code);
+        }
+        //btn marchandise arrivée
+        try {
+            $('#pan-customSwitchsizelg').click(function () {
+                if (document.getElementById('customSwitchsizelg').value == 'on') {
+                    document.getElementById('customSwitchsizelg').checked
+                    document.getElementById('customSwitchsizelg').value = true;
+                } else {
+                    document.getElementById('customSwitchsizelg').value = false;
+                }
+            });
+        } catch (e) {
+
+        }
+
+        $(".img-fluid").click(function () {
+            alert($(this).attr('Path'));
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Content("~/Dossiers/getpath")',
+                dataType: 'json',
+                data: { path: $(this).attr('Path') },
+                success: function (path) {
+                    alert(path);
+                    window.open('@Url.Content("~/Dossiers/GetPDF")?path=' + path, "_blank", "scrollbars=yes,resizable=yes,top=500,left=500,width=500,height=700");
+                },
+
+                error: function (ex) {
+                    alert(Error);
+                }
+            });
+        });
+
+        //Contrôle date edit instruction
+        try {
+            $(function () {
+                var dtToday = new Date();
+                //var month = dtToday.getMonth() + 1;
+                var month = dtToday.getMonth()
+
+
+                    ;
+                var day = dtToday.getDate();
+                var year = dtToday.getFullYear();
+                if (month < 10)
+                    month = '0' + month.toString();
+                if (day < 10)
+                    day = '0' + day.toString();
+
+                var maxDate = year + '-' + month + '-' + day;
+                //$('#DateSignInst').attr('max', maxDate);
+                document.getElementById('DateSignInst').valueAsDate = new Date(year, month, day);
+            });
+
+        } catch (e) {
+
+        }
+
+    });
+
+</script>

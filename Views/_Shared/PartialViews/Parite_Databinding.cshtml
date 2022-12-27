@@ -1,0 +1,37 @@
+﻿
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    //Databinding
+    $("#Montant").on("change", function () {
+        patrie();
+    });
+
+    $("#DeviseMonetaireId").on("change", function () {alert('rr')
+        patrie();
+    });
+    //patrie();
+    function patrie() {
+        var mt = $('#Montant').val();
+        var dv = $('#DeviseMonetaireId').val();
+        $.get("@Url.Content("~/Dossiers/Parite?mt=")" + mt + "&idDevise=" + dv, function (data, status) {
+            try {
+                if (data.cv==0) {
+                    $('#ContreValeurXAF').val('');
+                    $('#ContreValeurToString').text(data.cvs);
+                } else {
+                    $('#ContreValeurXAF').val(data.cvs);
+                    $('#ContreValeurToString').text('');
+
+                }
+            } catch (e) {
+
+            }
+            try {
+                $('#montantToString').text(data.mts);
+            } catch (e) {
+
+            }
+        });
+    }
+</script>

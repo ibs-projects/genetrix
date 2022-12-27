@@ -1,0 +1,98 @@
+﻿@model IEnumerable<genetrix.Models.Contact>
+
+@{
+    ViewBag.Title = "Contact";
+    ViewBag.pTitle = "Contact";
+    ViewBag.pageTitle = "Contact";
+    ViewBag.pageImage = "~/assets/images/IU/structure.png";
+}
+
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+<p>
+    <a class="" href="@Url.Action("Create","Contacts")">
+        <i class="dripicons-plus me-2"></i>
+        Nouveau contact
+    </a>
+</p>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                Liste de contacts
+            </div>
+            <div class="card-body">
+                <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>
+                               Nom
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Pays)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Ville)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Telephone)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Fax)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Groupe)
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomComplet)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Pays)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Ville)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Telephone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Fax)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Groupe)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("Editer", "Edit", new { id = item.Id }) |
+                                    @Html.ActionLink("Détails", "Details", new { id = item.Id }) |
+                                    @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

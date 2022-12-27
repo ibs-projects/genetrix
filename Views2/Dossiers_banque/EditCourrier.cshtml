@@ -1,0 +1,169 @@
+﻿@using System;
+@using System.Globalization;
+@model genetrix.Models.Dossier
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-FR");
+}
+<style>
+    .th1 {
+        border-left: 1px solid #808080;
+    }
+
+    #tab11 {
+        border: 1px solid #808080;
+        overflow: hidden;
+    }
+
+    td, th {
+        width: 50%;
+        padding: 2px;
+    }
+
+    @@media print {
+        table tr {
+            background-color: yellow !important;
+        }
+    }
+</style>
+<div class="row p-2">
+    <div class="col-lg-12 bg-white">
+        <div class="invoice-title d-print-none">
+            <div class="text-muted hidden">
+                <p class="mb-1">641 Counts Lane Wilmore, KY 40390</p>
+                <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> abc@123.com</p>
+                <p><i class="uil uil-phone me-1"></i> 012-345-6789</p>
+            </div>
+        </div>
+
+        <hr class="my-4 d-print-none">
+
+        <div class="row">
+            <div class="col-6 ">
+                <div class="text-muted text-end ">
+
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="text-muted text-start">
+                    <div>
+                        <h5 class="font-size-16 mb-1">Libreville, le @(DateTime.Now.ToString("m", cultureInfo)) @DateTime.Now.Year</h5>
+                    </div>
+                    <div class="mt-4">
+                        <h5 class="font-size-16 mb-1">
+                            A l’attention du Directeur National de la Banque des Etats de l’Afrique Central (BEAC)
+                        </h5>
+                    </div>
+                    <div class="mt-4">
+                        <h5 class="font-size-16 mb-1">Libreville</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p style="margin-top:40px">
+            Objet : Demande de devises @Model.DeviseToString
+        </p>
+        <h3 style="font-size:1em;margin-bottom:40px">
+            Référence transaction : 7013/0365/GA
+        </h3>
+
+        <p>
+            Monsieur le Directeur National,
+        </p>
+        <p>
+            En couverture de l’opération de notre client XXXXX nous vous prions de bien vouloir mettre à notre disposition les devises nécessaires (Euros), selon les modalités ci-après :
+        </p>
+        <div class="py-2">
+            <div class="table-responsive">
+                <table id="tab11" class="table table-nowrap table-centered table-striped mb-0" style="font-size:12px">
+                    <thead>
+                        <tr style="background-color:aquamarine">
+                            <th>Compte BEAC  à débiter</th>
+                            <th>XXX</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Montant XAF</th>
+                            <td>
+                                @Model.MontantString
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Devise à couvrir</th>
+                            <td class="th1">
+                                @Model.DeviseToString
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Banque domiciliataire</th>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Ville</th>
+                            <td class="th1">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">SWIFT Code</th>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Bénéficiaire</th>
+                            <td class="th1">
+                                @Model.BanqueToString
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Motif de l’opération</th>
+                            <td>
+                                Couverture Transfert du client @Model.Client.Nom
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">E-mail donneur d’ordre</th>
+                            <td class="th1">
+                                Couverture Transfert du client @Model.Client.GetEmail
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <hr />
+                <p>
+                    Dans l’attente d’une suite favorable, veuillez agréer, Monsieur le Directeur National, notre profonde considération.
+                </p>
+                <table style="width:100%;margin-top:-20px">
+                    <tr>
+                        <td style="height:150px">Signataire 1</td>
+                        <td style="height:150px">Signataire 2</td>
+                    </tr>
+                    <tr style="height:120px">
+                        <td>Fonction</td>
+                        <td>Fonction</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="d-print-none mt-4">
+                <div class="float-end">
+                    <a href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></a>
+                    <a href="#" class="btn btn-primary w-md waves-effect waves-light">Send</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end row -->
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+

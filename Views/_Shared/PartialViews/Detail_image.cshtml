@@ -1,0 +1,23 @@
+﻿<div id="detailImage" class="modal fade" tabindex="-1" aria-labelledby="#detailImage" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content bg-transparent" id="im-2-content" style="width:100%">
+            <div class="modal-header text-danger bg-gradient-light">
+                <h5 class="modal-title mt-0" id="modal-typedocument"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body bg-gradient-dark" style="width:100%">
+                <iframe class="card-img mg-fluid1" src="#" id="img-2" style="height:100%;width:100%" frameborder="0"  />
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+    var taille = document.getElementById('detailImage').height;
+        if (taille > 595) {
+            taille = taille * 4/5;
+        } else {
+            taille = taille * 9 / 10;
+    }
+    document.getElementById('img-2').style = "max-height:1242px; max-width: 895px; height: auto; width:" + taille + "px";
+</script>

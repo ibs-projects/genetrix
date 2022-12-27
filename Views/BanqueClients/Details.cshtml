@@ -1,0 +1,60 @@
+﻿@model genetrix.Models.BanqueClient
+@{
+    genetrix.Models.ApplicationDbContext db = new genetrix.Models.ApplicationDbContext();
+    ViewBag.Title = "Gestionnaire";
+    ViewBag.pTitle = "Détail de la banque";
+    ViewBag.pageTitle = "Gestionnaire";
+    ViewBag.pageImage = "~/assets/images/IU/fournisseur.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <hr />
+        <div class="card">
+            <div class="card-body">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayName("Banque")
+                    </dt>
+
+                    <dd>
+                        @Model.Site.BanqueName(db)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayName("Agence")
+                    </dt>
+
+                    <dd>
+                       @Html.DisplayFor(model => model.Site.Nom)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayName("Gestionnaire")
+                    </dt>
+
+                    <dd>
+                        <span style="font:bolder">Noms </span>: @Html.DisplayFor(model => model.Gestionnaire.NomComplet) <br />
+                        <span style="font:bolder">Tel </span>: @Html.DisplayFor(model => model.Gestionnaire.Tel1) <br />
+                        <span style="font:bolder">Email </span>: @Html.DisplayFor(model => model.Gestionnaire.Email)
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @{
+        if ((string)Session["Profile"] == "banque")
+        {
+            <span> | </span>
+            @Html.ActionLink("Editer", "Edit", new { id = Model.Id })<span> | </span>
+            @Html.ActionLink("Supprimer", "Delete", new { id = Model.Id })
+        }
+    }
+    @Html.ActionLink("Voir la liste", "Index")
+</p>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

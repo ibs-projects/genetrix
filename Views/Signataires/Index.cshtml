@@ -1,0 +1,81 @@
+﻿@model IEnumerable<genetrix.Models.Signataire>
+@{
+    ViewBag.Title = "Signataires ";
+    ViewBag.pTitle = "Signataires ";
+    ViewBag.pageTitle = "Signataires ";
+    ViewBag.pageImage = "~/assets/images/IU/client.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<p>
+    @Html.ActionLink("Ajouter", "Create")
+</p>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1">
+                Liste des signatiares des courriers
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.NomComplet)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Telephone)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Email)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Rang)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Fonction)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </tbody>
+
+                        <tfoot>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.NomComplet)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Telephone)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Email)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Rang)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Fonction)
+                                    </td>
+                                    <td>
+                                        @Html.ActionLink("Editer", "Edit", new { id = item.Id }) |
+                                        @Html.ActionLink("Détails", "Details", new { id = item.Id }) |
+                                        @Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+                                    </td>
+                                </tr>
+                            }
+
+                        </tfoot>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

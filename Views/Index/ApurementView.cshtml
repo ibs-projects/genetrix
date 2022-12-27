@@ -1,0 +1,98 @@
+﻿@model genetrix.Models.VariablGlobales
+@using genetrix.Models
+<style>
+    .bsz {
+        font-size: large !important;
+        font: bolder !important;
+    }
+
+    .nav-item0 {
+        padding-left: 3em !important;
+        padding-right: 3em !important;
+    }
+</style>
+@{
+    ViewBag.pageImage = string.IsNullOrEmpty(ViewBag.interf) ? "~/assets/images/IU/bank.png" : "~/assets/images/IU/allDoc.png";
+    ViewBag.Title = "Apurement";
+    ViewBag.pTitle = "Apurement";
+    //var info = Model.GetAllDataBankByEtapesDeviseBeac(new int?[] { 22, 23, 24, 25, 230, 231, 232, 250, -230, -231, -232, -250 }, 0, estBeac: 0, all_beac_non: true);
+    var info = Model.GetApurementDataByEtapesModel(new int?[] { 22, 23, 24, 25, 230, 231, 232, 250, -230, -231, -232, -250 });
+
+}
+
+<div class="">
+    <!-- Nav tabs -->
+    <ul style="border-bottom: 1px solid rgb(38,137,166 , 0.40) " class="nav nav-pills bg-gradient" role="tablist">
+        <li class="nav-item waves-effect waves-light">
+            <a class="nav-link active" data-bs-toggle="tab" href="#home1" role="tab">
+                <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                <span class="nav-item0 d-none d-sm-block bsz">DFX <span id="nbr-dfx"></span></span>
+            </a>
+        </li>
+        <li class="nav-item waves-effect waves-light">
+            <a class="nav-link" data-bs-toggle="tab" href="#profile1" role="tab">
+                <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                <span class="nav-item0 d-none d-sm-block bsz">REFINANCEMENT <span id="nbr-ref"></span></span>
+            </a>
+        </li>
+        <li class="nav-item waves-effect waves-light">
+            <a class="nav-link" data-bs-toggle="tab" href="#fp_ap" role="tab">
+                <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                <span class="nav-item0 d-none d-sm-block bsz">Fonds propres <span id="nbr-fp"></span></span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content p-3 text-muted">
+        <div class="tab-pane active" id="home1" role="tabpanel">
+            <div style="">
+                <h4 class="card-title">Dossiers DFX - Apurement</h4>
+                <p class="card-title-desc"></p>
+            </div>
+            <div class="row">
+                @Html.Partial("~/Views/_Shared/PartialViews/IndexApurementDFX.cshtml", info.Where(d => d.DFX6FP6BEAC == 1))
+            </div>
+            @*@Html.Partial("~/Views/_Shared/PartialViews/ListDFXBanque.cshtml", info.Where(d => d.DFX6FP6BEAC == 1))*@
+        </div>
+        <div class="tab-pane" id="profile1" role="tabpanel">
+
+            <h4 class="card-title">Dossiers Refinancement - Apurement</h4>
+            <p class="card-title-desc"></p>
+            <div class="row">
+                @Html.Partial("~/Views/_Shared/PartialViews/IndexApurementREF.cshtml", info.Where(d => d.DFX6FP6BEAC == 3))
+            </div>
+        </div>
+        <div class="tab-pane" id="fp_ap" role="tabpanel">
+
+            <h4 class="card-title"> Dossiers Fonds propres - Apurement</h4>
+            <p class="card-title-desc"></p>
+            <div class="row">
+                @Html.Partial("~/Views/_Shared/PartialViews/IndexApurementFP.cshtml", info.Where(d => d.DFX6FP6BEAC == 2))
+            </div>
+        </div>
+    </div>
+
+</div>
+<a id="link-partial-docs" style="display:none" href="#"></a>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+<script>
+
+    $(document).ready(function () {
+        $('.racourci-ref').click(function (e) {
+            var _url = '@Url.Content("~/ReferenceBanques/Index?st=")' + this.getAttribute("href")+"&type=ref";
+            var self = document.getElementById('link-partial-docs');
+            self.setAttribute("href", _url);
+            e.preventDefault(); // prevent default any way
+            self.click();
+        });
+        $('.racourci-dfx').click(function (e) {
+            var _url = '@Url.Content("~/Dfxes/Index?st=")' + this.getAttribute("href")+"&type=dfx";
+            var self = document.getElementById('link-partial-docs');
+            self.setAttribute("href", _url);
+            e.preventDefault(); // prevent default any way
+            self.click();
+        });
+    }
+</script>
+

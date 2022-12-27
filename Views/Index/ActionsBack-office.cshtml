@@ -1,0 +1,51 @@
+﻿@model genetrix.Models.Dossier
+@{
+   if (!Model.ValiderDouane &&( Model.EtapesDosier==4 || Model.EtapesDosier==5))
+	{
+	if (Model.EtapesDosier==4)
+    {
+        Model.Actions_content_visible = true;
+        <td>
+            <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                <i class="mdi mdi-cancel"></i>
+                Rejeter
+            </button>
+        </td>
+    }
+    if (Model.DeclarImport == null || Model.DomicilImport == null)
+    {
+        Model.Actions_content_visible = true;
+        <td>
+            <button type="button" id="add-docs-douane" class="btn btn-outline-warning btn-action" data-bs-toggle="modal" data-bs-target="#modal-docs-douane" data-bs-container="#actions-content" title="Ajouter les document(s) de la douane">
+                <i class="mdi mdi-plus-box-multiple-outline"></i>
+                Completer le dossier
+            </button>
+        </td>
+
+    }
+    else
+    {
+        Model.Actions_content_visible = true;
+        <td>
+            <button type="button" id="add-docs-douane" class="btn btn-outline-warning btn-action" data-bs-toggle="modal" data-bs-target="#modal-docs-douane" data-bs-container="#actions-content" title="Ajouter les document(s) de la douane">
+                <i class="mdi mdi-plus-box-multiple-outline"></i>
+                Editer la douane
+            </button>
+        </td>
+        <td>
+            <button type="button" id="valider-docs-douane" onclick="val_douane()" class="btn btn-outline-info btn-action" title="Valider les document(s) de la douane">
+                <i class="mdi mdi-plus-box-multiple-outline"></i>
+                Valider
+            </button>
+            <a id="Edit-douane" class="hidden" href=@Url.Content("~/Dossiers_banque/Edit-douane?id="+Model.Dossier_Id)></a>
+            <script>
+                function val_douane() {
+                    if (confirm('Confirmez-vous la validation des documents de douanes?')) {
+                        document.getElementById('Edit-douane').click();
+                    }
+                }
+            </script>
+        </td>
+    } 
+	}
+}

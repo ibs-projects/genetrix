@@ -1,0 +1,102 @@
+﻿@using genetrix.Models
+
+@model genetrix.Models.Dossier
+<style>
+    .ttd {
+        color: black;
+        font-weight: bold;
+        font-size: 1.3em;
+    }
+    .input-group > input{
+        margin-right:3px;
+    }
+</style>
+<div class="modal fade" id="modal-info-lettre" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel20" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel20">Informations de la lettre d'ngagement</h5>
+                <button type="button" id="modal-ajout-document-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table>
+                        <tr>
+                            <td class="ttd">genre:</td>
+                            <td class="ttb">
+                                <select class="form-control input-sel" id="genre">
+                                    <option value="M.">M.</option>
+                                    <option value="Mme">Mme</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Nom complet:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Votre nom et prénom" id="NonComplet" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Fonction:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Votre fonction." id="fonction" value="" /></td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Entreprise:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Votre entreprise" id="entreprise" value="@Model.GetClient" /></td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Banque:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Votre banque" id="banque" value="@Model.BanqueToString" /></td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Ville et pays du fournisseur:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Adresse fournisseur " id="vilePays_fournisseur" value="@(Model.GetVilleBenf+" ("+Model.PaysFournisseur+")")" /></td>
+                        </tr>
+                        @if (Model is Bien)
+                        {
+                            var date = (Model as Bien).DateLivraison;
+                            <tr>
+                                <td class="ttd">Date de livraison de la marchandise:</td>
+                                <td class="ttb">
+                                    <div class="input-group">
+                                        <input type="number" min="1" max="31" step="1" class="form-control input-sel" placeholder="Jour" id="dateLivraison_j" value="@(date!=null?date.Value.Day+"":"")" />
+                                        <input type="number" min="1" max="12" step="1" class="form-control input-sel" placeholder="Mois" id="dateLivraison_m" value="@(date!=null?date.Value.Month+"":"")" />
+                                        <input type="number" min="2022" max="2100" step="1" class="form-control input-sel" placeholder="Année" id="dateLivraison_a" value="@(date!=null?date.Value.Year+"":"")" />
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td class="ttd">Ville du client:</td>
+                            <td class="ttb"><input type="text" class="form-control input-sel" placeholder="Votre ville" id="ville" value="@Model.VilleClient" /></td>
+                        </tr>
+                        <tr>
+                            <td class="ttd">Date de signature:</td>
+                            <td class="ttb">
+                                <div class="input-group">
+                                    <input type="number" class="form-control input-sel" placeholder="Jour" id="dateJour_j" min="1" max="31" value="" />
+                                    <input type="number" class="form-control input-sel" placeholder="Mois" id="dateJour_m" min="1" max="12" value="" />
+                                    <input type="number" class="form-control input-sel" placeholder="Année" id="dateJour_a" min="2022" step="1" value="" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-down-lettre" class="btn btn-primary down-docs" data-bs-dismiss="modal" aria-label="Close"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+@{
+    var dnow = DateTime.Now;
+    <script>
+        mois='@(dnow.Month)'
+        annee='@(dnow.Year)'
+        jour='@(dnow.Day)'
+        document.getElementById('dateJour_j').value = jour;
+        document.getElementById('dateJour_m').value = mois;
+        document.getElementById('dateJour_a').value = annee;
+    </script>
+}

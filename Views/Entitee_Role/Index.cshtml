@@ -1,0 +1,64 @@
+﻿@model IEnumerable<genetrix.Models.Entitee_Role>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Entitee.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.XRole.Nom)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Lire)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Ecrire)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Supprimer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Créer)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Entitee.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.XRole.Nom)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Lire)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Ecrire)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Supprimer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Créer)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        </td>
+    </tr>
+}
+
+</table>

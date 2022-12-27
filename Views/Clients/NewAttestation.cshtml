@@ -1,0 +1,81 @@
+﻿@model genetrix.Models.DocumentAttache
+@{
+}
+<link href="~/assets/libs/dropzone/min/dropzone.min.css" rel="stylesheet" type="text/css" />
+
+<form id="cp-form-attest" action="~/Clients/AddAttest" method="post" enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal fs-6 text-dark card-body">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="row mb-3">
+
+            <div class="col-lg-12 mb-3">
+                @Html.Label("Date de signature", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <input type="date" class="form-control modif" name="DateSignature" required id="DateSignature" value="@Model.DateSignature" />
+                    <input type="number" class="hidden" name="IdClient" id="IdClient" value="@Model.IdClient" />
+                    <input type="number" class="hidden" name="AttestSurHonneur" id="AttestSurHonneur" value="@Model.AttestSurHonneur" />
+                </div>
+            </div>
+            <div class="col-lg-12 mb-3">
+                @Html.Label("Date d'expiration du document", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <input type="date" class="form-control" readonly="readonly" name="DateExpiration" id="DateExpiration" />
+                </div>
+            </div>
+            <div class="col-lg-12 mb-3">
+                @Html.Label("Nom du document", htmlAttributes: new { @class = "control-label" })
+                <div class="col-md-12">
+                    <input type="text" name="Nom" id="Nom001" required class="form-control modif" autocomplete="off" value="" />
+                </div>
+            </div>
+            <div class="col-lg-12">
+                <p></p>
+                <input name="ImagesFactureDoc" id="input-doc" max="7" type="file" accept=".jpg, .jpeg, .png, .pdf">
+            </div>
+        </div>
+
+        <div class="form-group mb-3 bg-dark upload-file hidden" id="upload-file-panel-doc" onclick="return false">
+            <div class="row">
+                <div id="upload-file-actived" class="col-lg-11 p-3 text-center" style="background-color:rgb(163, 232, 237, 0.14)">
+                    <div class="fallback hidden">
+                    </div>
+                    <div class="dz-message needsclick" id="images-contenaire-doc">
+                        @*<i class="display-4 text-muted uil uil-cloud-upload" id="icon-upload"></i>
+                            <h6 id="label-upload" class="text-white">Cliquez ici pour télécharger les fichiers.</h6>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-12">
+                <button type="submit" _action_requied_loader="0" id="bt-valider-autre-document" value="Valider" class="btn card-header1"><i class="mdi mdi-check"></i> Valider</button>
+                &emsp;
+                <div style="margin-top:10px;display:inline-block">
+                    <p style="display: none" id="ajout-doc-loader">
+                        <i class="mdi mdi-spin mdi-loading fs-1"></i> Veuillez patientez, validation en cours
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    try {
+        $('#DateSignature').on('change', function () {
+            var date = new Date(this.value);
+            document.getElementById('DateExpiration').valueAsDate = new Date(date.getFullYear(), Number(date.getMonth()), Number(date.getDate() + 30));
+            if (!document.getElementById("Nom001").value) {
+                document.getElementById("Nom001").value = "Attestation sur l'honneur du " + this.value.toString() + " au " + document.getElementById('DateExpiration').value.toString();
+            }
+        })
+    } catch (e) {
+
+    }
+
+</script>

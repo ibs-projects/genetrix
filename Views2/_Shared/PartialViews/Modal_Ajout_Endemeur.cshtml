@@ -1,0 +1,139 @@
+﻿@model genetrix.Models.Dossier
+    @{
+        string _url = "~/Dossiers_banque/SetMiseEnDemeure";
+        bool estClient = false;
+        if ((string)Session["Profile"]=="client")
+        {
+            estClient = true;
+            _url = "~/dossiers/SetMiseEnDemeure";
+        }}
+<form  action="@Url.Content(_url)" id="form-endemeures" method="post" enctype="multipart/form-data">
+    <input type="number" name="Dossier_Id" class="hidden" value="@Model.Dossier_Id" />
+    <input type="file" id="upload-endemeur1" name="EnDemeure" class="hidden" accept=".jpg, .jpeg, .png, .pdf" value="" />
+    <input type="file" id="upload-endemeur2" name="EnDemeure2" class="hidden" accept=".jpg, .jpeg, .png, .pdf" value="" />
+</form>
+<div id="modal-ajout_endemeure" class="modal fade" tabindex="-1" aria-labelledby="#add-courriers" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header card-header1">
+                <h5 class="modal-title mt-0 text-white" id="add-courriers">Numérisation du courrier de mise en demeure</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="background-color: rgb(163, 232, 237, 0.14)">
+                <fieldset>
+                    <legend style="font-weight:bolder">&bull; Courrier de mise en demeure</legend>
+                    <div id="de-MED">
+                        <div class="card-body">
+                            <div style="" class="@(estClient ? "hidden":"")">
+                                <button id="scanner-2" href="#" class="btn btn-outline-info scan-bt">
+                                    <i class="mdi mdi-scanner"></i>
+                                    Scanner
+                                </button>
+                                <span class="btn btn-outline-info" onclick="document.getElementById('upload-endemeur1').click()" style="max-width:150px;max-height:40px;">
+                                    <label for="upload-img-2" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                </span>
+                                <span class="text-muted pl-1" id="MED-file-size"></span>
+                            </div>
+                            <div class="col-lg-12" id="img-MED-parent" style="max-height:100%;">
+                                <div class="row">
+                                    <div class="col-1 p-0 bg-gradient-dark1 hidden">
+                                        <a infoImage="img-MED-parent" imgid="img-MED" infoInputImg="upload-img-2" class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                    </div>
+                                    <div class="col-11 p-3 text-left">
+                                        @{
+                                            var estPdf = false; string url = "",img="";
+                                            try
+                                            {
+                                                estPdf = Model.EnDemeure.EstPdf;
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = Model.EnDemeure.Id;
+                                                    url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=0");
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+                                            else
+                                            {
+                                                img = Model.Get_EnDemeure;
+                                            }
+                                            <iframe id="iframe-img-MED" class="pdf-view @(estPdf?"":"hidden")" src="@url"></iframe>
+                                            <img class="card1 bg-transparent-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" style="max-height:150px;max-width:150px" id="img-MED" alt="" />
+                                        }
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <hr />
+                <fieldset>
+                    <legend style="font-weight:bolder">&bull; Accusé de reception du client</legend>
+                    <div id="de-ARMD">
+                        <div class="card-body">
+                            <div style="">
+                                <button id="scanner-3" href="#" class="btn btn-outline-info scan-bt">
+                                    <i class="mdi mdi-scanner"></i>
+                                    Scanner
+                                </button>
+                                <span class="btn btn-outline-info" onclick="document.getElementById('upload-endemeur2').click()" style="max-width:150px;max-height:40px;">
+                                    <label for="upload-img-3" style="float:left"> <i class="mdi mdi-upload"></i> Choisr un fichier</label>
+                                </span>
+                                <span class="text-muted pl-1" id="ARMD-file-size"></span>
+                            </div>
+                            <div class="col-lg-12" id="img-ARMD-parent" style="max-height:100%;">
+                                <div class="row">
+                                    <div class="col-1 p-0 bg-gradient-dark1 hidden">
+                                        <a infoImage="img-ARMD-parent" imgid="img-recap" infoInputImg="upload-img-3" class="btn text-white" style="font-size:x-large ;margin-block:0px!important" title="supprimer"><i class="mdi mdi-delete"></i></a>
+                                    </div>
+                                    <div class="col-11 p-3 text-left">
+                                        @{
+                                            estPdf = false; url = ""; img="";
+                                            try
+                                            {
+                                                estPdf = Model.EnDemeure2.EstPdf;
+                                            }
+                                            catch (Exception)
+                                            { }
+                                            if (estPdf)
+                                            {
+                                                int idDoc = 0;
+                                                try
+                                                {
+                                                    idDoc = Model.EnDemeure2.Id;
+                                                    url = Url.Content("~/dossiers/GetPDF?idDoc=" + idDoc + "&estDocAttache=true&idDossier=0");
+                                                }
+                                                catch (Exception)
+                                                { }
+                                            }
+                                            else
+                                            {
+                                                img = Model.Get_EnDemeure2;
+                                            }
+                                            <iframe id="iframe-img-ARMD" class="pdf-view @(estPdf?"":"hidden")" src="@url"></iframe>
+                                            <img class="card1 bg-transparent-img img-fluid imf-taille @(estPdf?"hidden":"")" src="@(img)" style="max-height:150px;max-width:150px" id="img-ARMD" alt="" />
+                                        }
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger waves-effect" data-bs-dismiss="modal"><i class="mdi mdi-cancel"></i> Annuler</button>
+                <button type="submit" id="btn-valider-endemeures" onclick="document.getElementById('form-endemeures').submit()" class="btn btn-primary waves-effect waves-light"><i class="mdi mdi-check"></i> Valider</button>
+            </div>
+        </div>
+    </div>
+</div>

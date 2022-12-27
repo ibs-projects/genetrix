@@ -1,0 +1,107 @@
+﻿@model IEnumerable<genetrix.Models.DossierSupprime>
+
+@{
+    ViewBag.Title = "Dossiers supprimés";
+    ViewBag.pTitle = "Dossiers supprimés";
+    ViewBag.pageTitle = "Dossiers supprimés";
+    ViewBag.pageImage = "~/assets/images/IU/structures.png";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header card-header1 text-white">
+                Rapport des dossiers supprimés
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Agence)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Gestionnaire)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DonneurDordre)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Benefic)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Devise)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MontantDev)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.MontantXaf)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateTraitement)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateDepot)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DateSupp)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.UserName)
+                                </th>
+                                @*<th></th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Agence)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Gestionnaire)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DonneurDordre)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Benefic)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Devise)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MontantDev)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.MontantXaf)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateTraitement)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateDepot)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.DateSupp)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.UserName)
+                                    </td>
+                                    @*<td>
+                                        @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                                    </td>*@
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

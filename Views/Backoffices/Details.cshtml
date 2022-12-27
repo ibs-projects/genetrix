@@ -1,0 +1,163 @@
+﻿@model genetrix.Models.Backoffice
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/_Shared/Layouts/_layout_preloader.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Backoffice</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Responsable.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Responsable.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TypeStructure.Intitule)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TypeStructure.Intitule)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Nom)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Adresse)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Adresse)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Ville)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Ville)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Pays)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Pays)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telephone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telephone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Telephone2)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Telephone2)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiveauDossier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiveauDossier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiveauMaxManager)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiveauMaxManager)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiveauMaxDossier)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiveauMaxDossier)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirDossiersAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirDossiersAutres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirUsersAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirUsersAutres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VoirClientAutres)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VoirClientAutres)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EstAgence)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EstAgence)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiveauH)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiveauH)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LireTouteReference)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LireTouteReference)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Agence.Nom)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Agence.Nom)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

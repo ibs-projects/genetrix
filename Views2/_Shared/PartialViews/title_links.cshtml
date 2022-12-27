@@ -1,0 +1,168 @@
+﻿@using genetrix.Models
+@model string
+@{
+    foreach (var item in Model.Split(';'))
+    {
+        switch (item)
+        {
+            case "dossier_bank_details":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a _action_requied_loader="0" href="@Session["IndexUrl"]" id="page3" class="">
+                        Liste des dossiers <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>
+                break;
+            case "dossier_bank_index":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a _action_requied_loader="0" href="@Session["urlaccueil"]" id="page3" class="">
+                        Accueil <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>
+                break;
+            case "createdosclient":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menu principal <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Index/Index")"><i class="uil-home-alt"></i> Tableau de bord</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Mails/Index")"><i class="mdi mdi-email-open-multiple-outline"></i> Messagerie</a>
+                    </div>
+                </div>
+                break;
+            case "indexdosclient":
+            case "detailsdosclient":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Gestion des dossiers <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers/Index?st=assoum")"><i class="mdi mdi-folder-clock-outline"></i> Dossiers à soumettre</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers/Index?st=soumis")"><i class="mdi mdi-folder-clock"></i> Dossiers soumis</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers/Index?st=encours")"><i class="mdi mdi-folder-sync-outline"></i> Dossiers en cours</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers/Index?st=aapurer")"><i class="mdi mdi-folder-move-outline"></i> Dossiers à apurer</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers/Index?st=echu")"><i class="mdi mdi-folder-alert text-danger"></i> Dossiers échus</a>
+                    </div>
+                </div>
+                break;
+            case "indexclient":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menu principal <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Mails/Index")"><i class="mdi mdi-email-open-multiple-outline"></i> Messagerie</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/dossiers/create")"><i class="uil-folder-plus"></i> Nouveau transfert</a>
+                    </div>
+                </div>
+                break;
+            case "tb":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Accueil principal <i class="mdi mdi-chevron-right"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/index/indexbanque?panel=wf&ges=Gestion%20de%20transferts&acc=Gestion%20de%20transferts")"><i class="fas fa-route"></i> Gestion des transfert</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/index/indexbanque?panel=11,12,13,14&ges=Gestion%20des%20apurements&acc=Gestion%20des%20apurements")"><i class="fas fa-life-ring"></i> Gestion des apurements</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("#")"><i class="mdi mdi-archive"></i> Archivage</a>
+                    </div>
+                </div>
+                break;
+            case "consult_dos":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Consultation dossiers<i class="mdi mdi-chevron-right"></i>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#" onclick="tb()"><i class="mdi mdi-image-filter-tilt-shift"></i> Agence</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers_banque/Index?st=all")"><i class="mdi mdi-image-filter-tilt-shift"></i> Conformité</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers_banque/Index?st=all")"><i class="mdi mdi-image-filter-tilt-shift"></i> Transfert</a>
+                        <a _action_requied_loader="0" class="dropdown-item" href="@Url.Content("~/Dossiers_banque/Index?st=all")"><i class="mdi mdi-image-filter-tilt-shift"></i> BEAC</a>
+                    </div>
+                </div>
+                break;
+            case "dos_reçus":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a _action_requied_loader="0" href="@Url.Content("~/Dossiers_banque/Index?st=recu")">
+                        Dossiers en cours<i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>
+                break; 
+            case "conform":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a _action_requied_loader="0" href="@Url.Content("~/Dossiers_banque/Index?st=confirm")">
+                        Conformité<i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>
+                break; 
+            case "transfert":
+                <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a _action_requied_loader="0" href="@Url.Content("~/Dossiers_banque/Index?st=transfert")">
+                        Service transfert<i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>
+                break;
+            case "dos_encours":
+                @*<div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                    <a href="@Url.Content("~/index/indexbanque?st=encours")">
+                        Dossiers en cours<i class="mdi mdi-chevron-right"></i>
+                    </a>
+                </div>*@
+                break;
+            case "site":
+                if (Session["estChef"].ToString() == "True" || Session["estDirection"].ToString() == "True")
+                {
+                    <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                        <a href="#" id="page3" class="dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Agence <i class="mdi mdi-chevron-right"></i>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" onclick="tb1()"><i class="mdi mdi-watch-import"></i> Mon portefeuille</a>
+                            @{
+                                try
+                                {
+                                    foreach (var u in Session["collaborateurs"] as List<UserVM>)
+                                    {
+                                        try
+                                        {
+                                            //if (u.Id != ViewData["curenteUserID"].ToString())
+                                            {
+                                                <a class="dropdown-item" _action_requied_loader="0" id="tr" href=@Url.Content("~/index/IndexBanque?port="+u.Id+"&panel="+Session["str3"]+"&page=consult_dos;agence")>
+                                                    @u.NomComplet
+                                                    <i class="mdi mdi-clipboard-account-outline float-lg-start"></i>
+                                                </a>
+                                            }
+                                        }
+                                        catch (Exception)
+                                        { }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            }
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="dropdown mt-sm-0 p-0 m-0" style="display:inline-block;margin-top:-8px">
+                        <a href="#" onclick="tb()">
+                            Mon portefeuille<i class="mdi mdi-chevron-right"></i>
+                        </a>
+                    </div>
+                }
+                break;
+            default:
+                break;
+        }
+    }
+}
+<script>
+    function tb() {
+        alert("tb")
+        document.getElementById('tab1').click();
+    }
+
+</script>

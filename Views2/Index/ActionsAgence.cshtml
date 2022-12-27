@@ -1,0 +1,234 @@
+﻿@model genetrix.Models.Dossier
+
+@{
+    bool douaneComplet = false,estValiderDouane=true;
+    try
+    {
+        if (Model.DeclarImport != null && Model.DomicilImport != null)
+        {
+            douaneComplet = true;
+        }
+    }
+    catch
+    {}
+
+    bool apurementCond = true;
+    if (Model.EtapesDosier < -3)
+    {
+        apurementCond = false;
+    }
+    //if (Model.EtapesDosier != 4 && apurementCond) Activer si la conformité existe
+    if (apurementCond)
+    {
+        //rejet
+        if (Model.EtapesDosier < 6 || ViewBag.editApurement)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="104" id="btn-rejet" type="button" class="btn btn-outline-danger btn-action" data-bs-toggle="modal" data-bs-target="#modal-raison-rejet" data-bs-container="#actions-content" data-bs-placement="right" title="Rejeter le dossier">
+                    <i class="mdi mdi-cancel"></i>
+                    Rejeter
+                </button>
+            </th>
+        }
+        //validation du gestionnaire ou responsable du dossier
+        if (Model.EtapesDosier == 3)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="105" id="btn-val-doss" type="button" value="@(douaneComplet?"5":"4")" class="btn btn-outline-info change-etat" title="Valider le dossier (dossier accordé)">
+                    <i class="mdi mdi-check" id="btn-val-doss-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-val-doss-1"></i>
+                    Valider le dossier
+                </button>
+            </th>
+
+        } 
+        if ((Model.EtapesDosier > 3 && Model.EtapesDosier < 6 || Model.EtapesDosier < 0) && false)
+        {
+            Model.Actions_content_visible = true;
+            <th>
+                <button numero="105" id="btn-renvoi-back-doss" onclick="execute_renvoi_backoffice()" type="button" class="btn btn-outline-danger" title="Renvoyer le dossier à la saisie DIB" data-bs-toggle="modal" data-bs-target="#modal-renvoi-back-office">
+                    <i class="mdi mdi-step-backward" id="btn-renvoi-doss-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-renvoi-doss-1"></i>
+                    Renvoyer à la saisie DIB
+                </button>
+                <script>
+                    function execute_renvoi_backoffice() {
+                        document.getElementById('btn-renvoi-back-office').setAttribute('value', '4');
+                    }
+                </script>
+            </th>
+
+        }
+        if (Model.DeclarImport != null && Model.DomicilImport != null && (Model.ValiderDouane || estValiderDouane) && (Model.EtapesDosier == 5 || Model.EtapesDosier < -1) || Model.MarchandiseArrivee && Model.EtapesDosier >= 4 && Model.EtapesDosier < 6)
+        {
+            <th>
+                @{
+                    if (Model.EtapesDosier > 0)
+                    {
+                        <button numero="103" type="button" id="btn-env-conf" value="6" class="btn btn-outline-primary change-etat btn" data-bs-container="#actions-content" title="Envoyer à la conformité">
+                            <i class="mdi mdi-send-check" id="btn-env-conf-0"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-conf-1"></i>
+                            Conformité
+                        </button>
+                    }
+                    else
+                    {
+                        <button numero="103" type="button" id="btn-env-conf" class="btn btn-outline-primary btn" data-bs-toggle="modal" data-bs-target="#modal-note-renvoi" onclick="document.getElementById('change1252').value='6'" data-bs-container="#actions-content" title="Envoyer à la conformité">
+                            <i class="mdi mdi-send-check" id="btn-env-conf-0"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-conf-1"></i>
+                            Conformité
+                        </button>
+                    }
+                }
+            </th>
+            <th>
+                @{
+                    if (Model.EtapesDosier > 0)
+                    {
+                        <button numero="105" id="btn-env-stf" type="button" value="9" class="btn btn-outline-primary change-etat" title="Envoyer au service transfert">
+                            <i class="mdi mdi-send" id="btn-env-stf-0"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-stf-1"></i>
+                            @(Model.EtapesDosier == 5 || Model.EtapesDosier == -2?"Service transfert":"Valider le dossier")
+                        </button>
+                    }
+                    else
+                    {
+                        <button numero="105" id="btn-env-stf" type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-note-renvoi" onclick="document.getElementById('change1252').value='9'" data-bs-container="#actions-content" title="Envoyer au service transfert">
+                            <i class="mdi mdi-send" id="btn-env-stf-0"></i>
+                            <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-stf-1"></i>
+                            @(Model.EtapesDosier == 5 || Model.EtapesDosier == -2 || Model.EtapesDosier == -3?"Service transfert":"Valider le dossier")
+                        </button>
+                    }
+                }
+            </th>
+        }
+        else if (Model.EtapesDosier == 19 || Model.EtapesDosier == 20)// || VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, Model.EtapesDosier, min, max)))
+        {
+            //reception couverture beac
+            Model.Actions_content_visible = true;
+<th>
+    @{
+        if (Model.DFX6FP6BEAC == 1 || Model.DFX6FP6BEAC == 2)
+        {
+            <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                <input type="checkbox" name="devise_recu" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac" value="22">
+                <label class="form-check-label" for="devise_recu" style="margin-left:5px;margin-top:12px">Dossier traité</label>
+            </div>
+        }
+        else if (Model.DFX6FP6BEAC == 3)
+        {
+            @*<div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="devise_recu" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="recept-couvert-beac" href1="@Url.Content("~/referencebanques/ModifEtatDossierJS?etat=22&idreference="+Model.Dossier_Id)" value="22">
+                    <label class="form-check-label" for="devise_recu" style="margin-left:5px;margin-top:12px">Dossier traité</label>
+                </div>*@
+            <h4 class="text-center">Dossier réfinancement groupé <a href="@Url.Content("~/ReferenceBanques/details?id="+Model.ReferenceExterneId)" style="font-size:13px">Acceder à la référence</a></h4>
+        }
+    }
+</th>
+        }
+        else if (Model.EtapesDosier == 230)// || VariablGlobales.AfficheAction(Model.IdGestionnaire, Model.GetCurrenteResponsableID(min), Model.IdPrecedentResponsable, userId, Model.EtapesDosier, min, max)))
+        {
+            //reception couverture beac
+            Model.Actions_content_visible = true;
+            <th>
+                <a numero="103" href="#" id="btn-env-conf22" value="231" class="btn btn-outline-primary change-etat " title="Valider le dossier">
+                    <i class="mdi mdi-send-check" id="btn-env-conf-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-conf-1"></i>
+                    Valider
+                </a>
+            </th>
+        }
+        else if (Model.EtapesDosier == 231)
+        {
+            //reception couverture beac
+            Model.Actions_content_visible = true;
+            <th>
+                <a numero="103" href="#" id="btn-telecharger" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modal-extraire-dossier" title="Extraire le dossier">
+                    <i class="mdi mdi-download" id="btn-telecharger-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-telecharger-1"></i>
+                    Extraire le dossier
+                </a>
+                @*<a numero="103" href="@Url.Content("~/Dossiers_banque/DownloadZipFile?dossierId="+Model.Dossier_Id)" id="btn-telecharger" class="btn btn-outline-primary" title="Telecharger le dossier">
+                        <i class="mdi mdi-download" id="btn-telecharger-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-telecharger-1"></i>
+                        Telecharger le dossier
+                    </a>*@
+            </th>
+            <th>
+                <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="btn-env-conf" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="btn-env-conf" value="232">
+                    <label class="form-check-label" for="btn-env-conf" style="margin-left:5px;margin-top:12px">Envoyé à la BEAC</label>
+                </div>
+                @*<button numero="103" type="button" id="btn-env-conf" value="232" class="btn btn-outline-primary change-etat " title="Envoyé à la BEAC">
+                        <i class="mdi mdi-send-check" id="btn-env-conf-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-conf-1"></i>
+                        Envoyé à la BEAC
+                    </button>*@
+            </th>
+        }
+        else if (Model.EtapesDosier == 232)
+        {
+            //reception couverture beac
+            Model.Actions_content_visible = true;
+            <th>
+                @*<button numero="103" type="button" id="btn-env-conf" value="24" class="btn btn-outline-danger change-etat " title="Apurer le dossier">
+                        <i class="mdi mdi-alert" id="btn-env-conf-0"></i>
+                        <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-env-conf-1"></i>
+                        Apurer le dossier
+                    </button>*@
+                <div numero="102" class="form-check mb-1" style="display:inline-block!important" dir="ltr">
+                    <input type="checkbox" name="devise_recu" class="form-check-input change-etat" style="margin-left:0px;margin-top:15px" id="btn-env-conf" value="24">
+                    <label class="form-check-label" for="devise_recu" style="margin-left:5px;margin-top:12px">Dossier apuré par la BEAC</label>
+                </div>
+            </th>
+        }
+        if (Model.EtapesDosier == 25) //Echu
+        {
+            Model.Actions_content_visible = true;
+            <th class="hidden">
+                <button numero="103" type="button" id="btn-env-conf" value="24" class="btn btn-outline-danger change-etat hidden" title="Courrier de mise en demeure">
+                    <i class="mdi mdi-pdf-box" id="btn-env-conf-0"></i>
+                    Mise en demeure
+                </button>
+            </th>
+            <th>
+                <button numero="2" id="btn-gen-courr" type="button" class="btn @(Model.Get_EnDemeure!="#" &&Model.Get_EnDemeure2!="#"?"btn-success":"btn-outline-info" )" title="Numériser le courrier de mise en demeure" data-bs-toggle="modal" data-bs-target="#modal-ajout_endemeure">
+                    <i class="mdi mdi-file-document-edit" id="btn-gen-courr-0"></i>
+                    <i class="mdi mdi-spin mdi-loading" style="display:none" id="btn-gen-courr-1"></i>
+                    Numériser la mise en demeure
+                </button>
+            </th>
+                        }
+                    }
+}
+@*@Html.Partial("~/Views/_Shared/PartialViews/Modal_Extraire_Dossier.cshtml")*@
+
+
+@section extrairedossier{
+
+    @*<script>
+        $('#btn-modal-extraction-doss').click(function () {
+            var partage = document.getElementById('link-partager');
+            var emails = $("#agentemails").val();
+            ExtraireDossier(partage.getAttribute('elt-id'), emails);
+        });
+
+        function ExtraireDossier(id, emails) {
+            if (emails && id) {
+                var fourn = document.getElementById('include-fournisseur').checked;
+                var clt = document.getElementById('include-client').checked;
+                document.getElementById('link-preload').click();
+                $.ajax({
+                    url: '@Url.Content("~/dossiers_banque/ExtraireDossier?dossierId=")' + id + '&agtemail=' + emails + '&includ_f=' + fourn + '&includ_cl=' + clt,
+                    success: function (responce) {
+                        alert('Dossier extrait avec succès!')
+                        location.reload();
+                },
+                    error: function (responce) { alert(responce.error) }
+                });
+             }
+        }
+    </script>*@
+}

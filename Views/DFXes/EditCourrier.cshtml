@@ -1,0 +1,689 @@
+﻿@using System;
+@using System.Globalization;
+@using genetrix.Models;
+@model genetrix.Models.DFX
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+@{
+    CultureInfo cultureInfo = CultureInfo.CreateSpecificCulture("fr-FR");
+    var signataires = new List<Signataire>();
+    try
+    {
+        signataires = ViewBag.signataires as List<Signataire>;
+    }
+    catch (Exception)
+    { }
+    if (signataires == null)
+    {
+        signataires = new List<Signataire>();
+    }
+}
+<style>
+        .th1 {
+            border-left: 1px solid #808080;
+            font: bold;
+        }
+
+        #tab11 {
+            border: 1px solid #808080;
+            overflow: hidden;
+        }
+
+        td, th {
+            width: 50%;
+            padding: 0px;
+        }
+
+        @@media print {
+            /* table tr {
+                    background-color: yellow !important;
+                }
+    */
+            .pagebreak {
+                page-break-before: always;
+            }
+        }
+
+        .lg {
+            font-weight: bold;
+            display: block;
+        }
+
+        #tb22, #tb22 td, #tb22 th {
+            border: 1px solid transparent;
+            /*        width: 300px;
+        */
+        }
+
+        .td-none {
+            border: none;
+            border: 0px solid rgb(0, 0, 0, 0.00)
+        }
+
+        .bg-dark1 {
+            /*            background-color: #0d0f40;
+    */
+        }
+
+        .lab-sing {
+            font-weight: bold;
+        }
+
+        .lab-fct {
+            display: block;
+            margin-top: 20px;
+        }
+
+        .lab-fct, .lab-sing, tr, th, td, .lab-tab {
+            font-weight: bold;
+            font-family: Arial;
+            font-size: 14px;
+            padding: 3px;
+            margin: 0px;
+            color: #1c28a9
+        }
+
+        .form {
+            border: none;
+        }
+    @@media print {
+        html, body {
+            height: 100%;
+            margin: 0 !important;
+            padding: 0 !important;
+            overflow: hidden;
+        }
+    }
+        .th22 {
+            color: white;
+        }
+    .dd-11:hover {
+        overflow-x: scroll;
+    }
+</style>
+<body class="p-0">
+    <div class="main-content m-0">
+        <div class="page-content">
+            <!-- Nav tabs -->
+            <ul class="nav nav-pills d-print-none" role="tablist">
+                <li class="nav-item waves-effect waves-light">
+                    <a class="nav-link active  bg-dd" data-bs-toggle="tab" href="#navpills-home"
+                       role="tab">
+                        <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
+                        <span class="d-none d-sm-block">Courrier</span>
+                    </a>
+                </li>
+                <li class="nav-item waves-effect waves-light hidden">
+                    <a class="nav-link  bg-dd" data-bs-toggle="tab" href="#navpills-profile" role="tab">
+                        <span class="d-block d-sm-none"><i class="far fa-user"></i></span>
+                        <span class="d-none d-sm-block">Tableau de transferts</span>
+                    </a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content p-0" style="margin-top:8px;height:100%">
+                <div class="tab-pane active m-0" id="navpills-home" style="margin-top:10px;margin-bottom:60px" role="tabpanel">
+                    <div id="container0" class="container-fluid ">
+                        <div class="form-group d-print-none hidden">
+                            <label>Nombre des signataires du courrier :</label>
+                            <select id="nb-signataires" onclick="#" _type="nbsign" class="form-control" style="display:inline;width:50px">
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="1">1</option>
+                            </select>
+                            <hr style="width:70%" />
+                        </div>
+                        <div class="row col-lg-12" style="margin-top:5px">
+                            @*<form action="~//" id="editcourrier-form" method="post" class="col-lg-8 col-lg-offset-2 ">
+                                </form>*@
+                            @using (Html.BeginForm("editCourrier", "referencebanques", FormMethod.Post, new { @class = "col-lg-8 col-lg-offset-2 ", id = "editcourrier-form" }))
+                            {
+                                @Html.HiddenFor(model => model.Id)
+                                <input type="text" name="CompteBEACEditer" id="CompteBEACEditer" class="hidden" value="@Model.CompteBEACEditer" />
+                                <input type="text" name="BanqueDomiciliaire" id="BanqueDomiciliaire" class="hidden" value="@Model.BanqueDomiciliaire" />
+                                <input type="text" name="Ville" id="Ville" class="hidden" value="@Model.Ville" />
+                                <input type="text" name="CodeSwift" id="CodeSwift" class="hidden" value="@Model.CodeSwift" />
+                                <input type="text" name="Signataire1" id="Signataire1" class="hidden" value="@Model.Signataire1" />
+                                <input type="text" name="Signataire2" id="Signataire2" class="hidden" value="@Model.Signataire2" />
+
+                                <div class="bg-white pb-1" style="padding:30px;padding-top:15px" id="contener1">
+                                    <div class="invoice-title d-print-none">
+                                        <div class="text-muted hidden">
+                                            <p class="mb-1">641 Counts Lane Wilmore, KY 40390</p>
+                                            <p class="mb-1"><i class="uil uil-envelope-alt me-1"></i> abc@123.com</p>
+                                            <p><i class="uil uil-phone me-1"></i> 012-345-6789</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="text-muted text-end">
+                                                <div class="" style="text-align:left">
+                                                    <img src="@Url.Content(ViewBag.logo)" style="width:150px;height:150px" alt="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted text-start">
+                                                <div>
+                                                    <p class=" mb-1">Libreville, le @(DateTime.Now.ToString("m", cultureInfo)) @DateTime.Now.Year</p>
+                                                </div>
+                                                <div class="mt-4">
+                                                    <p class=" mb-1">
+                                                        A l’attention du Directeur National de la Banque des Etats de l’Afrique Centrale (BEAC)
+                                                    </p>
+                                                </div>
+                                                <div class="mt-4">
+                                                    <p class="mb-1">Libreville</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <p style="margin-top:40px">
+                                        Objet : Demande de devises @Model.DeviseToString
+                                    </p>
+                                    <h3 style="font-size:1em;margin-bottom:40px">
+                                        Référence transaction : @Model.NumeroRef
+                                    </h3>
+
+                                    <p>
+                                        Monsieur le Directeur National,
+                                    </p>
+                                    <p>
+                                        En couverture de l’opération @Model.Numero nous vous prions de bien vouloir mettre à notre disposition les devises nécessaires (@Model.DeviseToString), selon les modalités ci-après :
+                                    </p>
+                                    <div class="py-2">
+                                        <div class="table-responsive">
+                                            <table id="tab11" class="table table-sm table-nowrap table-centered table-striped mb-0" style="font-size:12px">
+                                                <tr style="background-color:aquamarine">
+                                                    <th style="50%;">Compte BEAC  à débiter</th>
+                                                    <th class="cl-editor" _id="1" style="width:50%">
+                                                        <label class="lab-tab" id="lab-1">@Model.CompteBEACEditer</label>
+                                                        @*<input type="text" id="input-1" _id="1" class="form-control cl-editor-input editor" name="CompteBEACEditer" value="@Model.CompteBEACEditer" />*@
+                                                        @*@Html.EditorFor(model => model.CompteBEACEditer, new { htmlAttributes = new { @class = "form-control  cl-editor-input editor", id = "input-1", _id = "1" } })*@
+                                                        <select class="form-control cl-editor-input editor" name="CompteBEACEditer" id="input-1" , _id="1" style="display:inline;width:80%;position:relative;z-index:200">
+                                                            <option value=""></option>
+                                                            @{
+                                                                foreach (var item in ViewBag.compteXaf)
+                                                                {
+                                                                    <option value="@item.Id" code="@item.NumCompte - @item.Cle" title="@item.Libellé">@item.NumCompte - @item.Cle</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <button type="button" class="cl-editor-btn editor" _id="1" id="btn-1"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Montant en devise</th>
+                                                    <td>
+                                                        @Model.MontantString
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Devise à couvrir</th>
+                                                    <td class="th1">
+                                                        @Model.DeviseToString
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Bénéficiaire</th>
+                                                    <td class="">
+                                                        @Model.Banque.Nom
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Banque domiciliataire</th>
+                                                    <th class="cl-editor th1" _id="6">
+                                                        <label class="lab-tab" id="lab-6">@Model.BanqueDomiciliaire</label>
+                                                        @*<input type="text" id="input-6" _id="6" class="form-control cl-editor-input editor" name="BanqueDomiciliaire" value="@Model.BanqueDomiciliaire" />*@
+                                                        <select class="form-control cl-editor-input editor elts get-comptNostro" _type="bd" name="IdCompteAcrediter" id="input-6" _id="6" style="display:inline;width:80%">
+                                                            @*<option value="">@Model.BanqueDomiciliaire</option>*@
+                                                            @{
+                                                                foreach (var item in ViewBag.correspondants)
+                                                                {
+                                                                    <option value="@item.Id" code="@item.SwiftCode">@item.NomBanque</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <button type="button" class="cl-editor-btn editor" _id="6" id="btn-6"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="cl-editor1">Compte @Model.GetBanque à créditer</th>
+                                                    <th class="cl-editor dd-11" _id="11">
+                                                        <label id="lab-11" class="lab-tab">@Model.CompteanqueACrediter</label>
+                                                        <select class="form-control cl-editor-input editor" name="BanqueDomiciliaire" id="input-11" _id="11" style="display:inline;width:80%">
+                                                            <option></option>
+                                                        </select>
+                                                        <button type="button" class="cl-editor-btn editor1" id="btn-11" _id="11"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row" class="cl-editor">SWIFT Code</th>
+                                                    <th class="cl-editor1" _id="3">
+                                                        <label id="lab-3" class="lab-tab">@Model.CodeSwift</label>
+                                                        <input type="text" id="input-3" _id="3" class="form-control cl-editor-input editor" name="CodeSwift" value="@Model.CodeSwift" style="display:inline;width:80%" />
+                                                        <button type="button" class="cl-editor-btn editor" id="btn-3" _id="3"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+
+                                                <tr>
+                                                    <th scope="row">Pays</th>
+                                                    <th class="th1 cl-editor1" _id="7">
+                                                        <label id="lab-7" class="lab-tab">@Model.Pays</label>
+                                                        <input type="text" id="input-7" _id="7" class="form-control cl-editor-input editor" name="Pays" value="@Model.Pays" style="display:inline;width:80%" />
+                                                        <button type="button" class="cl-editor-btn editor" _id="7" id="btn-7"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+                                                <tr>
+                                                    <th scope="row">Ville</th>
+                                                    <th class="cl-editor1" _id="2">
+                                                        <label id="lab-2" class="lab-tab">@Model.Ville</label>
+                                                        <input type="text" id="input-2" _id="2" class="form-control cl-editor-input editor" name="Ville" value="@Model.Ville" style="display:inline;width:80%" />
+                                                        <button type="button" class="cl-editor-btn editor" _id="2" id="btn-2"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                    </th>
+                                                </tr>
+
+                                                <!--<tr>
+                                                    <th scope="row">Motif de l’opération</th>
+                                                    <td class="th1 cl-editor">-->
+                                                        @*Couverture Transfert du client @Model.Client*@
+                                                    <!--</td>
+                                                </tr>-->
+                                                <tr>
+                                                    <th scope="row">Période</th>
+                                                    <td class="cl-editor">
+                                                        @Model.Periode
+                                                    </td>
+                                                </tr>
+                                            </table>
+
+                                            <p style="margin-top:25px">
+                                                Dans l’attente d’une suite favorable, veuillez agréer, Monsieur le Directeur National, notre profonde considération.
+                                            </p>
+                                            <div style="width:100%;height:250px;margin-top:20px;text-align:center;padding:20px;padding-bottom:5px">
+                                                @*<div style="height:30px">
+                                                    </div>*@
+                                                <div style="height:100px;" class="row">
+                                                    <div class="cl-editor col-6 sign" id="sign1" _id="5" style="text-align: center; font-weight: bold;">
+                                                        <label id="lab-5" class="lab-sing">@Model.Signataire1</label>
+                                                        <button type="button" class="cl-editor-btn editor" id="btn-5" _id="5"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                        <select id="input-5" rang="" _id="5" class="form-control cl-editor-input editor elts" _type="sing" name="Signataire1" style="display:inline;width:80%">
+                                                            @{
+                                                                <option></option>
+                                                                foreach (var item in signataires.Where(s => ((int)s.Rang) == 3))
+                                                                {
+                                                                    <option value="@item.Id">@item.NomComplet</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <label class="lab-fct" style="margin-top:60px" id="lab-fonct-5"></label>
+                                                    </div>
+                                                    <div class="cl-editor col-6 sign" id="sign2" _id="8" style="text-align: center; font-weight: bold;">
+                                                        <label id="lab-8" class="lab-sing">@Model.Signataire2</label>
+                                                        <button type="button" class="cl-editor-btn editor" id="btn-8" _id="8"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                        <select id="input-8" rang="" _id="8" class="form-control cl-editor-input editor elts" _type="sing" name="Signataire2" style="display:inline;width:80%">
+                                                            @{
+                                                                <option></option>
+                                                                foreach (var item in signataires.Where(s => ((int)s.Rang) == 2))
+                                                                {
+                                                                    <option value="@item.Id">@item.NomComplet</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <label class="pt-1 lab-fct" id="lab-fonct-8"></label>
+                                                    </div>
+                                                    <div class="cl-editor col-6 sign" id="sign3" _id="9" style="text-align: center; font-weight: bold;height:150px">
+                                                        <label id="lab-9" class="lab-sing" style="font-weight:bolder">@Model.Signataire3</label>
+                                                        <button type="button" class="cl-editor-btn editor" id="btn-9" _id="9"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                        <select id="input-9" rang="" _id="9" class="form-control cl-editor-input editor elts" _type="sing" name="Signataire3" style="display:inline;width:80%">
+                                                            @{
+                                                                <option></option>
+                                                                foreach (var item in signataires)
+                                                                {
+                                                                    <option value="@item.Id">@item.NomComplet</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <p class="lab-fct" id="lab-fonct-9" style="position: relative; margin-top: 100px; text-align: center;">@Model.fonction3</p>
+                                                    </div>
+                                                    <div class="cl-editor col-6 sign" id="sign4" _id="10" style="text-align:center;font-weight:bold;height:150px">
+                                                        <label id="lab-10" class="lab-sing" style="font-weight:bolder">@Model.Signataire4</label>
+                                                        <button type="button" class="cl-editor-btn editor" id="btn-10" _id="10"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                        <select id="input-10" rang="" _id="10" class="form-control cl-editor-input editor elts" _type="sing" name="Signataire4" style="display:inline;width:80%">
+                                                            @{
+                                                                <option></option>
+                                                                //foreach (var item in signataires.Where(s => ((int)s.Rang) == 0))
+                                                                foreach (var item in signataires)
+                                                                {
+                                                                    <option value="@item.Id">@item.NomComplet</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                        <p class="lab-fct" id="lab-fonct-10" style="position: relative;margin-top:100px; text-align:center;">@Model.fonction4</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane" id="navpills-profile" role="tabpanel">
+                    <div class="col-lg-12 pagebreak bg-white" style="padding:30px">
+
+                        <div style="margin-bottom:40px" class="text-dark">
+                            <div>
+                                <label class="p-1 bg-dark1">Nom de la banque: </label>
+                                <label class="lab-tab1" style="font-weight:bold">@Model.GetBanque</label>
+                                <label class="cl-editor-btn editor" _id="01">
+                                    <input type="text" id="input-01" _id="01" class="form-control cl-editor-input editor" name="name" value="" />
+                                    <button class="cl-editor-btn editor" _id="01" id="btn-01"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                </label>
+                            </div>
+                            <div>
+                                <label class="p-1 bg-dark1 ">Date: </label>
+                                <label class="lab-tab1" style="font-weight:bold"> @(DateTime.Now.ToString("dd-MM-yyyy"))</label>
+                                <label class="cl-editor-btn editor" _id="02">
+                                    <input type="text" id="input-02" _id="02" class="form-control cl-editor-input editor" name="name" value="" />
+                                    <button class="cl-editor-btn editor" _id="02" id="btn-02"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                </label>
+                            </div>
+                            <div class="row">
+                                <div class="col-6" style="text-align:left">
+                                    <label class="p-1 bg-dark1">Tableau récapitulatif des transferts</label>
+                                    <label class="cl-editor-btn editor" _id="03">
+                                        <input type="text" id="input-03" _id="03" class="form-control cl-editor-input editor" name="name" value="" />
+                                        <button class="cl-editor-btn editor" _id="03" id="btn-03"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                    </label>
+                                </div>
+                                <div class="col-6" style="text-align:right">
+                                    <div class="float-end">
+                                        <span class="p-1 mr-2">Référence: </span>
+                                        <p style="display:inline-block;font-weight:bolder">@Model.NumeroRef</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="py-2">
+                            <div class="table-responsive">
+                                <table id="tab10" class="table table-bordered table-sm table-nowrap table-centered table-striped mb-0" style="font-size:12px;">
+                                    <thead>
+                                        <tr id="htab22" style="background-color:#1c28a9">
+                                            <th class="th22" scope="row">Demandeur</th>
+                                            <th class="th22" scope="row">Montant XAF</th>
+                                            <th class="th22" scope="row">Montant (@Model.DeviseToString)</th>
+                                            <th class="th22" scope="row">Bénéficiaire</th>
+                                            <th class="th22" scope="row">Pays</th>
+                                            <th class="th22" scope="row" style="width:20px!important">
+                                                Banque du bénéficiaire
+                                            </th>
+                                            <th class="th22" scope="row">Motif transaction</th>
+                                            <th class="th22" scope="row">type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                        @{
+                                            try
+                                            {
+                                                foreach (var item in Model.Dossiers)
+                                                {
+                                                    try
+                                                    {
+                                                        <tr>
+                                                            <td>@item.GetClient</td>
+                                                            <td>@item.MontantCVstring</td>
+                                                            <td>@item.MontantString</td>
+                                                            <td>@item.GetFournisseur</td>
+                                                            <td _id="f-@item.Dossier_Id">
+                                                                <input type="text" id="input-f-@item.Dossier_Id" _id="f-@item.Dossier_Id" class="form-control cl-editor-input editor" name="name" value="" />
+                                                                <button class="cl-editor-btn editor" _id="f-@item.Dossier_Id" id="btn-f-@item.Dossier_Id"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                            </td>
+                                                            <td _id="b-@item.Dossier_Id">
+                                                                <input type="text" id="input-b-@item.Dossier_Id" _id="b-@item.Dossier_Id" class="form-control1 cl-editor-input editor" name="name" value="" />
+                                                                <button class="cl-editor-btn editor" _id="b-@item.Dossier_Id" id="btn-b-@item.Dossier_Id"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                            </td>
+                                                            <td _id="m-@item.Dossier_Id">
+                                                                Couverture Transfert du client @*@Model.Client*@
+                                                                <input type="text" id="input-m-@item.Dossier_Id" _id="m-@item.Dossier_Id" class="form-control cl-editor-input editor" name="name" value="" />
+                                                                <button class="cl-editor-btn editor" _id="m-@item.Dossier_Id" id="btn-m-@item.Dossier_Id"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                            </td>
+                                                            <td _id="t-@item.Dossier_Id">
+                                                                @item.NatureOperation
+                                                                <input type="text" id="input-t-@item.Dossier_Id" _id="t-@item.Dossier_Id" class="form-control cl-editor-input editor" name="name" value="" />
+                                                                <button class="cl-editor-btn editor" _id="t-@item.Dossier_Id" id="btn-t-@item.Dossier_Id"><i class="mdi mdi-circle-edit-outline"></i></button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                    catch
+                                                    { }
+                                                }
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style="background-color:rgb(128, 128 ,128 , 0.45)">
+                                            <td><label class="lab-tab float-end">Total</label></td>
+                                            <td style="font-weight:bolder" rowspan="2">@Model.MontantCVString</td>
+                                            <td style="font-weight:bolder" rowspan="6">@Model.MontantString</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-print-none mt-4" style="">
+                    <div class="float-start">
+                        <a id="print-courrier" href="javascript:window.print()" class="btn btn-success waves-effect waves-light me-1"><i class="fa fa-print"></i></a>
+                        <a href="#" onclick="document.getElementById('editcourrier-form').submit()" class="btn btn-primary waves-effect waves-light me-1 hidden"><i class="fa fa-save"></i></a>
+                        @*<button type="submit" href="#" class="hidden"><i class="fa fa-save"></i></button>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<!-- end row -->
+<!-- JAVASCRIPT -->
+<script src="~/assets/libs/jquery/jquery.min.js"></script>
+<script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+<script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+<script src="~/assets/libs/node-waves/waves.min.js"></script>
+<script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+<script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+<script src="~/assets/js/app.js"></script>
+
+<script>
+    $('.editor').hide();
+
+    $(document).ready(function () {
+        try {
+            $('#print-courrier').click(function () {
+                $('body').css('background-color', 'white');
+            })
+            $('.bg-dd').click(function () {
+                $('body').css('background-color', 'whitesmoke');
+            })
+        } catch (e) {
+
+        }
+        try {
+            $('.elts').on('input',function () {
+                var _id = this.value;
+                var _type = this.getAttribute('_type');
+                var _num = this.getAttribute('_id');
+
+                $.ajax({
+                    url: '@Url.Content("~/referencebanques/getElets?id=")' + _id + '&type=' + _type,
+                    success: function (responce) {
+                        if (responce.type =="bd") {
+                            $("#lab-3").text(responce.SwiftCode);
+                            $("#lab-3").show();
+                            $("#lab-7").text(responce.Pays);
+                            $("#lab-7").show();
+                            $("#lab-2").text(responce.Ville);
+                            $("#lab-2").show();
+                            $("#lab-11").show();
+                            $("#input-11").show();
+                            $("#btn-11").show();
+                            $("#btn-6").show();
+                            try {
+                                var daySelect = document.getElementById('input-11');
+                                var length = daySelect.options.length;
+                                for (i = length - 1; i >= 0; i--) {
+                                    daySelect.options[i] = null;
+                                }
+                                $.each(responce.comptes, function (index, item) {
+                                    try {
+                                        var option = new Option(item.Numero + ' - ' + item.Cle, item.Id);
+                                        option.setAttribute('title', item.Libellé);
+                                        option.setAttribute('code', item.Numero+' - '+item.Cle);
+                                        daySelect.options[daySelect.options.length] = option;
+                                    } catch (e) {
+
+                                    }
+                                });
+                            } catch (e) {
+
+                            }
+                        } else {
+                            $("#lab-fonct-" + _num).text(responce.Fonction);
+                        }
+                    },
+                    error: function (responce) { alert("ee: "+responce) }
+                });
+            });
+        } catch (e) {
+        }
+
+        //Get comptes nostro
+         try {
+             @*$('.get-comptNostro').on('input',function () {
+                var _id = this.value;
+                $.ajax({
+                    url: '@Url.Content("~/referencebanques/getNostro?id=")' + _id,
+                    success: function (responce) {
+                        if (responce.type =="bd") {
+                            $("#lab-3").text(responce.SwiftCode);
+                            $("#lab-3").show();
+                            $("#lab-7").text(responce.Pays);
+                            $("#lab-7").show();
+                            $("#lab-2").text(responce.Ville);
+                            $("#lab-2").show();
+                        } else {
+                            $("#lab-fonct-" + _num).text(responce.Fonction);
+                        }
+                    },
+                    error: function (responce) { alert(responce.error) }
+                });
+            });*@
+        } catch (e) {
+        }
+
+        $('.cl-editor').on('mouseenter', function () {
+            $('#btn-' + $(this).attr('_id')).show();
+        });
+        $('.cl-editor').on('mouseleave', function () {
+            $('#btn-' + $(this).attr('_id')).hide();
+            $('#btn-' + $(this).attr('_id')).css("background-color","red");
+        });
+        $('.cl-editor-btn').on('click', function () {
+            if (!this.classList.contains("btn")) {
+                this.classList.add("btn");
+                this.classList.add("btn-primary");
+                var input = document.getElementById('input-' + $(this).attr('_id'));
+                if (input.tagName=="INPUT") {
+                    $(input).text(this.parentNode.textContent);
+                }
+                $(document.getElementById('lab-' + $(this).attr('_id'))).hide();
+                $(input).show();
+            } else {
+                this.classList.remove("btn");
+                this.classList.remove("btn-primary");
+                var input = document.getElementById('input-' + $(this).attr('_id'));
+                $('#' + $(input).attr('name')).val($(input).val());
+                //this.parentNode.textContent = input.val();
+                if (input.tagName == "INPUT") {
+                    document.getElementById('lab-' + $(this).attr('_id')).textContent = input.value;
+                } else {
+                    document.getElementById('lab-' + $(this).attr('_id')).textContent = input.options[input.selectedIndex].text;
+                }
+                $(document.getElementById('lab-' + $(this).attr('_id'))).show();
+                $(input).hide();
+            }
+        });
+    });
+</script>
+<script>
+    $('.sign').hide();
+    $(document).ready(function () {
+        // geeneration signataire courriers
+        try {
+            $('#sign4').show();
+            $('#sign3').show();
+            $('#nb-signataires').on('input', function () {
+                var nb = Number(this.value);
+                switch (nb) {
+                    case 1:
+                        $('.sign').hide();
+                        $('#sign4').show();
+                        removeClass($('#sign4'), 12)
+                        break;
+                    case 2:
+                        $('.sign').hide();
+                        $('#sign4').show();
+                        $('#sign3').show();
+                        removeClass($('#sign3'), 6)
+                        removeClass($('#sign4'), 6)
+                        break;
+                    case 3:
+                        $('.sign').hide();
+                        $('#sign4').show();
+                        $('#sign3').show();
+                        $('#sign2').show();
+                        removeClass($('#sign2'), 4)
+                        removeClass($('#sign3'), 4)
+                        removeClass($('#sign4'), 4)
+                        break;
+                    case 4:
+                        $('.sign').show();
+                        removeClass($('#sign1'), 3)
+                        removeClass($('#sign2'), 3)
+                        removeClass($('#sign3'), 3)
+                        removeClass($('#sign4'), 3)
+                        break;
+                    default:
+                }
+            });
+
+            function removeClass(elt, col) {
+                $(elt).removeClass("col-12");
+                $(elt).removeClass("col-6");
+                $(elt).removeClass("col-4");
+                $(elt).removeClass("col-3");
+                $(elt).addClass("col-" + col);
+            };
+        } catch (e) {
+
+        }
+    });
+</script>

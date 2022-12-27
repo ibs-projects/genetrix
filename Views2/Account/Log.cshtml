@@ -1,0 +1,208 @@
+﻿@using genetrix.Models
+@model LoginViewModel
+<style>
+    body {
+        overflow: hidden1
+    }
+
+    .login-elt {
+        z-index: 999;
+        position: relative
+    }
+
+    .center {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        -ms-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+</style>
+<div id="Preloader_partiel" style="display:none;">
+    @Html.Partial("~/Views/_Shared/PartialViews/Preloader.cshtml")
+    @Html.Partial("~/Views/_Shared/PartialViews/Preloader_partiel.cshtml")
+</div>
+<body class="authentication-bg">
+    <div class="account-pages my-5 pt-sm-5">
+        <div class="container">
+            <div class="row align-items-center justify-content-center login-elt hidden1" style="">
+                <div class="col-md-8 col-lg-6 col-xl-5" style="text-align:center">
+                    <div class="card1 bg-transparent border border-0" style="border:none!important">
+
+                        <div class="card-body border border-0 p-4">
+                            <div class="bg-white card">
+                                <div class="text-center mb-0">
+                                    <img src="~/assets/images/IU/accueil-icon.png" style="width:100%;height:auto" alt="" />
+                                </div>
+                                <div class="p-3 pt-0">
+                                    <button class="btn btn-default text-white fa fa-chevron-down" style="bottom:0;"></button>
+                                    <style>
+                                        input {
+                                            height: 40px;
+                                            border-radius: 12px 14px;
+                                        }
+                                    </style>
+
+                                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "row login_forml", role = "form", id = "con-form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        try
+                                        {
+                                            <div class="card1 pb-4" style="">
+                                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                                <div class="col-lg-12 form-group">
+                                                    <p class="text-danger"> @ViewBag.info </p>
+                                                </div>
+                                                <div class="col-lg-12 form-group">
+                                                    <p class="float-start" style="font:bold;margin-bottom:0px">Courrier électronique</p>
+                                                    <div>
+                                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Nom d'utilisateur ou adresse mail" })
+                                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 form-group hidden" style="display:none">
+                                                    @Html.Label("Code de l'entreprise", new { @class = "Form-label" })
+                                                    <div class="mb-3">
+                                                        <input type="text" name="NumeroEntreprise" class="form-control" value="1" />
+                                                        @Html.ValidationMessageFor(m => m.NumeroEntreprise, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-12 form-group">
+                                                    <p class="float-start" style="font:bold;margin-bottom:0px;margin-top:10px">Mot de passe</p>
+                                                    <div>
+                                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Entrer le mot de passe..." })
+                                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <p></p>
+                                                <div class="col-lg-12 form-group row">
+                                                    <table style="width:100%">
+                                                        <tr>
+                                                            <td>
+                                                                <p></p>
+                                                                <a class="text-muted pos1" style="margin-bottom:-15px" href="@Url.Content("~/account/ForgotPassword")">Reinitialiser le mot de passe</a>
+                                                            </td>
+                                                            <td>
+                                                                <button id="btn-submit" class="btn btn-outline-info w-sm waves-effect waves-light float-end" _action_requied_loader="0" type="submit"><i class="mdi mdi-key-variant"></i> Connexion</button>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        }
+                                        catch
+                                        { }
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5 text-center hidden">
+                        <p>
+                            ©
+                            <script>document.write(new Date().getFullYear())</script> Minible. Crafted with <i class="mdi mdi-heart text-danger"></i> by Themesbrand
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+            <!-- end row -->
+        </div>
+        <!-- end container -->
+    </div>
+    @*@Html.Partial("~/Views/Account/Modal_Login.cshtml", "~/Views/Account/LoginFormBanque.cshtml")*@
+    <div id="dd3">
+        <iframe src="~/bg/index?bcl=b" id="id-frame" style="width:100%;height:100%;overflow:hidden"></iframe>
+    </div>
+    <a href="@Url.Content("~/index/indexbanque?panel=")" id="link-sub" class="hidden"></a>
+    <!-- JAVASCRIPT -->
+    <script src="~/assets/libs/jquery/jquery.min.js"></script>
+    <script src="~/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/libs/metismenu/metisMenu.min.js"></script>
+    <script src="~/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="~/assets/libs/node-waves/waves.min.js"></script>
+    <script src="~/assets/libs/waypoints/lib/jquery.waypoints.min.js"></script>
+    <script src="~/assets/libs/jquery.counterup/jquery.counterup.min.js"></script>
+
+    <!-- owl.carousel js -->
+    <script src="~/assets/libs/owl.carousel/owl.carousel.min.js"></script>
+    <!-- init js -->
+    <script src="~/assets/js/pages/auth-carousel.init.js"></script>
+    <i class="mdi mdi-spin mdi-loading fs-1 text-dark" id="img-loarder" style="display:none"></i>
+    <script src="~/assets/js/app.js"></script>
+    <script>
+        var oufer = false;
+        document.addEventListener(`click`, e => {
+            const origin = e.target;//.closest("a", "buttom", "input");
+            if (origin.tagName == "BUTTON" && origin.id != 'btn-submit') {
+                if (oufer) {
+                    $('#login-form').show(200);
+                } else {
+                    $('#login-form').hide(200);
+                }
+                oufer = !oufer;
+            }
+        });
+    </script>
+    <script>
+        $('.maintenance-box').click(function () {
+            var url = document.getElementById("link-sub").getAttribute("href");
+            url += this.id;
+            document.getElementById("link-sub").setAttribute("href", url);
+            document.getElementById("link-sub").click();
+        });
+    </script>
+    <script>
+        $('#btn-submit').click(function () {
+            //var img = document.createElement("img");
+            var img = document.getElementById("img-loarder");
+            img.style.display = "initial";
+            img.setAttribute("width", "60");
+            img.setAttribute("height", "60");
+            img.style.position = 'absolute';
+            var loginbody = document.getElementById('login-body');
+            img.style.left = (loginbody.offsetWidth / 2 - 50) + 'px'
+            img.style.top = (loginbody.offsetHeight / 2 - 100) + 'px'
+            //img.setAttribute('src', '(Url.Content("~/assets/images/IU/loading.gif"))');
+            loginbody.appendChild(img);
+        });
+    </script>
+    <script>
+        var img = document.createElement("login-form");
+        img.style.position = 'relative';
+        img.style.left = (document.offsetWidth / 2 - img.offsetWidth) + 'px'
+        img.style.top = (document.offsetHeight / 2 - img.offsetHeight) + 'px'
+    </script>
+    <script>
+        $(document).ready(function () {
+            try {
+                //preload
+                $('#btn-submit').click(function () {
+                    $('#Preloader_partiel').show();
+                });
+            } catch (e) {
+
+            }
+            $("#id-frame").css({ 'position': 'fixed', 'top': '0px', 'z-index': '2' });
+            (function t(e) {
+                setTimeout(() => {
+                    $('#login-form').show(800);
+                }, 3000);
+            })();
+
+            $('#close-form-login').click(function () {
+                $('#login-form').hide(200);
+                //setTimeout(() => {
+                //    $('#login-form').show(800);
+                //}, 10000);
+            });
+        });
+    </script>
+</body>
+
+

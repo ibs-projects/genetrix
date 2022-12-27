@@ -1,0 +1,84 @@
+﻿@model genetrix.Models.NumCompteBeneficiaire
+@{ 
+    Layout = null;
+}
+@using (Html.BeginForm("create", "NumCompteBeneficiaires",FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    
+<div class="form-horizontal">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="row">
+        <div class="form-group mb-3 col-8">
+            @Html.LabelFor(model => model.NomBanque, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.NomBanque, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NomBanque, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group mb-3 col-4">
+            @Html.LabelFor(model => model.CodeAgence, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.CodeAgence, new { htmlAttributes = new { @class = "form-control",@maxlength = "5" } })
+                @Html.ValidationMessageFor(model => model.CodeAgence, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="form-group mb-3 col-6">
+            @Html.LabelFor(model => model.Pays, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Pays, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Pays, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group mb-3 col-6">
+            @Html.LabelFor(model => model.Ville, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Ville, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Ville, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="form-group mb-3">
+        @Html.LabelFor(model => model.Nom, htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.Nom, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Nom, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group mb-3 col-8">
+            @Html.LabelFor(model => model.Numero, htmlAttributes: new { @class = "control-label"})
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Numero, new { htmlAttributes = new { @class = "form-control", @maxlength="11" } })
+                @Html.ValidationMessageFor(model => model.Numero, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group mb-3 col-4">
+            @Html.LabelFor(model => model.Cle, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12">
+                @Html.EditorFor(model => model.Cle, new { htmlAttributes = new { @class = "form-control",@maxlength = "2" } })
+                @Html.ValidationMessageFor(model => model.Cle, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group mb-3 hidden">
+        @Html.LabelFor(model => model.IdFournisseur, "IdFournisseur", htmlAttributes: new { @class = "control-label" })
+        <div class="col-md-12">
+            @Html.EditorFor(model => model.IdFournisseur, new { htmlAttributes = new { @class = "form-control" } })
+            @*@Html.DropDownList("IdFournisseur", null, htmlAttributes: new { @class = "form-control" })*@
+            @Html.ValidationMessageFor(model => model.IdFournisseur, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group mb-3">
+        <div class="col-md-offset-2 col-md-12">
+            <input type="submit" value="Créer" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+}

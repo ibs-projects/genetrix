@@ -1,0 +1,284 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@{
+    //string[] mois = new string[] { "Jeanvier", "Fevier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aoùt", "Septembre", "Octobre", "Novembre", "Decembre" };
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> fournisseursModels = null;
+    IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>> datesModels = null;
+    IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>> devisesModels = null;
+    Dictionary<string, string> fname = new Dictionary<string, string>();
+
+    try
+    {
+        fournisseursModels = ViewData["fournisseur"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        datesModels = ViewData["date"] as IEnumerable<IGrouping<int, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        devisesModels = ViewData["devise"] as IEnumerable<IGrouping<string, genetrix.Models.Fonctions.FileItemModel>>;
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        fname = ViewData["fname"] as Dictionary<string, string>;
+    }
+    catch (Exception)
+    { }
+    if (fname == null)
+    {
+        fname = new Dictionary<string, string>();
+    }
+}
+<link href="~/assets/arch.css" rel="stylesheet" />
+<style>
+    .atome:hover {
+        /* background-color:rgb(15 ,61 ,94 , 0.43);
+        border-radius:6px 8px;
+        color:white*/
+    }
+</style>
+<div class="vertical-menu mb-0" id="vertical-menu-archive" style="">
+
+    <!-- LOGO -->
+    @{
+        string pt = "",icon="hidden",minh= "min-height:60px";
+        if (ViewBag.vue == "large")
+        {
+            pt = "pt-3";
+            icon = "";
+            minh = "";
+        }
+        <div class="navbar-brand-box" id="navbar-icon" style="background-color: #2689a6;margin-top: 0px;@minh">
+            <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-dark @icon">
+                <span class="logo-sm">
+                    <img src="~/assets/images/logo/logo-sm1.png" alt="" height="32">
+                </span>
+                <span class="logo-lg">
+                    <img src="~/assets/images/logo/logo-light1.png" alt="" height="40">
+                </span>
+            </a>
+
+            <a href=@Url.Action("Index", "index") _action_requied_loader="0" class="logo logo-light @icon">
+                <span class="logo-sm">
+                    <img src="~/assets/images/logo/logo-sm1.png" alt="" height="33">
+                </span>
+                <span class="logo-lg">
+                    <img src="~/assets/images/logo/logo-light1.png" alt="" height="33">
+                </span>
+            </a>
+        </div>
+    }
+
+    <div class="">
+        <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn" style="float:right!important">
+            <i class="fa fas fa-chevron-right"></i>
+        </button>
+    </div>
+
+    <div data-simplebar class="sidebar-menu-scroll @pt" style="margin-top:35px">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu" style="margin-top:10px!important;">
+            @*<button class="mdi mdi-note-search btn btn-outline-secondary"></button>*@
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu" style="">
+                <li class="menu-title hidden1"></li>
+                <li intitule="Documents">
+                    <a href="#" intitule="Documents" class="has-arrow sidbar waves-effect" id="archives">
+                        <i class="mdi mdi-folder-open text-dark"></i>
+                        <span>Archives</span>
+                    </a>
+                    <ul class="sub-menu1" aria-expanded="false">
+                        <li intitule="Fournisseurs">
+                            <a href="javascript: void(0);" intitule="Fournisseurs" id="fournisseurs" class="has-arrow sidbar">
+                                <i class="mdi mdi-account text-dark"></i>
+                                <span>Fournisseurs</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    string ff = ""; bool idF = false;
+                                    try
+                                    {
+                                        foreach (var item in fournisseursModels)
+                                        {
+                                            try
+                                            {
+                                                var _ff = item.Key.Replace(" ", "");
+
+                                                <li intitule="@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="fou-@(item.Key)" idFournisseur="" class="has-arrow sidbar mdi mdi-folder-open">
+                                                        @* Fournisseur *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                        @{
+                                                            idF = false;
+                                                            foreach (var dos in item)
+                                                            {
+                                                                <li intitule="@dos.Name">
+                                                                    <a href="javascript: void(0);" intitule="@dos.Name" title="@ff" id="fou-dos-@dos.Id" iddossier="@dos.Id" class="has-arrow sidbar _folder mdi mdi-folder-open">
+                                                                        <span>@dos.Name</span>
+                                                                    </a>
+                                                                    @{
+                                                                        if (!idF)
+                                                                        {
+                                                                            idF = true;
+                                                                            <script>
+                                                                                document.getElementById('fou-@(item.Key)').setAttribute('idFournisseur', '@dos.FournisseurId')
+                                                                            </script>
+                                                                        }
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li intitule="Archive par date">
+                            <a href="javascript: void(0);" intitule="Archive par date" id="dates" title="Période de traitement" class="has-arrow sidbar">
+                                <i class="mdi mdi-calendar-range"></i>
+                                <span>Période</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    try
+                                    {
+                                        foreach (var item in datesModels)
+                                        {
+                                            try
+                                            {
+                                                <li intitule="@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="annee-@(item.Key)" annee="@item.Key" class="has-arrow sidbar mdi mdi-folder-open">
+                                                        @* Année *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu" aria-expanded="true">
+                                                        @{
+                                                            foreach (var dos in item.GroupBy(d => d.MoisArchivage))
+                                                            {
+                                                                <li intitule="@dos.Key">
+                                                                    <a href="javascript: void(0);" intitule="@dos.Key" id="annee-mois-@(dos.Key)" anne-mois="@(item.Key+"-"+dos.Key)" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                        @* Mois *@
+                                                                        <span>@ViewBag.mois[dos.Key - 1]</span>
+                                                                    </a>
+                                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                                        @{
+                                                                            foreach (var f in dos.GroupBy(d => d.FournisseurName))
+                                                                            {
+                                                                                <li intitule="@f.Key">
+                                                                                    <a href="javascript: void(0);" intitule="@f.Key" title="@ff" id="annee-mois-fou-@f.Key" idFournisseur="@f.Key" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                                        <span>@f.Key</span>
+                                                                                    </a>
+                                                                                </li>
+                                                                            }
+                                                                        }
+                                                                    </ul>
+                                                                </li>
+                                                            }
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li intitule="Devises">
+                            <a href="javascript: void(0);" intitule="Devises" id="devises" class="has-arrow sidbar">
+                                <i class="mdi mdi-currency-usd text-dark"></i>
+                                <span>Devise</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    try
+                                    {
+                                        foreach (var item in devisesModels)
+                                        {
+                                            try
+                                            {
+                                                <li intitule="@item.Key">
+                                                    <a href="javascript: void(0);" intitule="@item.Key" id="dev-@(item.Key)" _id="dev-@item.Key" iddevise="" class="has-arrow sidbar mdi mdi-folder-open">
+                                                        @* Devise *@
+                                                        <span>@item.Key</span>
+                                                    </a>
+                                                    <ul class="sub-menu hidden" aria-expanded="true">
+                                                        @{
+                                                            @*foreach (var f in item.GroupBy(d => d.FournisseurName))
+                                                                {
+                                                                    idF = false;
+                                                                    <li intitule="@f.Key">
+                                                                        <a href="javascript: void(0);" intitule="@f.Key" id="dev-fou-@f.Key" _id="four-@f.Key" idFournisseur="" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                             Fournisseur
+                                                                            <span>@f.Key</span>
+                                                                        </a>
+                                                                        <ul class="sub-menu hidden" aria-expanded="true">
+                                                                            @{
+                                                                                foreach (var dos in f)
+                                                                                {
+                                                                                    <li intitule="@dos.Name">
+                                                                                        <a href="javascript: void(0);" intitule="@dos.Name" title="@ff" id="dev-fou-dos-@dos.Id" _id="dos-@dos.Id" iddossier="@dos.Id" class="has-arrow sidbar mdi mdi-folder-open">
+                                                                                            <span>@dos.Name</span>
+                                                                                        </a>
+                                                                                        @{
+                                                                                            if (!idF)
+                                                                                            {
+                                                                                                idF = true;
+                                                                                                <script>
+                                                                                                    document.getElementById('dev-@(item.Key)').setAttribute('iddevise', '@dos.IdDevise')
+                                                                                                    document.getElementById('dev-fou-@f.Key').setAttribute('iddevise', '@dos.FournisseurId')
+                                                                                                </script>
+                                                                                            }
+                                                                                        }
+                                                                                    </li>
+                                                                                }
+                                                                            }
+                                                                        </ul>
+                                                                    </li>
+                                                                }*@
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li intitule="Dossiers">
+                            <a href="javascript: void(0);" intitule="Dossiers" id="dossiers" class="has-arrow sidbar">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Tout</span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

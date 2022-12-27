@@ -1,0 +1,81 @@
+﻿@using genetrix.Models
+@model IEnumerable<genetrix.Models.Dossier>
+
+@{
+    ViewBag.Title = "Dossiers";
+    ViewBag.pTitle = "Liste de dossiers " + ViewBag.statut;
+    ViewBag.pageTitle = "Dossiers";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+    ApplicationDbContext db = new ApplicationDbContext();
+
+}
+
+<!-- DataTables -->
+<link href="~/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="~/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+@*@Html.Partial("~/Views/_Shared/_head_css.cshtml")*@
+@{
+   // if (Session["Profile"].ToString() == "client")
+    {
+        <p>
+            <a class="" href="#" onclick="newDossier01()" id="scanner-1">
+                <i class="dripicons-plus me-2"></i>
+                Nouveau dossier
+            </a>
+        </p>
+
+        <script>
+            function newDossier01() {
+                document.getElementById('nouveau-transfert').click();
+            }
+        </script>
+    }
+}
+@{ var action = false;}
+<div class="row">
+    <div class="col-12">
+        @{
+            if (ViewBag.msg != null)
+            {
+                string msg = "" + ViewBag.msg;
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    <div class="alert alert-border alert-border-danger alert-dismissible fade show" role="alert">
+                        <i class="uil uil-exclamation-triangle font-size-16 text-danger me-2"></i>
+                        @Html.Raw(ViewBag.msg)
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                        </button>
+                    </div>
+                    <hr />
+                }
+            }
+        }
+        <div class="card">
+            <div class="card-body">
+                @*@Html.Partial("~/Views/_Shared/PartialViews/Dossiers_Client.cshtml", Model)*@
+                @Html.Partial("~/Views/_Shared/PartialViews/ListeDossiers_Clients.cshtml", Model)
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+<!-- JAVASCRIPT -->
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")
+
+<script>
+    //var lignes = document.getElementsByClassName('');
+    //$('.ligne td').click(function () {
+    //    document.getElementById('' + this.getAttribute('idd')).click();
+    //});
+    $('.ligne td').click(function () {
+        if (!this.classList.contains("att")) {
+            document.getElementById('' + this.parentElement.getAttribute('idd')).click();
+            document.getElementById('link-preload').click();
+        }
+    });
+    $('thead').addClass("bg-gradient-primary text-white");
+    $('.nav-pills').addClass("bg-white");
+</script>

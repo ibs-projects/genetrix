@@ -1,0 +1,38 @@
+﻿@using genetrix.Models
+@model genetrix.Models.Dossier
+
+<div class="modal fade" id="modal-ajout-facture11" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen" style="text-align:center!important;">
+        <div class="modal-content badge border border-3  p-0" style="text-align:left!important;position:center">
+            <div class="modal-header card-header1 m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Détail222 de la facture n°@(Model.Justificatifs.Count+1)</h5>
+                <button type="button" id="modal-ajout-facture-close" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body" style="background-color: rgb(163, 232, 237, 0.14)">
+                @{
+                    Justificatif justificatif = new Justificatif();
+
+                    try
+                    {
+                        justificatif.DossierId = Model.Dossier_Id;
+                        justificatif.Dossier = Model;
+                        justificatif.FournisseurJustif = Model.GetFournisseur;
+                        justificatif.DeviseJustif = Model.DeviseToString;
+                        justificatif.MontantTotalDossier = Model.MontantTpmp;
+                        justificatif.IdDevise = Model.DeviseMonetaireId;
+                    }
+                    catch (Exception)
+                    {}
+                }
+                @Html.Partial("~/Views/_Shared/PartialViews/Justificatif_DetailView.cshtml", justificatif);
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<script>
+    document.getElementById('staticBackdropLabel').addEventListener("click", function () {
+        alert('ttt')
+        document.getElementById('modal-ajout-facture-close').click();
+    });
+</script>

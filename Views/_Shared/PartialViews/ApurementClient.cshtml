@@ -1,0 +1,63 @@
+﻿@using genetrix.Models;
+@model IEnumerable<genetrix.Models.InfoDocAcueil3>
+@{
+    ApplicationDbContext db = new ApplicationDbContext();
+    bool apurement = false;
+    try
+    {
+        apurement = Convert.ToBoolean(ViewBag.apurement);
+    }
+    catch
+    {}
+}
+
+<div class="table-responsive p-3">
+    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" style="border-collapse: collapse; border-spacing: 0; width: 100%;">
+        <thead class="table-borderless">
+            <tr>
+                @*<th>ID Transfert</th>*@
+                @*<th>Date de dépot à la banque</th>*@
+                <th>Bénéficiaire</th>
+                <th>Montant</th>
+                <th>Devise</th>
+                <th>Nature</th>
+                <th class="@(apurement?"":"hidden")">Délai</th>
+                <th>Statut du transfert</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)//.Where(d => d.EtapesDosier < 22))
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DFX6FP6BEAC)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MontantString)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Devise)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NatureOperation)
+                    </td>
+                    <td class="@(apurement?"":"hidden")">@item.Delai jour(s)</td>
+                    <td class="text-statut">
+                        @Html.Partial("~/Views/_Shared/PartialViews/StatusDossiers.cshtml", item)
+                    </td>
+                    <td>
+                        <a href=@Url.Content("~/Dossiers/Details/"+item.Dossier_Id) _action_requied_loader="0"><i class="mdi mdi-detail"></i> Détails</a>
+                        @{
+                            if (item.EstEditable)
+                            {
+                                <a href=@Url.Content("~/Dossiers/Edit/"+item.Dossier_Id) _action_requied_loader="0"><i class="mdi mdi-pen"></i> Editer</a>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

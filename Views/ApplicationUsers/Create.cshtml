@@ -1,0 +1,23 @@
+﻿@model genetrix.Models.RegisterViewModel
+
+@{
+    ViewBag.Title = "Utilisateur";
+    ViewBag.pTitle = "Nouvel utilisateur";
+    ViewBag.pageTitle = "Utilisateur";
+    ViewBag.pageImage = "~/assets/images/IU/user.png";
+}
+@Html.Partial("~/Views/_Shared/_head_css.cshtml")
+
+
+<div class="row">
+    <div class="col-lg-12">
+        @Html.Partial("~/Views/ApplicationUsers/AddUser.cshtml")
+        <div>
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    </div>
+    <!-- end col -->
+</div>
+
+
+@Html.Partial("~/Views/_Shared/_Script_DataList.cshtml")

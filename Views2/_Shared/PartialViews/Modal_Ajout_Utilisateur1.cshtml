@@ -1,0 +1,54 @@
+﻿@model IEnumerable<genetrix.Models.ApplicationUser>
+
+<div class="modal fade ajout-users" id="ajout-users" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="text-align:center!important;width:40%!important;">
+        <div class="modal-content badge border border-3 border-info p-0" style="text-align:left!important;position:center">
+            <div class="modal-header  bg-info m-0">
+                <h5 class="modal-title mt-0 text-white" id="staticBackdropLabel">Ajout d'utilisateurs</h5>
+                <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="~/XtraRoles/AddComposant" method="post">
+                    <input type="number" class="hidden" name="RoleId" value="@ViewBag.RoleId" />
+                    <table class="table">
+                        <tr>
+                            <th><input type="checkbox" id="sel-all" value="" /></th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.NomComplet)
+                            </th>
+
+                            <th>
+                                @Html.DisplayNameFor(model => model.NomUtilisateur)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.EstAdmin)
+                            </th>
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="checkbox" name="user_@item.Id" value="@item.Id" />
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomComplet)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.NomUtilisateur)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.EstAdmin)
+                                </td>
+
+                            </tr>
+                        }
+
+                    </table>
+                    <input type="submit" _action_requied_loader="0" class="btn btn-soft-primary" value="Ajouter" />
+                </form>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

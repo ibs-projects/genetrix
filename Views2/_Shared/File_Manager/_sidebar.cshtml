@@ -1,0 +1,197 @@
+﻿<!-- ========== Left Sidebar Start ========== -->
+@{
+    //string[] mois = new string[] { "Jeanvier", "Fevier", "Mars", "Avril", "Mai", "Juin", "Juillet", "Aoùt", "Septembre", "Octobre", "Novembre", "Decembre" };
+    List<genetrix.Models.Fonctions.FileItemModel> itemModels = null;
+    Dictionary<string, string> fname = new Dictionary<string, string>();
+
+    try
+    {
+        itemModels = (ViewBag.model as IEnumerable<genetrix.Models.Fonctions.FileItemModel>).ToList();
+    }
+    catch (Exception)
+    { }
+    try
+    {
+        fname = ViewData["fname"] as Dictionary<string, string>;
+    }
+    catch (Exception)
+    {}
+    if (fname==null)
+    {
+        fname = new Dictionary<string, string>();
+    }
+}
+
+<style>
+    .atome:hover{
+       /* background-color:rgb(15 ,61 ,94 , 0.43);
+        border-radius:6px 8px;
+        color:white*/
+    }
+</style>
+<div class="vertical-menu bg-white mb-0">
+
+    <!-- LOGO -->
+    @*<div class="navbar-brand-box pb-2">
+            <a href=@Url.Action("Index", "index") class="logo logo-dark ">
+                <i class="mdi mdi-upload"></i>
+                Télechager
+            </a>
+
+            <a href=@Url.Action("Index", "index") class="logo logo-light ">
+                <i class="mdi mdi-upload"></i>
+                Télecharger
+            </a>
+        </div>*@
+
+    <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect vertical-menu-btn">
+        <i class="fa fas fa-chevron-right"></i>
+    </button>
+
+    <div data-simplebar class="sidebar-menu-scroll mt-1">
+        <!--- Sidemenu -->
+        <div id="sidebar-menu" style="margin-top:10px!important;">
+            @*<button class="mdi mdi-note-search btn btn-outline-secondary"></button>*@
+            <!-- Left Menu Start -->
+            <ul class="metismenu list-unstyled" id="side-menu" style="">
+                <li class="menu-title">Vos archives</li>
+                <li>
+                    <a href="@Url.Content("~/archivage/donnees?adx=")" class="has-arrow waves-effect" id="archives">
+                        <i class="mdi mdi-folder-open text-dark"></i>
+                        <span>Documents</span>
+                    </a>
+                    <ul class="sub-menu1" aria-expanded="false">
+                        <li class="hidden">
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Entreprise</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                <li>
+                                    <a href="@Url.Content("~/archivage/donnees?adx=DocumentsEntreprise")" id="DocumentsEntreprise" class="has-arrow non">
+                                        <i class="mdi mdi-folder-open text-dark"></i>
+                                        <span>Juridiques</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" id="fournisseurs" class="has-arrow">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Fournisseurs</span>
+                            </a>
+                            <ul class="sub-menu1" aria-expanded="false">
+                                @{
+                                    string ff = "";
+                                    try
+                                    {
+                                        foreach (var item in itemModels.FirstOrDefault(f => f.Name == "Fournisseurs").SousRepertoires)
+                                        {
+                                            try
+                                            {
+                                                ff = fname[item.Name];
+                                                <li>
+                                                    <a href="@Url.Content("~/archivage/donnees?adx="+item.Parent.Name+"/"+item.Name)" title="@ff" nav="@item.Name" id="@(item.Parent.Name+"/"+item.Name)" class="has-arrow waves-effect">
+                                                        <i class="mdi mdi-folder-open text-dark"></i>
+                                                        <span>@(ff.Length>6?ff.Substring(0,6)+"..":ff)</span>
+                                                    </a>
+                                                </li>
+                                            }
+                                            catch
+                                            { }
+                                        }
+                                    }
+                                    catch
+                                    { }
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" id="Transferts" class="has-arrow waves-effect">
+                                <i class="mdi mdi-folder-open text-dark"></i>
+                                <span>Transferts</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="true">
+                                @{
+                                    try
+                                    {
+                                        foreach (var item in itemModels.FirstOrDefault(f => f.ParentPath == "Transferts").SousRepertoires.GroupBy(f => f.CreationTime.Year))
+                                        {
+                                            <li>
+                                                <a href="javascript: void(0);" id="Transferts-ga-@(item.Key)" class="has-arrow mdi mdi-folder-open">
+                                                    @*<i class="mdi mdi-folder-open text-dark"></i>*@
+                                                    <span>@item.Key (@item.Count())</span>
+                                                </a>
+                                                <ul class="sub-menu" aria-expanded="true">
+                                                    @{
+                                                        ff = "";
+                                                        foreach (var dos in item.GroupBy(d => d.CreationTime.Month))
+                                                        {
+                                                            ff = ViewBag.mois[dos.Key - 1];
+                                                            <li>
+                                                                <a href="javascript: void(0);" title="@ff" id="Transferts-gm-@(item.Key+"-"+dos.Key)" class="has-arrow mdi mdi-folder-open">
+                                                                    @ff
+                                                                </a>
+                                                                <ul class="sub-menu" aria-expanded="true">
+                                                                    @{
+                                                                        foreach (var d in dos)
+                                                                        {
+                                                                            <li class="atome">
+                                                                                <a href="javascript: void(0);" id="Transferts-@(d.Name)" _href="Transferts-@(d.Name)" title="@d.Name" isabsolute="false" class="has-arrow mdi mdi-folder-open non _folder" style="display: block">
+                                                                                   @(d.Name+"")
+                                                                                </a>
+                                                                            </li>
+                                                                        }
+                                                                    }
+                                                                </ul>
+                                                            </li>
+                                                        }
+                                                    }
+                                                </ul>
+                                            </li>
+                                        }
+
+                                    }
+                                    catch
+                                    { } 
+                                 }
+                                <li class="hidden">
+                                    <a href="javascript: void(0);" class="has-arrow">
+                                        <i class="mdi mdi-folder-open text-dark"></i>
+                                        <span>2021</span>
+                                    </a>
+                                    <ul class="sub-menu" aria-expanded="true">
+                                        <li>
+                                            <a href="javascript: void(0);" class="has-arrow">
+                                                <i class="mdi mdi-folder-open text-dark"></i>
+                                                <span>Fournisseur 1</span>
+                                            </a>
+                                            <ul class="sub-menu" aria-expanded="true">
+                                                <li>
+                                                    <a href="javascript: void(0);" class="has-arrow">
+                                                        <i class="mdi mdi-folder-open text-dark"></i>
+                                                        <span>Transfert 1</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="javascript: void(0);" class="has-arrow">
+                                                        <i class="mdi mdi-folder-open"></i>
+                                                        <span>Transfert 2</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- Sidebar -->
+    </div>
+</div>
+<!-- Left Sidebar End -->

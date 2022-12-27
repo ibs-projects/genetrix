@@ -1,0 +1,1129 @@
+﻿@using genetrix.Models
+@using System.Globalization;
+
+@model genetrix.Models.Bien
+
+@{
+    ViewBag.Title = "Bien";
+    ViewBag.pTitle = "Edition de l'opération";
+    ViewBag.pageTitle = "Bien";
+    ViewBag.pageImage = "~/assets/images/IU/encours.png";
+}
+
+@*}*@
+<style>
+    input[type='file'] {
+        opacity: 0;
+    }
+
+    .file-show {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 38%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+
+    .zone {
+        border: 0.3px solid rgb(187, 187, 187, 0.30);
+        padding-bottom: 10px;
+    }
+</style>
+<style>
+    .detail {
+        border: 1px solid #eef1fd;
+        border-radius: 5px 3px;
+        margin-bottom: 10px
+    }
+
+    .detail0 {
+        padding: 5px
+    }
+
+    legend {
+        background-color: #eef1fd;
+        padding: 5px;
+        font-size: large;
+        font: bold;
+        text-transform: uppercase;
+    }
+
+    .imf-taille {
+        /*max-height: 420px;
+        max-width: 320px;*/
+        width: 150px;
+        height: 200px
+    }
+
+    #list-info {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #333333;
+    }
+
+        #list-info li {
+            float: left;
+        }
+
+    .col-1 {
+        display: none
+    }
+
+    .icon-dos {
+        font-size: 1.5em;
+        color: #2689a6;
+    }
+
+    .separation {
+        margin: 5px;
+    }
+</style>
+<style>
+    details > summary {
+        padding: 8px;
+        width: 40vw;
+        background-color: #eeeeee;
+        border: none;
+        box-shadow: 1px 1px 2px #bbbbbb;
+        cursor: pointer;
+        font-size: 1.3em;
+        color: #2689a6;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    details > div {
+        background-color: #eeeeee;
+        padding: 8px;
+        margin: 0;
+        box-shadow: 1px 1px 2px #bbbbbb;
+    }
+
+    .input-group-text:hover {
+        cursor: pointer;
+        box-shadow: 3px 3px rgb(187, 187, 187, 0.30);
+        background-color: rgb(38, 137,166, 0.35);
+    }
+
+    #pan-nature {
+        border: 0.3px solid rgb(187, 187, 187, 0.30);
+        padding: 15px;
+        padding-left: 6em;
+    }
+
+    input[type='radio'], label[class='form-check-label'] {
+        font-size: 1.5em;
+    }
+
+    .separation {
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+
+    .table-domici {
+        width: 100%;
+        font-size: 1.3em;
+    }
+
+    .item {
+        font-weight: bold;
+        text-align: center;
+        text-transform: uppercase;
+        color: #2689a6;
+    }
+
+    .td-data {
+        padding: 0px;
+        overflow: hidden;
+    }
+
+        .td-data > input {
+            width: 100%;
+            margin: 0px;
+            padding-left: 10px;
+        }
+
+        .td-data > span {
+            display: none;
+        }
+
+
+    .sel-elt {
+        display: none;
+        max-width: 150px;
+    }
+
+    #pan-actions {
+        display: flex;
+    }
+
+    .row {
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="hidden1" id="sauv_auto" style="display:none">
+    @Html.Partial("~/Views/_Shared/PartialViews/Sauvegarde_Auto.cshtml")
+</div>
+<div class="row">
+    <div class="col-lg-12">
+
+        <div class="card">
+            <div class="card-body bg-light">
+                @*<h4 class="card-title mb-4">Saisie de données</h4>*@
+
+                <div id="basic-example">
+                    <!-- Seller Details -->
+                    <h3>Nature de l'opération</h3>
+                    <section>
+                        <details>
+                            <summary class="detail-nature">Nature de l'opération</summary>
+                            <div id="pan-nature">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="formRadios"
+                                           id="formRadios1" checked>
+                                    <label class="form-check-label" for="formRadios1">
+                                        Bien
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" disabled="disabled" type="radio" name="formRadios"
+                                           id="formRadios2">
+                                    <label class="form-check-label" for="formRadios2">
+                                        Service
+                                    </label>
+                                </div>
+                            </div>
+                        </details>
+
+                    </section>
+                    <h3>Saisie des données</h3>
+                    <section>
+                        <form id="form-edit" action="~/dossiers/editbien" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="number" class="hidden" name="Dossier_Id" value="@Model.Dossier_Id" />
+                            <input type="number" class="hidden" name="ClientId" value="@Model.ClientId" />
+                            <input type="text" class="hidden" id="InEtapeNum" name="InEtapeNum" value="@Model.InEtapeNum" />
+                            <div>
+                                <details>
+                                    <summary id="detail-fournisseur">Fournisseur</summary>
+                                    <div class="table-domici">
+                                        <div class="col-12">
+                                            <div colspan="2" class="item">
+                                                <input type="number" id="FournisseurId-tmp" class="hidden" value="@Model.FournisseurId" />
+                                                <input type="number" id="ImportateurId-tmp" class="hidden" value="@Model.ImportateurId" />
+                                                <div class="input-group">
+                                                    <div class="input-group-text item-action" title="Choisir un fournisseur existant" _id="FournisseurId"><i class="mdi mdi-account-search"></i></div>
+                                                    <select class="form-control sel-elt" id="FournisseurId" name="FournisseurId">
+                                                        <option value="@Model.FournisseurId">@Model.GetFournisseur</option>
+                                                        @{
+                                                            foreach (var item in ViewBag.FournisseurId)
+                                                            {
+                                                                if (item.Id != Model.FournisseurId)
+                                                                {
+                                                                    <option value="@item.Id">@item.Nom</option>
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <div class="input-group-text item-action1" title="Ajouter un nouveau fournisseur" _id="add-fournisseur"><a href="#" data-bs-toggle="modal" data-bs-target="#modal-ajout-fournisseur"><i class="icon-dos mdi mdi-plus"></i></a></div>
+                                                    <div class="input-group-text item-action" title="Edition multiple">
+                                                        <i class="mdi mdi-data-matrix-edit"></i>&emsp;
+                                                        <input type="checkbox" checked="checked" name="name" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Nom ou raison sociale: </div>
+                                                <div class="td-data">
+                                                    <span>@Model.GetFournisseur</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="GetFournisseur" name="GetFournisseur" value="@Model.GetFournisseur" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Pays d'origine:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.PaysFournisseur</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="PaysFournisseur" id="PaysFournisseur" value="@Model.PaysFournisseur" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Adresse dans le pays d'origine:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.PaysFournisseur</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="PaysFournisseur" id="PaysFournisseur" value="@Model.PaysFournisseur" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Code établissement:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.CodeEtsBenf</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="CodeAgenceBenf" id="CodeEtsBenf" value="@Model.CodeEtsBenf" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Code agence:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.CodeAgenceBenf</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="CodeAgenceBenf" id="CodeAgenceBenf" value="@Model.CodeAgenceBenf" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Clé:</div>
+                                                <div class="text-muted">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="CleCompteBenf" id="CleCompteBenf" value="@Model.CleCompteBenf" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Numéro du compte:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.NumCompteBenef</span>
+                                                    <select class="form-control input-sel" name="NumCompteBenef" id="NumCompteBenef">
+                                                        <option value="@Model.NumCompteBenef">@Model.NumCompteBenef</option>
+                                                    </select>
+                                                    @*<input class="form-control input-sel input-data" autocomplete="off" type="text" name="NumCompteBenef" id="NumCompteBenef" value="@Model.NumCompteBenef" />*@
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Code Swift:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.CodeSwiftBic</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="CodeSwiftBic" id="CodeSwiftBic" value="@Model.CodeSwiftBic" />
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Banque:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.NomBanqueBenf</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="NomBanqueBenf" id="NomBanqueBenf" value="@Model.NomBanqueBenf" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Adresse de la Banque:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.AdresseBanqueBenf</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="AdresseBanqueBenf" id="AdresseBanqueBenf" value="@Model.AdresseBanqueBenf" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+
+                                <hr class="separation" />
+                                <details>
+                                    <summary id="detail-importateur">Importateur</summary>
+                                    <div class="table-domici row">
+                                        <div class="col-12">
+                                            <div colspan="2" class="item">
+                                                <div class="input-group">
+                                                    <div class="input-group-text item-action" title="Choisir un importateur existant" _id="ImportateurId"><i class="mdi mdi-account-search"></i></div>
+                                                    <select id="ImportateurId" class="sel-elt form-control contact" name="ImportateurId">
+                                                        <option value="@Model.ImportateurId">@Model.GetImportateur</option>
+                                                        @{
+                                                            foreach (var item in ViewBag.ImportateurId)
+                                                            {
+                                                                if (item.Id != Model.ImportateurId)
+                                                                {
+                                                                    <option value="@item.Id">@item.NomComplet</option>
+                                                                }
+                                                            }
+                                                        }
+                                                    </select>
+                                                    <div class="input-group-text item-action" title="Ajouter un nouvel importateur" _id="add-importateur"><a href="#" data-bs-toggle="modal" data-bs-target="#modal-ajout-importateur"><i class="icon-dos mdi mdi-plus"></i></a></div>
+                                                    <div class="input-group-text item-action" title="Edition multiple">
+                                                        <i class="mdi mdi-data-matrix-edit"></i>&emsp;
+                                                        <input type="checkbox" checked="checked" name="name" value="" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Nom ou raison sociale:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="ImportaNom" name="ImportaNom" value="@Model.ImportaNom" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Numéro d'inscription au registre de commerce:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ImportaNumInscri" id="ImportaNumInscri" value="@Model.ImportaNumInscri" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Code:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="ImportateurCode" id="ImportateurCode" value="@Model.ImportateurCode" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Téléphone:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="ImportateurPhone" id="ImportateurPhone" value="@Model.ImportateurPhone" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="text-muted">Adresse complète:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ImportaAdresse" id="ImportaAdresse" value="@Model.ImportaAdresse" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Ville:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="ImportaVille" id="ImportaVille" value="@Model.ImportaVille" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Pays:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" id="ImportaPays" name="ImportaPays" id="ImportaPays" value="@Model.ImportaPays" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="text-muted">Code d'agrément:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="ImportateurCodeAgr" id="ImportateurCodeAgr" value="@Model.ImportateurCodeAgr" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Obtention:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="Obtention" id="Obtention" value="@Model.Obtention" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Péremption:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="Peremption" id="Peremption" value="@Model.Peremption" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <div class="text-muted">Email:</div>
+                                                <div class="td-data">
+                                                    <input type="text" class="form-control input-sel input-data" name="ImportateurMail" id="ImportateurMail" value="@Model.ImportateurMail" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Profession</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="ImportaProfession" name="ImportaProfession" value="@Model.ImportaProfession" />
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-muted">Immatriculation statique: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="ImportaImmatri" name="ImportaImmatri" value="@Model.ImportaImmatri" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </details>
+
+                                <hr class="separation" />
+
+                                <details>
+                                    <summary id="detail-marchandise">Marchandise</summary>
+                                    <div class="table-domici">
+                                        <div class="col-12" style="display:flex">
+                                            <div class="text-muted" style="padding-top:4px">Marchandise déjà arrivée?:</div>
+                                            <div style="padding-top:0px">
+                                                <div class="form-check form-switch form-switch-lg" dir="ltr" id="pan-customSwitchsizelg">
+                                                    <input name="MarchandiseArrivee" type="checkbox" @(Model.MarchandiseArrivee ? "checked value=true" : "value=false") class="form-check-input" style="margin-left:0px" id="customSwitchsizelg">
+                                                    <label style="margin-top:5px;color:#2689a6;font-weight:bold">@(Model.MarchandiseArrivee?"OUI":"NON")</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr /><div class="row">
+                                            <div class="col-3">
+                                                <div class="text-muted">Pays emmeteur:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="PaysClient" name="PaysClient" value="@Model.PaysClient" />
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="text-muted">N° declaration:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" id="NumDeclaration" name="NumDeclaration" value="@Model.NumDeclaration" />
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="text-muted">Date declaration:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="date" id="DateDeclaration" name="DateDeclaration" value="@Model.DateDeclaration" />
+                                                    <script>
+                document.getElementById('DateDeclaration').value = "@(Model.DateDeclaration != null?Model.DateDeclaration.Value.ToString("yyyy-MM-dd"):"")";
+                                                    </script>
+                                                </div>
+
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="text-muted">Date imp:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="date" id="DateImport" name="DateImport" value="@Model.DateImport" />
+                                                    <script>
+                document.getElementById('DateImport').value = "@(Model.DateImport != null?Model.DateImport.Value.ToString("yyyy-MM-dd"):"")";
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Designation commerciale:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="Description" value="@Model.Description" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Quantité (Poinds net):</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="Qte" value="@Model.Qte" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Bureau d'embarquement:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="BureauEmbarquement" value="@Model.BureauEmbarquement" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">FOB:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="FOBDevise" value="@Model.FOBDevise" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">CAF:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="CAF" value="@Model.CAF" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="text-muted">Nomenclature douanière:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="NomenClatureDouane" value="@Model.NomenClatureDouane" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Reference de la facture:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="NumFacturePro" value="@Model.NumFacturePro" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-6">
+                                                <div class="text-muted">Pays de provenance:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="PaysProv" id="PaysProv" value="@Model.PaysProv" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Pays d'origine:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="PaysOrig" id="PaysOrig" value="@Model.PaysOrig" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Banque domiciliataire: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="BanqueDomi" id="BanqueDomi" value="@Model.BanqueDomi" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Ref. domiciliataire: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="RefDomiciliation" id="RefDomiciliation" value="@Model.RefDomiciliation" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Date domiciliataire: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="date" placeholder="01/01/2023" name="DateDomiciliation" id="DateDomiciliation" value="@Model.DateDomiciliation" />
+                                                    <script>
+                                                        document.getElementById('DateDomiciliation').value = "@(Model.DateDomiciliation != null?Model.DateDomiciliation.Value.ToString("yyyy-MM-dd"):"")";
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">N° Facture pro forma: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="NumFacturePro" id="NumFacturePro" value="@Model.NumFacturePro" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Date Facture pro forma: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="date" placeholder="01/01/2023" name="DateFacturePro" id="DateFacturePro" value="" />
+                                                    <script>
+                                                        document.getElementById('DateFacturePro').value = "@(Model.DateFacturePro!=null?Model.DateFacturePro.Value.ToString("yyyy-MM-dd"):"")";
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Modalité règlement: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ModalReglement" id="ModalReglement" value="@Model.ModalReglement" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Services Connexes aux biens: </div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ServiceConnexe" id="ServiceConnexe" value="@Model.ServiceConnexe" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Montant en devise:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-data parite valided input-sel" autocomplete="off" type="number" id="Montant" name="Montant" value="@Model.Montant" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6" style="display:flex">
+                                                <div style="flex:1">
+                                                    <div class="text-muted">Devise:</div>
+                                                    <div class="td-data">
+                                                        @*@Html.DropDownList("DeviseMonetaireId", null, htmlAttributes: new { @class = "form-control input-sel", id = "DeviseMonetaireId" })*@
+                                                        <select class="form-control input-sel" id="DeviseMonetaireId" name="DeviseMonetaireId">
+                                                            <option value="@Model.DeviseMonetaireId">@Model.DeviseToString</option>
+                                                            @foreach (var item in ViewBag.DeviseMonetaireId)
+                                                            {
+                                                                if (Model.DeviseMonetaireId != item.Id)
+                                                                {
+                                                                    <option taux="@item.ParitéXAF" value="@item.Id">@item.Nom</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div style="flex:1">
+                                                    <div class="text-muted">Taux de change: </div>
+                                                    <div class="td-data">
+                                                        <input class="form-control input-sel input-data" autocomplete="off" type="text" name="TauxChange" id="TauxChange" value="@Model.TauxChange" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Montant en lettre:</div>
+                                                <div>
+                                                    <textarea rows="1" name="MontantEnLettre" class="form-control input-sel" multiple id="MontantEnLettre" value="@Model.MontantEnLettre" readonly="readonly">@Model.MontantEnLettre</textarea>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Montant en CFA:</div>
+                                                <div class="td-data" style="margin-bottom:0px">
+                                                    @{
+                                                        string devise = "";
+                                                        try
+                                                        {
+                                                            devise = Model.DeviseMonetaire.Nom;
+                                                        }
+                                                        catch (Exception)
+                                                        { }
+                                                        <input type="text" name="ContreValeurXAF" class="form-control input-sel icon-dos" style="font-size:1.1em;height:50px" id="ContreValeurXAF" value="@Model.MontantCVstring" readonly="readonly" />
+                                                        if (devise == "EUR")
+                                                        {
+                                                            <label class="text-danger" style="margin-bottom:-10px" id="ContreValeurToString"></label>
+                                                        }
+                                                        else
+                                                        {
+                                                            <label class="text-danger" style=" margin-bottom: -10px" id="ContreValeurToString">Le cours vous sera communiqué par votre gestionnaire</label>
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div class="text-muted">Pos. Tarifaire:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="PosTarif" id="PosTarif" value="@Model.PosTarif" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">Quantité:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="number" name="Qte" id="Qte" value="@Model.Qte" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6" style="display:flex">
+                                                <div style="flex:1">
+                                                    <div class="text-muted">Unité:</div>
+                                                    <div class="td-data">
+                                                        <input class="form-control input-sel input-data" autocomplete="off" type="text" name="Unite" id="Unite" value="@Model.Unite" />
+                                                    </div>
+                                                </div>
+                                                <div style="flex:1">
+                                                    <div class="text-muted">Péremption:</div>
+                                                    <div class="td-data">
+                                                        <input class="form-control input-sel input-data" autocomplete="off" type="text" name="Peremption" id="Peremption" value="@Model.Peremption" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div class="text-muted">FOB en devise:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="FOBDevise" id="FOBDevise" value="@Model.FOBDevise" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-12 row">
+                                                <div class="col-6">
+                                                    <div class="text-muted">Taxe d'inspection:</div>
+                                                    <div class="td-data">
+                                                        <input class="form-control input-sel input-data" autocomplete="off" type="text" name="TaxeInsp" id="TaxeInsp" value="@Model.TaxeInsp" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="text-muted">Chèque n° / virement:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ChequeNum" id="ChequeNum" value="@Model.ChequeNum" />
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div>Date du cheque:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="date" name="ChequeDate" id="ChequeDate" value="@Model.ChequeDate" />
+                                                    <script>
+                                                        document.getElementById('ChequeDate').value = "@(Model.ChequeDate != null?Model.ChequeDate.Value.ToString("yyyy-MM-dd"):"")";
+                                                    </script>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div>Banque:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ChequeBanque" id="ChequeBanque" value="@Model.ChequeBanque" />
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div>Montant chèque en CFA:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="number" name="ChequeMontantCFA" id="ChequeMontantCFA" value="@Model.ChequeMontantCFA" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div>Terme de vente:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="TermeVente" id="TermeVente" value="@Model.TermeVente" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div>Valeur FOB (devises):</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ValeurFOB" id="ValeurFOB" value="@Model.ValeurFOB" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div>Mode de transport:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="ModeTransport" id="ModeTransport" value="@Model.ModeTransport" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div>Type d'expedition:</div>
+                                                <div class="td-data">
+                                                    <span>@Model.TypeExpedition</span>
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="TypeExpedition" id="TypeExpedition" value="@Model.TypeExpedition" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <div>Echéance fixée pour le paiement:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="EcheancePaiement" id="EcheancePaiement" value="@Model.EcheancePaiement" />
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <div>Lieu de dédouagnement:</div>
+                                                <div class="td-data">
+                                                    <input class="form-control input-sel input-data" autocomplete="off" type="text" name="LieuDedouagnement" id="LieuDedouagnement" value="@Model.LieuDedouagnement" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </details>
+                            </div>
+                        </form>
+                    </section>
+                    <h3 id="numerisation">Numérisation des documents</h3>
+                    <section>
+                    </section>
+                </div>
+                <hr />
+                <div id="pan-actions">
+                    <div style="flex:1">
+                        <button id="btn-submit" class="btn btn-primary float-left"><i class="fas fa-check"></i> Valider</button>
+                    </div>
+                    <div style="flex:2">
+                        <button id="btn-numerise" class="btn btn-primary float-end" style="display:none"><i class="mdi mdi-arrow-right"></i> Suivant</button>
+                    </div>
+                </div>
+            </div>
+            <!-- end card body -->
+
+        </div>
+
+    </div>
+
+</div>
+@Html.Partial("~/Views/Dossiers/Modal_Ajout_Fournisseur.cshtml", new Fournisseurs() { IdDossier = Model.Dossier_Id })
+@Html.Partial("~/Views/Dossiers/Modal_Ajout_Importateur.cshtml", new Importateur() { IdDossier = Model.Dossier_Id })
+
+@Scripts.Render("~/Content/js")
+@Scripts.Render("~/Content/wizard")
+<script src="~/assets/nombre_en_lettre.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        try {
+            //Parité devise XAF
+            //Databinding
+            $("#Montant").on("change", function () {
+                patrie();
+            });
+
+            $("#DeviseMonetaireId").on("change", function () {
+                patrie();
+            });
+            //patrie();
+            function patrie() {
+                var mt = $('#Montant').val();
+                var itemSelected = document.getElementById('DeviseMonetaireId').options[document.getElementById('DeviseMonetaireId').selectedIndex];
+                var dv = itemSelected.value;
+                $('#TauxChange').val(itemSelected.getAttribute('taux'));
+                itemSelected = null;
+                $.get("@Url.Content("~/Dossiers/Parite?mt=")" + mt + "&idDevise=" + dv, function (data, status) {
+                    try {
+                        if (data.cv==0) {
+                            $('#ContreValeurXAF').val('');
+                            $('#ContreValeurToString').text(data.cvs);
+                        } else {
+                            $('#ContreValeurXAF').val(data.cvs);
+                            $('#ContreValeurToString').text('');
+
+                        }
+                    } catch (e) {
+
+                    }
+                    try {
+                        $('#montantToString').text(data.mts);
+                    } catch (e) {
+
+                    }
+                });
+            }
+    } catch (e) {
+
+        }
+
+        try {
+            $('#Montant,#DeviseMonetaireId').on('change', function () {
+                SetMontantLet(this);
+            })
+        } catch (e) {
+
+        }
+        var tab = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',', '.'];
+        function SetMontantLet(elt) {
+            var devise = "";
+            try {
+                devise = document.getElementById('DeviseMonetaireId').options[document.getElementById('DeviseMonetaireId').selectedIndex].textContent;
+                //    devise = devise.toLowerCase();
+            } catch (e) {
+
+            }
+            var mt = "";
+            for (var i in $('#Montant').val()) {
+                if (tab.includes($('#Montant').val()[i])) {
+                    mt += $('#Montant').val()[i];
+                }
+            }
+            var intPart = 0, nombre = 0;
+            if (mt.includes('.')) {
+                nombre = Number(mt.split('.')[0]);
+                intPart = Number(Number("0." + mt.split('.')[1]) * 100);
+            } else {
+                nombre = Number(mt);
+            }
+            if (intPart > 0) {
+                var centime = "centime";
+                if (intPart.toString().includes('.')) {
+                    intPart = Number(intPart.toString().split('.')[0]);
+                }
+                if (intPart >= 2) {
+                    centime = "centimes";
+                }
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise + " et " + intPart + " " + centime);
+            } else {
+                $('#MontantEnLettre').val(NumberToLetter(nombre) + " " + devise);
+            }
+        }
+
+        try {
+            var suiv = $("a[href='#next']")[0];
+            suiv.click();
+            $('.detail-nature').click();
+            if ($('#FournisseurId-tmp').val() <= 0) {
+                $('#detail-fournisseur').click();
+            } else if ($('#ImportateurId-tmp').val() <= 0) {
+                $('#detail-importateur').click();
+            } else {
+                $('#detail-marchandise').click();
+            }
+        } catch (e) {
+
+        }
+
+        $('.actions').hide();
+        try {
+            $("#FournisseurId").change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+                 try {
+                     $.ajax({
+                         url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + selectedCountry,
+                         success: function (responce) {
+                             var daySelect = document.getElementById('NumCompteBenef');
+                            var length = daySelect.options.length;
+                            for (i = length - 1; i >= 0; i--) {
+                                daySelect.options[i] = null;
+                            }
+
+                             $.each(responce, function (index, item) {
+                                 try {
+                                     $('#CodeEtsBenf').val(item.CodeEts);
+                                     $('#AdresseBanqueBenf').val(item.Adresse);
+                                     $('#NomBanqueBenf').val(item.NomBanque);
+                                     $('#AdresseFournisseur').val(item.AdresseBenf);
+                                     $('#GetFournisseur').val(item.FournisseurNom);
+                                     $('#PaysFournisseur').val(item.FournisseurPays);
+                                     $('#AdresseFournisseur').val(item.FournisseurAdresse);
+                                     $('#CodeAgenceBenf').val(item.CodeAgence);
+                                     $('#CleCompteBenf').val(item.Cle);
+                                     $('#CodeSwiftBic').val(item.CodeSwift);
+                                 } catch (e) {
+
+                                 }
+                                 daySelect.options[daySelect.options.length] = new Option('' + item.Numero, item.Numero);
+                             });
+                             daySelect.options[daySelect.options.length] = new Option('', '');
+                        },
+                        error: function (responce) { alert(responce.error) }
+                    });
+                } catch (e) {
+
+                }
+            });
+        } catch (e) {
+
+        }
+
+        //btn marchandise arrivée
+        try {
+            $('#pan-customSwitchsizelg').click(function () {
+                document.getElementById('customSwitchsizelg').checked;
+                if (document.getElementById('customSwitchsizelg').value == 'false') {
+                    document.getElementById('link-preload').click();
+                    document.getElementById('customSwitchsizelg').value = true;
+                } else {
+                    document.getElementById('customSwitchsizelg').value = false;
+                }
+                document.getElementById('form-edit').submit();
+            });
+        } catch (e) {
+
+        }
+
+        try {
+
+            $('#NumCompteBenef').change(function () {
+                var selectedCountry = $(this).children("option:selected").val();
+                 try {
+                     $.ajax({
+                         url: '@Url.Content("~/Fournisseurs/GetCompte?fourId=")' + $('#FournisseurId').val() + '&numCmpt=' + selectedCountry,
+                         success: function (responce) {alert("rrr")
+                             try {
+                                 $('#NomBanqueBenf').val(responce.NomBanque);
+                                 $('#AdresseBanqueBenf').val(responce.Adresse);
+                                 $('#CodeAgenceBenf').val(responce.CodeAgence);
+                                 $('#CleCompteBenf').val(responce.Cle);
+                                 $('#CodeSwiftBic').val(responce.CodeSwift);
+                             } catch (e) {
+
+                             }
+                        },
+                        error: function (responce) { alert("eee: "+responce.error) }
+                    });
+                } catch (e) {
+
+                }
+            });
+
+        } catch (e) {
+
+        }
+
+        try {
+            $(".contact").change(function () {
+            var selectedCountry = $(this).children("option:selected").val();
+            var ctName = $(this).attr("Name");
+                 try {
+                     $.ajax({
+                         url: '@Url.Content("~/Contacts/GetOne?id=")' + selectedCountry,
+                         success: function (item) {
+                             try {
+                                 if (ctName=='VendeurId') {
+                                    $('#VendeurNom').val(item.NomComplet);
+                                     $('#VendeurAdresse').val(item.Adresse);
+                                     $('#VendeurFax').val(item.Fax);
+                                     $('#VendeurPaysHorsCemac').val(item.Pays);
+                                     $('#VendeurPhone').val(item.Telephone);
+                                     $('#VendeurVille').val(item.Ville);
+                                 } else {
+                                     $('#ImportaNom').val(item.NomComplet);
+                                     $('#ImportaAdresse').val(item.Adresse);
+                                     $('#ImportateurPhone').val(item.Telephone);
+                                     $('#ImportaVille').val(item.Ville);
+                                     $('#ImportateurCodeAgr').val(item.CodeAgrement);
+                                     $('#ImportateurCode').val(item.Code);
+                                     $('#ImportaImmatri').val(item.Immatriculation);
+                                     $('#ImportaProfession').val(item.Profession);
+                                     $('#ImportaNumInscri').val(item.NumInscri);
+                                     $('#ImportaPays').val(item.Pays);
+                                     $('#Immatriculation').val(item.Immatriculation);
+                                     $('#ImportateurMail').val(item.Email);
+                                     $('#Profession').val(item.Profession);
+                                     $('#Obtention').val(item.DateOptention);
+                                 }
+                                 } catch (e) {
+
+                                 }
+                         },
+                        error: function (responce) { alert(responce.error) }
+                    });
+                } catch (e) {
+
+                }
+            });
+        } catch (e) {
+
+        }
+
+        $('.item-action').click(function () {
+            $('#' + $(this).attr('_id')).show(100);
+        });
+        if ('@Model.EtapeNumerisation' == 'True') {
+            $('#btn-numerise').show();
+            $('#basic-example-t-2').click(function () {
+                $('#btn-numerise').click();
+            });
+        } else {
+            $('#btn-numerise').hide();
+        }
+        $('#btn-valid').click(function () {
+            document.getElementById('formcreate').submit();
+        });
+
+        $('.input-data').change(function () {
+            try {
+                if (this.value) {
+                    this.style.display = 'color:black;background-color:#ebeefc';
+                } else {
+                    this.style.display = 'background-color:white';
+                }
+                this.style.display = 'background-color:white';
+            } catch (e) {
+
+            }
+        });
+        $('.td-data0').hover(function () {
+            try {
+                this.style.padding = '0px';
+                var _ph = this.offsetHeight;
+                $(this).children()[0].style.display = 'none';
+                $(this).children()[1].style = 'display:initial;height:' + _ph + 'px';
+            } catch (e) {
+
+            }
+        });
+        $('.td-data0').mouseleave(function () {
+            try {
+                this.style.padding = '10px';
+                $(this).children()[1].style.display = 'none';
+                $(this).children()[0].textContent = $(this).children()[1].value;
+                $(this).children()[0].style.display = 'initial';
+            } catch (e) {
+
+            }
+        });
+        $('#btn-submit').click(function () {
+            if (confirm('Confirmez vous la validation des données?')) {
+                $('#InEtapeNum').val('false');
+                document.getElementById('link-preload').click();
+                document.getElementById('form-edit').submit();
+            }
+        });
+        $('#btn-numerise').click(function () {
+            if (confirm("Vous passez à l'étape de numérisation des documents. Voulze-vous continuer?")) {
+                $('#InEtapeNum').val('true');
+                document.getElementById('link-preload').click();
+                document.getElementById('form-edit').submit();
+            }
+        });
+    });
+</script>
